@@ -1,18 +1,21 @@
 # eCommHarvest — Q4 Masterclass Landing Page
 
-Static design review page presenting four headline/positioning versions of the Q4
-Masterclass landing page. Tabs at the top switch between versions (V1–V4); each
-version is a full-page layout with its own hero, proof, and CTA treatment.
+Landing page for a free 90-minute masterclass: *Your Q4 Revenue Playbook, Built
+in 90 Minutes.* Aimed at LDS e-commerce founders, presented by David Love, hosted
+by Tiny 3D Temples, B.O.M. Socks, and Come Follow Me FHE.
 
 ## Structure
 
 ```
-public/index.html   Single self-contained page (inline CSS + JS, logo as data URI)
+public/index.html   Single self-contained page (inline CSS, logo as data URI)
 vercel.json         Static hosting config: clean URLs, cache + security headers
 ```
 
-Nothing to build — `public/` is served as-is. External dependency: Google Fonts
-(Plus Jakarta Sans, IBM Plex Mono).
+Nothing to build — `public/` is served as-is. No JavaScript. External dependency:
+Google Fonts (Plus Jakarta Sans, IBM Plex Mono).
+
+Page order: hero → hosted-by trust bar → faith-first positioning → what you'll
+learn → who this is for → presenter → final CTA.
 
 ## Local preview
 
@@ -28,11 +31,20 @@ Vercel, output directory `public`, no build step:
 vercel deploy --prod
 ```
 
-Or connect the repo in the Vercel dashboard — the settings in `vercel.json` are
-picked up automatically.
+Or connect the repo in the Vercel dashboard — `vercel.json` is picked up
+automatically.
 
-## Status
+## Open items
 
-Copy in the sections marked `PLACEHOLDER SECTION` is lorem ipsum standing in for
-final copy. Every CTA currently links to the in-page `#register-v*` anchors and
-needs a real registration URL before this goes in front of traffic.
+Search `index.html` for `TODO`:
+
+1. **Host logos** — the three `.host-mark` spans are typographic monogram
+   placeholders. Replace each with `<img src="logos/<brand>.svg" alt="<Brand>">`
+   (drop them in `public/logos/`); `.host img` caps height at 42px. If a logo is
+   a full wordmark, delete the adjacent `.host-name` span.
+2. **Presenter photo and bio** — `.pres-photo` holds a `DL` monogram; swap in a
+   square headshot. The two bio paragraphs are a draft written from approach
+   rather than credentials, and want real proof points.
+3. **Registration URL** — every CTA above the fold links to the `#register`
+   anchor, and the button inside the final card is still `href="#"`. That one
+   needs the real registration link.
