@@ -1,7 +1,8 @@
 # eCommHarvest — Q4 Masterclass Landing Page
 
 Landing page for a free 90-minute masterclass: *Your Q4 Revenue Playbook, Built
-in 90 Minutes.* Aimed at LDS e-commerce founders. Presented by David Love with
+in 90 Minutes.* Thursday, September 3, 2026 at 11:00 AM MT. Aimed at LDS
+e-commerce founders. Presented by David Love with
 special guest Derek Crimin (owner of B.O.M. Socks), hosted by Tiny 3D Temples,
 B.O.M. Socks, and Come Follow Me FHE.
 
@@ -47,8 +48,6 @@ Search `index.html` for `TODO`:
    swap in square headshots. Both bios are drafts written from approach rather
    than credentials, and want real proof points. Derek's especially — confirm it
    with him before this ships.
-3. **Date and time** — the hero `.when` line reads `[Date & time TBD]`. Needs the
-   real date, start time, and timezone.
-4. **Registration URL** — every CTA above the fold links to the `#register`
+3. **Registration URL** — every CTA above the fold links to the `#register`
    anchor, and the button inside the final card is still `href="#"`. That one
    needs the real registration link, or better, an embedded form in its place.
