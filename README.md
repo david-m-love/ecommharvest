@@ -1,123 +1,150 @@
-# eCommHarvest — Q4 Masterclass
+# eCommHarvest
 
-Landing page and registration backend for a free 90-minute masterclass: *Your Q4
-Revenue Playbook, Built in 90 Minutes.* Thursday, September 3, 2026 at 11:00 AM
-MT. Aimed at LDS e-commerce founders. Presented by David Love with special guest
-Derek Crimin (owner of B.O.M.Socks), hosted by Tiny 3D Temples, B.O.M.Socks, and
-Come Follow Me FHE.
+Marketing site, member area, and admin for eCommHarvest — one Next.js app with
+Payload CMS running inside it.
 
-## Structure
+| URL | What |
+| --- | --- |
+| `/` | Marketing home |
+| `/masterclass` | Q4 Masterclass landing page (Thursday, September 3, 11:00 AM MT) |
+| `/learn` | Member area — courses, lessons, progress |
+| `/members` | Admin: who has access to what, grant/revoke, impersonate |
+| `/admin` | Payload admin — content CRUD, generated from the schema |
+| `/privacy`, `/terms` | Legal pages (**drafts, need legal review**) |
 
-```
-public/
-  index.html        Landing page + registration form
-  thanks.html       Post-registration confirmation, calendar links (noindex)
-  privacy.html      Privacy policy (DRAFT — needs legal review)
-  terms.html        Terms & conditions (DRAFT — needs legal review)
-  styles.css        Shared stylesheet for all four pages
-  logo.png          eCommHarvest wordmark
-  masterclass.ics   Calendar file for the event
-  logos/            Host logos go here (see docs/logos.md)
-api/
-  register.js       POST — validates and fans a registration out to every sink
-  registrations.js  GET  — CSV export, bearer-token protected
-test/
-  register.test.js       14 tests
-  registrations.test.js  11 tests
-  devserver.js           Local server that runs the API in-process
-vercel.json         Static config, function limits, cache + security headers
-```
+Paths rather than subdomains on purpose: a separate `admin.` host means a
+separate cookie scope, so you either duplicate auth or widen the session cookie
+to every subdomain. `app.ecommharvest.com` can later be an alias to the same
+deployment.
 
-No build step. `public/` is served as-is; `api/` runs as Node serverless
-functions. Zero dependencies — the functions use global `fetch`. Only external
-runtime dependency is Google Fonts.
+## Stack
 
-Page order on the landing page: hero → hosted-by trust bar → faith-first
-positioning → what you'll learn → paid social / CAC → who this is for →
-speakers → registration form.
+- **Next.js 16** (App Router) + React 19, TypeScript
+- **Payload CMS 3** — admin panel, auth, and REST/GraphQL inside the same app
+- **Postgres** (Neon in production; a local cluster for development)
+- **Cloudflare Stream** for video, behind an adapter so Bunny/Mux is a swap
+- **Resend** for transactional email (optional; dev logs links to the console)
 
-## Local development
+## Getting started
 
 ```bash
-npm run dev      # static only, no API
-npm run dev:api  # serves public/ and runs the API handlers in-process, port 4322
-npm test         # 25 tests, no network required
+npm install
+cp .env.example .env      # fill in DATABASE_URI and PAYLOAD_SECRET
+npm run db:start          # local Postgres (skip if using a hosted database)
+npm run seed              # admin + test member + the Q4 course
+npm run dev               # http://localhost:3000
 ```
 
-`dev:api` reads the same environment variables as production, so you can point
-it at a real sink:
+Seeded accounts (development only — override with `SEED_ADMIN_PASSWORD`):
+
+| Email | Role | Password |
+| --- | --- | --- |
+| `david@lovemarketing.digital` | admin + member | `change-me-locally-8f2a` |
+| `member@example.com` | member | `change-me-locally-8f2a` |
+
+Members normally sign in without a password: `/login` emails a one-time link. In
+development the link is printed to the server console, because Payload's fallback
+email adapter logs only the subject.
+
+## Tests
 
 ```bash
-REGISTRATION_WEBHOOK_URL=https://webhook.site/<your-id> npm run dev:api
+npm test            # registration + video adapter, no network or database needed
+npm run test:security   # access boundaries, needs `npm run dev` running + seed data
 ```
+
+`test/security.e2e.mjs` sets an `Origin` header on every request deliberately.
+Payload only honours cookie auth for origins listed in `csrf`, so without one
+every call reads as unauthenticated and the suite passes for the wrong reason.
+
+## How access works
+
+`Entitlements` is the single source of truth for "may this person watch this
+course", and it is deliberately decoupled from any payment provider — a manual
+grant, a Stripe webhook, and a Shopify order all just write a row. That is why
+access works today with no checkout, and why processors stay swappable.
+
+An entitlement counts only if `revokedAt` is empty and `expiresAt` is absent or
+in the future. Revoking stamps `revokedAt` rather than deleting, so history
+survives a refund dispute.
+
+Course and lesson *metadata* are publicly readable on purpose — that listing is
+the sales page. What is gated is **playback**: the player fetches a signed,
+four-hour token from `/api/playback/[lessonSlug]`, which authorises before it
+reveals anything about the video. Uploads are created with `requireSignedURLs`,
+so an unsigned URL never works.
+
+Lessons flagged `isPreview` are playable without an entitlement, as the teaser.
 
 ## Environment variables
 
-`POST /api/register` writes to **every** sink that is configured, and returns
-`503` if none are — a registration is never accepted into a void. Configure at
-least one.
-
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `KV_REST_API_URL` | — | Vercel KV / Upstash Redis REST endpoint. Enables durable storage, the CSV export, and per-IP rate limiting. |
-| `KV_REST_API_TOKEN` | — | Token for the above. Both are set automatically when you attach a KV store in Vercel. |
-| `KLAVIYO_PRIVATE_KEY` | — | Klaviyo private API key (`pk_…`). Subscribes each registrant to a list. |
-| `KLAVIYO_LIST_ID` | — | Klaviyo list ID to subscribe to. Needed alongside the key. |
-| `REGISTRATION_WEBHOOK_URL` | — | Any URL that accepts a JSON POST — Zapier, Make, n8n. Useful as a belt-and-braces copy. |
-| `ADMIN_TOKEN` | — | Enables `GET /api/registrations`. Without it that endpoint always returns 401. |
+| `DATABASE_URI` | **yes** | Postgres connection string |
+| `PAYLOAD_SECRET` | **yes** | Signs auth tokens. A long random string. |
+| `NEXT_PUBLIC_SERVER_URL` | **yes** | Public origin; also a trusted CSRF origin |
+| `CLOUDFLARE_ACCOUNT_ID` | video | Cloudflare account |
+| `CLOUDFLARE_STREAM_TOKEN` | video | API token with Stream read/write |
+| `CLOUDFLARE_STREAM_SIGNING_KEY_ID` | — | Signs playback tokens locally, avoiding an API call per play |
+| `CLOUDFLARE_STREAM_SIGNING_KEY_JWK` | — | The signing key, base64 or raw JSON |
+| `RESEND_API_KEY` | email | Sends sign-in links. Without it, dev logs them. |
+| `BLOB_READ_WRITE_TOKEN` | uploads | Vercel Blob. Required in production — Vercel's filesystem is ephemeral. |
+| `KLAVIYO_PRIVATE_KEY` / `KLAVIYO_LIST_ID` | — | Subscribe masterclass registrants to a list |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | — | Extra registration sink + per-IP rate limiting |
+| `REGISTRATION_WEBHOOK_URL` | — | Extra registration sink (Zapier, Make, n8n) |
+| `ADMIN_TOKEN` | — | Bearer token for scripting the CSV export |
 
-Set them in Vercel under Project → Settings → Environment Variables, then
-redeploy.
+Registrations write to **every** configured sink and the endpoint returns 503 if
+none are, so a lead is never accepted into a void. The database counts as a sink,
+so once `DATABASE_URI` is set the form works.
 
-### Exporting registrations
+Export registrations:
 
 ```bash
-curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://<your-domain>/api/registrations > registrations.csv
+curl -H "Authorization: Bearer $ADMIN_TOKEN" https://<site>/api/registrations > regs.csv
 ```
-
-Requires KV (that's where rows are stored). Returns 404 if KV is unconfigured,
-so the endpoint doesn't advertise itself on a site that isn't using it.
-
-### Spam handling
-
-Three layers, no CAPTCHA: a honeypot `company` field, a minimum fill time of
-2.5s, and a per-IP limit of 8 submissions per hour (KV only). Suspected bots
-receive a normal-looking success response but are never stored.
 
 ## Deploy
 
-Vercel, no build command, output directory `public`. `api/` is detected
-automatically.
+Vercel auto-detects Next. Set the environment variables, attach a Neon Postgres
+database and a Blob store, then deploy. `next.config.mjs` carries the headers and
+the legacy `.html` redirects; there is no `vercel.json`.
 
-```bash
-vercel deploy --prod
-```
-
-Or connect the repo in the Vercel dashboard — `vercel.json` is picked up
-automatically.
+Add every domain you sign in on to `csrf` in `src/payload.config.ts`, including
+preview URLs, or cookie auth will silently not work there.
 
 ## Open items
 
-1. **Legal review.** `privacy.html` and `terms.html` are drafts and say so on the
-   page. Both contain `[bracketed]` placeholders for the legal entity name,
-   address, contact addresses, retention period, liability cap, and governing
-   law. The privacy policy also has an explicit either/or to resolve: whether
-   the three host brands receive registrant details. Pick one, delete the other
-   — this has to match what you actually do.
-2. **Klaviyo schema.** The subscribe call is pinned to API revision
-   `2024-10-15`. It could not be verified against live docs from the build
-   environment, so send one test registration and confirm the profile lands on
-   the list before promoting the page.
-3. **Webinar platform.** Nothing here creates a Zoom/Demio registration or
-   issues a real join link — the confirmation email has to carry it. If the
-   platform needs registrants pushed into it, that's a fourth sink in
-   `api/register.js`, alongside the Klaviyo one.
-4. **Host logos** — three `.host-mark` monogram placeholders. See
-   `docs/logos.md`.
-5. **Speaker photos and bios** — `.sp-photo` holds `DL` / `DC` monograms. Both
-   bios are drafts written from approach rather than credentials. Confirm
-   Derek's with him.
-6. **Analytics / ad pixel.** None installed. If a Meta pixel goes on for the ad
-   campaign, the privacy policy's tracking section must be updated to name it,
-   and it should be consent-gated for UK/EU visitors.
+1. **Legal review.** `/privacy` and `/terms` are drafts and say so on the page.
+   Bracketed placeholders for entity name, address, contact addresses, retention
+   period, liability cap, and governing law. One real decision inside: whether
+   the three host brands receive registrant details — pick one branch, delete the
+   other, and make it match what you actually do.
+2. **Klaviyo schema unverified.** The subscribe call is pinned to API revision
+   `2024-10-15` but was written without access to live docs. Send one test
+   registration and confirm the profile lands on the list.
+3. **Host logos** — three monogram placeholders. See `docs/logos.md`.
+4. **Speaker photos and bios** — `DL` / `DC` monograms; both bios are drafts.
+   Confirm Derek's with him.
+5. **No payments yet.** Access is granted by hand from `/members`. Stripe
+   Checkout plus a webhook that calls `grantAccess()` is the next step.
+6. **No webinar platform integration.** Nothing here issues a Zoom/Demio join
+   link; the confirmation email must carry it. If registrants need pushing into
+   the platform, that is a fifth sink in `src/lib/registration.ts`.
+7. **Analytics / ad pixel** — none installed. When a Meta pixel goes on, the
+   privacy policy's tracking section must name it, and it should be consent-gated
+   for UK/EU visitors.
+
+## Notes for whoever works on this next
+
+- **Next 16 renames `middleware` to `proxy`**, with no edge runtime. `AGENTS.md`
+  is generated by `next dev` and committed deliberately, since it is recreated
+  on every run.
+- **Payload scripts need top-level `await`.** A floating promise lets Node exit 0
+  before the database connects, so a seed appears to succeed while doing nothing.
+- **Postgres ids are integers.** `numericId()` in `src/lib/entitlements.ts`
+  coerces ids arriving as strings from URL params.
+- **Impersonation replaces your own session** rather than stacking one, so you
+  sign back in afterwards. Deliberate: carrying the original identity in a second
+  cookie is a much larger security surface than a second sign-in is an
+  inconvenience.
