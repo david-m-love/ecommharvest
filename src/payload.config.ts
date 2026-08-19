@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
@@ -37,7 +38,18 @@ const storagePlugins = process.env.BLOB_READ_WRITE_TOKEN
     ]
   : []
 
+// Transactional email. Without a key Payload falls back to logging, which is
+// fine locally — the sign-in route prints the link to the console in dev.
+const email = process.env.RESEND_API_KEY
+  ? resendAdapter({
+      apiKey: process.env.RESEND_API_KEY,
+      defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'hello@ecommharvest.com',
+      defaultFromName: process.env.EMAIL_FROM_NAME || 'eCommHarvest',
+    })
+  : undefined
+
 export default buildConfig({
+  email,
   admin: {
     user: Users.slug,
     meta: {
@@ -61,6 +73,24 @@ export default buildConfig({
   }),
   secret: process.env.PAYLOAD_SECRET,
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
+  /**
+   * Cookie auth is only honoured for requests from these origins, which is what
+   * stops another site from riding a member's session. Verified: a request with
+   * a hostile Origin and a valid cookie resolves to no user.
+   *
+   * Every domain the app is served from must be listed, including Vercel
+   * preview URLs if you sign in on them.
+   */
+  csrf: [
+    process.env.NEXT_PUBLIC_SERVER_URL,
+    'https://ecommharvest.com',
+    'https://www.ecommharvest.com',
+    'https://app.ecommharvest.com',
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : undefined,
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+  ].filter((origin): origin is string => Boolean(origin)),
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
