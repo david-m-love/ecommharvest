@@ -390,6 +390,38 @@ written.push(
 )
 
 /**
+ * Self-contained variants: the stylesheet inlined into the block itself.
+ *
+ * GoHighLevel's CSS and tracking-code fields proved unreliable in practice —
+ * the stylesheet did not reach the published page from either. These variants
+ * take every GHL field out of the equation: one paste into one Custom JS/HTML
+ * element carries both the styles and the markup, so there is nothing left to
+ * misconfigure.
+ *
+ * Only the FIRST block on a page needs this; the styles then apply to every
+ * later block on the same page. Hence one variant per page, not per block.
+ */
+const selfContained = (blockName, outName, label) => {
+  const inner = readFileSync(join(here, 'blocks', blockName), 'utf8')
+  return out(
+    outName,
+    `<!-- eCommHarvest — ${label}
+     SELF-CONTAINED: includes the stylesheet, so no GHL CSS or tracking-code
+     field is involved. Paste this whole thing into ONE "Custom JS/HTML" element.
+     Later blocks on the SAME page do not repeat the stylesheet.
+-->
+<style>
+${convertedCss}
+</style>
+
+${inner}`,
+  )
+}
+written.push(selfContained('1-hero.html', '1-hero-WITH-CSS.html', 'Registration page, first block + stylesheet'))
+written.push(selfContained('thanks.html', 'thanks-WITH-CSS.html', 'Thank-you page, whole page + stylesheet'))
+written.push(selfContained('home-1-body.html', 'home-1-WITH-CSS.html', 'Home page, first block + stylesheet'))
+
+/**
  * Mirror every block as .txt in ghl/paste-me/.
  *
  * Double-clicking an .html file opens it in a browser, which *renders* it — so
