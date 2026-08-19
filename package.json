@@ -18,7 +18,9 @@
     "db:start": "bash scripts/local-db.sh start",
     "db:stop": "bash scripts/local-db.sh stop",
     "seed": "payload run scripts/seed.ts",
-    "test:security": "node test/security.e2e.mjs"
+    "test:security": "node test/security.e2e.mjs",
+    "ghl:build": "node ghl/build.mjs",
+    "ghl:verify": "node ghl/verify.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.88.0",

@@ -1,5 +1,25 @@
 # eCommHarvest
 
+> ## Parked — 19 August 2026
+>
+> **This platform is not the live system.** eCommHarvest is being built in
+> GoHighLevel instead. The masterclass is 15 days out and GHL already provides
+> memberships, courses, video hosting, checkout and workflows natively — so
+> buying beat building on this timeline.
+>
+> What that means for this repo:
+>
+> - **`ghl/`** holds the live deliverable: the page designs converted into
+>   paste-ready GoHighLevel blocks, plus the course outline. Start there.
+> - Everything below still works and is fully tested. It stays as a fallback and
+>   as the design source of truth — `ghl/` is generated from it.
+> - Nothing here is deployed. There is no Vercel project.
+>
+> If you are revisiting this to reconsider a custom build, the honest summary is
+> that the hard parts were finished: entitlements decoupled from any payment
+> provider, signed video playback, passwordless auth, and an audited admin. What
+> remained was Stripe checkout and a webinar integration.
+
 Marketing site, member area, and admin for eCommHarvest — one Next.js app with
 Payload CMS running inside it.
 
