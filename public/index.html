@@ -124,7 +124,8 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .hostbar-in{max-width:var(--maxw);margin:0 auto;padding:34px 32px;text-align:center}
 .host-label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 20px}
 .hosts{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 44px}
-.host{display:flex;align-items:center;gap:12px}
+.host{display:flex;align-items:center;gap:12px;text-decoration:none;transition:opacity .15s ease}
+.host:hover{opacity:.72}
 .host img{height:42px;width:auto;display:block}
 .host-mark{flex:none;width:44px;height:44px;border-radius:50%;background:var(--cream);border:1px solid #E6DBC6;
   display:flex;align-items:center;justify-content:center;
@@ -210,23 +211,25 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   </div>
 
   <!-- HOSTED BY (trust bar) -->
-  <!-- TODO: replace each .host-mark span with <img src="logos/<brand>.svg" alt="<Brand>"> and delete the .host-name span if the logo is a full wordmark -->
+  <!-- TODO: drop real logo files into public/logos/ and replace each .host-mark span with
+       <img src="logos/tiny-3d-temples.svg" alt="Tiny 3D Temples"> etc. If a logo is a full
+       wordmark, delete the sibling .host-name span so the name is not duplicated. -->
   <div class="hostbar">
     <div class="hostbar-in">
       <p class="host-label">Hosted by</p>
       <div class="hosts">
-        <div class="host">
+        <a class="host" href="https://tiny3dtemples.com/" target="_blank" rel="noopener">
           <span class="host-mark" aria-hidden="true">T3T</span>
           <span class="host-name">Tiny 3D Temples</span>
-        </div>
-        <div class="host">
+        </a>
+        <a class="host" href="https://bomsocks.com/" target="_blank" rel="noopener">
           <span class="host-mark" aria-hidden="true">BOM</span>
-          <span class="host-name">B.O.M. Socks</span>
-        </div>
-        <div class="host">
+          <span class="host-name">B.O.M.Socks</span>
+        </a>
+        <a class="host" href="https://www.comefollowmefhe.com/" target="_blank" rel="noopener">
           <span class="host-mark" aria-hidden="true">CFM</span>
           <span class="host-name">Come Follow Me FHE</span>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -342,16 +345,16 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
             <div class="sp-photo" aria-hidden="true">DC</div>
             <div>
               <p class="sp-name">Derek Crimin</p>
-              <p class="sp-role">Owner, B.O.M. Socks</p>
+              <p class="sp-role">Owner, B.O.M.Socks</p>
             </div>
           </div>
-          <p>Derek owns and operates B.O.M. Socks, so he walks into Q4 as an operator rather than a theorist &mdash; same inventory calls, same ad costs, same deadline you&rsquo;re working against.</p>
+          <p>Derek owns and operates B.O.M.Socks, so he walks into Q4 as an operator rather than a theorist &mdash; same inventory calls, same ad costs, same deadline you&rsquo;re working against.</p>
           <p>He&rsquo;s joining to show what these plays look like inside a real store, and where the plan meets reality.</p>
         </div>
       </div>
       <div class="cta-row cta-row-2">
         <a href="#register" class="btn">Save my seat</a>
-        <span class="cta-micro">Hosted by Tiny 3D Temples, B.O.M. Socks &amp; Come Follow Me FHE</span>
+        <span class="cta-micro">Hosted by Tiny 3D Temples, B.O.M.Socks &amp; Come Follow Me FHE</span>
       </div>
     </div>
   </div>
@@ -371,7 +374,7 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 <footer>
   <div class="foot-in">
     <span>&copy; 2026 eCommHarvest</span>
-    <span>Hosted by Tiny 3D Temples &middot; B.O.M. Socks &middot; Come Follow Me FHE</span>
+    <span>Hosted by Tiny 3D Temples &middot; B.O.M.Socks &middot; Come Follow Me FHE</span>
   </div>
 </footer>
 

@@ -3,8 +3,8 @@
 Landing page for a free 90-minute masterclass: *Your Q4 Revenue Playbook, Built
 in 90 Minutes.* Thursday, September 3, 2026 at 11:00 AM MT. Aimed at LDS
 e-commerce founders. Presented by David Love with
-special guest Derek Crimin (owner of B.O.M. Socks), hosted by Tiny 3D Temples,
-B.O.M. Socks, and Come Follow Me FHE.
+special guest Derek Crimin (owner of B.O.M.Socks), hosted by Tiny 3D Temples,
+B.O.M.Socks, and Come Follow Me FHE.
 
 ## Structure
 
@@ -41,9 +41,9 @@ automatically.
 Search `index.html` for `TODO`:
 
 1. **Host logos** — the three `.host-mark` spans are typographic monogram
-   placeholders. Replace each with `<img src="logos/<brand>.svg" alt="<Brand>">`
-   (drop them in `public/logos/`); `.host img` caps height at 42px. If a logo is
-   a full wordmark, delete the adjacent `.host-name` span.
+   placeholders. Real files go in `public/logos/`; see `docs/logos.md` for
+   filenames, specs, and the markup swap. Host names already link to
+   tiny3dtemples.com, bomsocks.com, and comefollowmefhe.com.
 2. **Speaker photos and bios** — each `.sp-photo` holds a monogram (`DL`, `DC`);
    swap in square headshots. Both bios are drafts written from approach rather
    than credentials, and want real proof points. Derek's especially — confirm it
