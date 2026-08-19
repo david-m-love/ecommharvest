@@ -1,0 +1,15 @@
+{
+  "name": "ecommharvest-q4-masterclass",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Landing page and registration backend for the eCommHarvest Q4 masterclass",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npx --yes serve public",
+    "test": "node test/register.test.js && node test/registrations.test.js",
+    "dev:api": "node test/devserver.js"
+  }
+}

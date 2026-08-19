@@ -1,0 +1,24 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//eCommHarvest//Q4 Masterclass//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:q4-masterclass-2026-09-03@ecommharvest
+DTSTAMP:20260819T000000Z
+DTSTART:20260903T170000Z
+DTEND:20260903T183000Z
+SUMMARY:Your Q4 Revenue Playbook, Built in 90 Minutes
+DESCRIPTION:Free 90-minute masterclass with David Love and special guest 
+ Derek Crimin (B.O.M.Socks). Build your Q4 promotional calendar, offer st
+ rategy, email and SMS roadmap, and paid social plan in one sitting. The 
+ join link is in your confirmation email.
+LOCATION:Online
+STATUS:CONFIRMED
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Q4 Masterclass starts in 1 hour
+END:VALARM
+END:VEVENT
+END:VCALENDAR
