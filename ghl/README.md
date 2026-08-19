@@ -10,6 +10,8 @@ ghl/blocks/2-body.html              faith-first, curriculum, paid social, who it
 ghl/blocks/3-cta-heading.html       final CTA card  <-- GHL FORM ROW GOES BELOW THIS
 ghl/blocks/4-footer.html            footer
 ghl/blocks/thanks.html              whole thank-you page, one block
+ghl/blocks/home-1-body.html         HOME: hero, the three arms, your-copy section
+ghl/blocks/home-2-cta.html          HOME: masterclass CTA + footer
 ghl/course-outline.md               5 categories / 14 lessons for Memberships
 ghl/src/                            source the blocks are generated from
 ghl/build.mjs                       regenerates blocks (node ghl/build.mjs)
@@ -67,6 +69,20 @@ that no block has unbalanced tags. Twelve hostile rules, all defended.
    part of the dark card above it.
 6. Add `4-footer` below the form row.
 7. Thank-you page: one Custom JS/HTML element, paste `thanks.html`.
+
+## Home page
+
+Same stylesheet, two blocks: `home-1-body.html` then `home-2-cta.html`. No form,
+so nothing goes between them.
+
+**A designed home page did not exist before this.** The app's `/` was a
+placeholder to make the build work; the masterclass was the only finished page.
+So this is new: hero, the three-arms section (your actual strategy, reusing the
+CAC formula), and then a **clearly marked placeholder section for your copy** —
+heading, lead paragraph, and a three-point bullet list, using the same classes so
+whatever you write stays on brand.
+
+Send me your home page copy and I'll replace that section properly.
 
 The logo is embedded as a data URI, so nothing needs uploading. If you'd rather
 serve it from GHL's media library, replace the `src="data:image/png;base64,…"`

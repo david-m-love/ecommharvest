@@ -341,6 +341,41 @@ written.push(
   ),
 )
 
+// --- home page ----------------------------------------------------------
+
+// A designed home page did not exist before this — the app's `/` was a thin
+// placeholder. This is built from the same design system so it needs no new CSS,
+// with one section deliberately left as a marked placeholder for David's copy.
+const home = src('home.html')
+// Stop before the CTA card — that goes in block 2, and running to </main> here
+// would emit it in both blocks.
+const homeMain = between(home, '<div class="slot hero">', '<div class="final-in">').replace(
+  /<!--[\s\S]*?-->/g,
+  '',
+)
+written.push(
+  out(
+    'home-1-body.html',
+    wrap('Home page, block 1 of 2: hero, the three arms, your copy section', topbar + '\n' + homeMain),
+  ),
+)
+written.push(
+  out(
+    'home-2-cta.html',
+    wrap('Home page, block 2 of 2: masterclass CTA + footer', between(home, '<div class="final-in">', '</main>').replace(/<!--[\s\S]*?-->/g, '') + `
+<footer>
+  <div class="foot-in">
+    <span>&copy; 2026 eCommHarvest</span>
+    <nav class="foot-nav">
+      <a href="/masterclass">Masterclass</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms &amp; Conditions</a>
+    </nav>
+  </div>
+</footer>`),
+  ),
+)
+
 // --- thank-you page -----------------------------------------------------
 
 const thanksMain = between(thanks, '<div class="thanks">', '<footer>')

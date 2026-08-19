@@ -28,6 +28,8 @@ const block = (name) => readFileSync(join(here, 'blocks', name), 'utf8')
 const css = block('masterclass-styles.css')
 
 const BLOCKS = ['1-hero.html', '2-body.html', '3-cta-heading.html', '4-footer.html']
+// Checked for tag balance and isolation alongside the masterclass blocks.
+const EXTRA_BLOCKS = ['thanks.html', 'home-1-body.html', 'home-2-cta.html']
 const launchOptions = process.env.PLAYWRIGHT_CHROMIUM_PATH
   ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
   : {}
@@ -42,7 +44,7 @@ const check = (ok, label, detail = '') => {
 
 console.log('block integrity')
 const VOID = new Set(['img', 'br', 'hr', 'input', 'meta', 'link', 'source'])
-for (const name of [...BLOCKS, 'thanks.html']) {
+for (const name of [...BLOCKS, ...EXTRA_BLOCKS]) {
   const html = block(name).replace(/<!--[\s\S]*?-->/g, '')
   const stack = []
   let balanced = true
