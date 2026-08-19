@@ -18,7 +18,7 @@
  *      raises specificity so GHL's bare `p {}` loses to our `.ech-scope p {}`.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -389,5 +389,24 @@ written.push(
   ),
 )
 
+/**
+ * Mirror every block as .txt in ghl/paste-me/.
+ *
+ * Double-clicking an .html file opens it in a browser, which *renders* it — so
+ * copying that window yields the visible words with the tags stripped out, which
+ * is useless for pasting into a page builder. A .txt opens in a text editor and
+ * copies as source.
+ *
+ * Generated rather than committed, so these can never drift from the blocks they
+ * mirror. Stale paste files would be a genuinely nasty footgun.
+ */
+const pasteDir = join(here, 'paste-me')
+mkdirSync(pasteDir, { recursive: true })
+const mirrored = readdirSync(join(here, 'blocks'))
+for (const name of mirrored) {
+  copyFileSync(join(here, 'blocks', name), join(pasteDir, `${name}.txt`))
+}
+
 console.log('wrote ghl/blocks/:')
 written.forEach((w) => console.log('  ' + w))
+console.log(`mirrored ${mirrored.length} files to ghl/paste-me/*.txt (open in a text editor, not a browser)`)

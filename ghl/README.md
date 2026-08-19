@@ -13,6 +13,7 @@ ghl/blocks/thanks.html              whole thank-you page, one block
 ghl/blocks/home-1-body.html         HOME: hero, the three arms, your-copy section
 ghl/blocks/home-2-cta.html          HOME: masterclass CTA + footer
 ghl/course-outline.md               5 categories / 14 lessons for Memberships
+ghl/paste-me/*.txt                  the same blocks as .txt (generated, gitignored)
 ghl/src/                            source the blocks are generated from
 ghl/build.mjs                       regenerates blocks (node ghl/build.mjs)
 ghl/verify.mjs                      proves the blocks are safe to paste
@@ -48,6 +49,19 @@ Verified adversarially, not by eye — `node ghl/verify.mjs` renders the blocks
 against deliberately hostile page-builder CSS and confirms the result is
 pixel-identical, that a mock GHL form on the same page keeps its own styling, and
 that no block has unbalanced tags. Twelve hostile rules, all defended.
+
+## Copying a block without mangling it
+
+Double-clicking an `.html` file opens it in a browser, which **renders** it — so
+copying that window gives you the visible words with every tag stripped out.
+That paste is useless, and the failure looks like the file was wrong.
+
+Use `ghl/paste-me/*.txt` instead: same bytes, but a text editor opens them, so
+select-all copies the actual source. (`Cmd/Ctrl+U` in a browser also shows source.)
+
+**Never route the text through Word, Pages or Google Docs.** They convert straight
+quotes to curly ones, so `class="ech-scope"` becomes `class="ech-scope"` with
+smart quotes, and the HTML silently breaks.
 
 ## Paste order
 

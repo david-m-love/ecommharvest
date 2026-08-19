@@ -6,3 +6,4 @@ node_modules
 *.log
 .DS_Store
 ghl/.verify/
+ghl/paste-me/
