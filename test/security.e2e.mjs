@@ -11,11 +11,18 @@
  * Requires the seed data (npm run seed).
  */
 import { chromium } from 'playwright'
-const B = 'http://localhost:3000'
+
+const B = process.env.BASE_URL || 'http://localhost:3000'
+// Sandboxes and CI images often ship a Chromium that does not match the version
+// Playwright expects. PLAYWRIGHT_CHROMIUM_PATH points at it; otherwise
+// Playwright resolves its own bundled browser as normal.
+const launchOptions = process.env.PLAYWRIGHT_CHROMIUM_PATH
+  ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+  : {}
 // Playwright's request client sends no Origin, and Payload refuses cookie auth
 // without one — so every request here sets it, or the results are meaningless.
 const H = { Origin: B }
-const browser = await chromium.launch()
+const browser = await chromium.launch(launchOptions)
 
 const ctxFor = async (email) => {
   const ctx = await browser.newContext()

@@ -53,6 +53,13 @@ npm test            # registration + video adapter, no network or database neede
 npm run test:security   # access boundaries, needs `npm run dev` running + seed data
 ```
 
+If your Chromium does not match the version Playwright expects (common in CI
+images and sandboxes), point at it:
+
+```bash
+PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome npm run test:security
+```
+
 `test/security.e2e.mjs` sets an `Origin` header on every request deliberately.
 Payload only honours cookie auth for origins listed in `csrf`, so without one
 every call reads as unauthenticated and the suite passes for the wrong reason.
