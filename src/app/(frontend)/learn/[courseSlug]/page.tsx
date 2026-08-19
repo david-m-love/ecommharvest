@@ -72,7 +72,7 @@ export default async function CoursePage({ params }: Props) {
         )}
 
         {hasAccess && total > 0 && (
-          <div style={{ maxWidth: 420, marginBottom: 30 }}>
+          <div className="courseprogress">
             <div className="bar">
               <span style={{ width: `${pct}%` }} />
             </div>
@@ -83,7 +83,7 @@ export default async function CoursePage({ params }: Props) {
         )}
 
         {resume && hasAccess && (
-          <div className="cta-row cta-row-2" style={{ marginBottom: 34 }}>
+          <div className="cta-row cta-row-2 resumerow">
             <Link href={`/learn/${course.slug}/${resume.slug}`} className="btn">
               {done === 0 ? 'Start the course' : done === total ? 'Review from the start' : 'Resume'}
             </Link>

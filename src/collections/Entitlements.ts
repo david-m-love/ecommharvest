@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { adminOnly, isAdmin } from '@/lib/access'
+import { auditEntitlementChange, auditEntitlementDelete } from '@/lib/audit'
 
 /**
  * The single source of truth for "may this person watch this course".
@@ -27,6 +28,12 @@ export const Entitlements: CollectionConfig = {
     create: adminOnly,
     update: adminOnly,
     delete: adminOnly,
+  },
+  // Logged as hooks rather than in each route, so a grant made by clicking
+  // around Payload's own admin is recorded identically to an API one.
+  hooks: {
+    afterChange: [auditEntitlementChange],
+    afterDelete: [auditEntitlementDelete],
   },
   fields: [
     {

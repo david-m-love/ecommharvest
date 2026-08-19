@@ -17,7 +17,8 @@
     "test": "node test/register.test.js && node test/registrations.test.js && node --experimental-strip-types test/video.test.js",
     "db:start": "bash scripts/local-db.sh start",
     "db:stop": "bash scripts/local-db.sh stop",
-    "seed": "payload run scripts/seed.ts"
+    "seed": "payload run scripts/seed.ts",
+    "test:security": "node test/security.e2e.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.88.0",

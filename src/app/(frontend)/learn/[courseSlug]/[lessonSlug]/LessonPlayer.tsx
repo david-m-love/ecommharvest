@@ -122,7 +122,7 @@ export const LessonPlayer = ({
       </div>
 
       {playable && (
-        <div className="cta-row cta-row-2" style={{ marginTop: 20 }}>
+        <div className="cta-row cta-row-2 completerow">
           <button
             type="button"
             className={complete ? 'btn btn-ghost' : 'btn'}

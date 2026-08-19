@@ -77,7 +77,7 @@ export default async function LessonPage({ params }: Props) {
       <main className="shell">
         <div className="pagehead">
           <p className="eyebrow">
-            <Link href={`/learn/${course.slug}`} style={{ color: 'inherit' }}>
+            <Link href={`/learn/${course.slug}`} className="plainlink">
               {course.title}
             </Link>
           </p>
@@ -108,7 +108,7 @@ export default async function LessonPage({ params }: Props) {
             </div>
 
             {paragraphs.length > 0 && (
-              <div className="prose" style={{ marginTop: 34 }}>
+              <div className="prose lessonbody">
                 {paragraphs.map((text, i) => (
                   <p key={i}>{text}</p>
                 ))}
@@ -131,7 +131,7 @@ export default async function LessonPage({ params }: Props) {
                 </ul>
               </>
             )}
-            <h4 style={{ marginTop: attachments.length ? 28 : 0 }}>In this course</h4>
+            <h4 className={attachments.length ? 'spaced' : undefined}>In this course</h4>
             <ul className="attachlist">
               <li>
                 <Link href={`/learn/${course.slug}`}>All {flat.length} lessons</Link>

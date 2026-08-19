@@ -88,7 +88,7 @@ export default async function LearnPage() {
                     <h2>{course.title}</h2>
                     <p>{course.excerpt || course.subtitle}</p>
                     {hasAccess && total > 0 && (
-                      <div style={{ marginTop: 20 }}>
+                      <div className="cardprogress">
                         <div className="bar">
                           <span style={{ width: `${pct}%` }} />
                         </div>

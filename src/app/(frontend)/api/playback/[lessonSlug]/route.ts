@@ -29,13 +29,10 @@ export async function GET(
   }
   const { lesson, course } = context
 
-  if (!lesson.videoId || lesson.videoStatus !== 'ready') {
-    return NextResponse.json(
-      { error: 'This lesson has no playable video yet.', status: lesson.videoStatus },
-      { status: 409 },
-    )
-  }
-
+  // Authorise before revealing anything about the video, including whether one
+  // exists. Checking readiness first would tell an unauthorised caller about the
+  // state of content they cannot watch.
+  //
   // Preview lessons are the teaser, playable without an entitlement — but still
   // signed, so the URL expires like any other.
   if (!lesson.isPreview) {
@@ -50,6 +47,13 @@ export async function GET(
         { status: 403 },
       )
     }
+  }
+
+  if (!lesson.videoId || lesson.videoStatus !== 'ready') {
+    return NextResponse.json(
+      { error: 'This lesson has no playable video yet.', status: lesson.videoStatus },
+      { status: 409 },
+    )
   }
 
   const provider = getVideoProvider()

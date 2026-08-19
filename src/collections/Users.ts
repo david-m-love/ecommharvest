@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { adminOnly, adminOnlyField, adminOrSelf, isAdmin } from '@/lib/access'
+import { auditUserRoleChange } from '@/lib/audit'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -24,6 +25,9 @@ export const Users: CollectionConfig = {
     update: adminOrSelf,
     delete: adminOnly,
     admin: ({ req }) => isAdmin(req.user),
+  },
+  hooks: {
+    afterChange: [auditUserRoleChange],
   },
   fields: [
     { name: 'name', type: 'text' },
