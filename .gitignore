@@ -7,3 +7,6 @@ node_modules
 .DS_Store
 ghl/.verify/
 ghl/paste-me/
+
+# generated
+proof/dist
