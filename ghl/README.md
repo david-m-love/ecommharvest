@@ -1,16 +1,17 @@
 # GoHighLevel handoff
 
-The masterclass and thank-you pages, converted into blocks you can paste into
-GHL's page builder, plus the course outline for Memberships.
+Three funnel steps. You build step 2 in GHL; steps 1 and 3 are one paste each.
+
+| Step | Page | Who builds it |
+| --- | --- | --- |
+| 1 | Masterclass landing page — every button links to step 2 | paste `LANDING-PAGE.html` |
+| 2 | Registration — GHL's native form, email + SMS | **you, in GHL** |
+| 3 | Thank you | paste `thanks-WITH-CSS.html` |
 
 ```
-ghl/blocks/masterclass-styles.css   paste ONCE into Funnel Settings -> Custom CSS
-ghl/blocks/1-hero.html              header, hero, hosted-by bar
-ghl/blocks/2-body.html              faith-first, curriculum, paid social, who it's for, speakers
-ghl/blocks/3-cta-heading.html       final CTA card  <-- GHL FORM ROW GOES BELOW THIS
-ghl/blocks/4-footer.html            footer
-ghl/blocks/thanks.html              whole thank-you page, one block
-ghl/blocks/home-1-body.html         HOME: hero, the three arms, your-copy section
+ghl/blocks/LANDING-PAGE.html        STEP 1 — whole page, one paste, CSS included
+ghl/blocks/thanks-WITH-CSS.html     STEP 3 — whole page, one paste, CSS included
+ghl/blocks/home-1-WITH-CSS.html     HOME: first block, CSS included
 ghl/blocks/home-2-cta.html          HOME: masterclass CTA + footer
 ghl/course-outline.md               5 categories / 14 lessons for Memberships
 ghl/paste-me/*.txt                  the same blocks as .txt (generated, gitignored)
@@ -19,21 +20,95 @@ ghl/build.mjs                       regenerates blocks (node ghl/build.mjs)
 ghl/verify.mjs                      proves the blocks are safe to paste
 ```
 
-## Why it's blocks and not a file
+Split versions of the landing page also exist — `1-hero.html`, `2-body.html`,
+`3-cta-footer.html` plus `masterclass-styles.css` — in case one 80kb paste ever
+misbehaves in the builder. **Ignore them unless that happens.** They need the
+stylesheet pasted separately, which is the step that failed to take effect before.
 
-GHL has no page import. You paste body HTML into a **Custom JS/HTML** element
-(Elements → Add element → search "Custom") and put CSS in **Settings → Custom
-CSS**. So the page arrives as sections, not as an upload.
+## Step 1 — the landing page
 
-Splitting at the form boundary is deliberate: it lets GHL's native form sit
-between blocks 3 and 4, which is the layout you wanted.
+One Custom JS/HTML element. That's the whole job.
 
-## The part that would have broken it
+1. Elements → Add element → search **"Custom"** → **Custom JS/HTML**.
+2. Paste all of `ghl/paste-me/LANDING-PAGE.html.txt`.
+3. Set the row's padding to 0 and the page background to `#FFFFFF`. The block
+   brings its own spacing; GHL's default row padding doubles it.
+4. Optional, for the fonts: Page Settings → Tracking Code → **Head**:
+   ```html
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+   ```
+   Without it the page falls back to system fonts — readable, but not the design.
+
+No CSS field, no tracking-code requirement, no block ordering. The stylesheet is
+inside the block.
+
+### Where the buttons point
+
+All four "Save my seat" buttons link to **`/register`** — a root-relative path, so
+it works on the preview domain and the custom domain without editing.
+
+Name step 2's path `register` and it just works. If you name it something else,
+tell me and I rebuild in a minute:
+
+```bash
+REGISTER_URL=/save-my-seat node ghl/build.mjs
+```
+
+Do not leave it pointing at a path that doesn't exist — the buttons look fine in
+the builder and 404 on the live page.
+
+## Step 2 — the registration form (yours)
+
+A plain GHL page: your form element, and nothing from me. Keep the headline and
+the date visible so the page doesn't feel like a different site.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| First Name | standard | |
+| Email | standard | |
+| Phone | standard | **Required if you want SMS.** No phone, no texts. |
+| Store URL | custom, text | Optional. Useful for qualifying who's in the room. |
+| Email consent | custom, checkbox | Own field, so the agreement is evidenced |
+| SMS consent | custom, checkbox | **Separate field. See below.** |
+
+**Email consent and SMS consent are two different permissions.** One checkbox
+covering both is not valid consent for text messages under US TCPA rules, and
+GHL will suspend an account that texts people who didn't agree to be texted. Two
+checkboxes, two custom fields, two labels:
+
+> **Email:** Send me the invite, the replay, and Q4 emails from eCommHarvest.
+> Unsubscribe anytime. See our Privacy Policy.
+
+> **SMS:** Text me the join link and a reminder before we start. Message and data
+> rates may apply. Reply STOP to opt out.
+
+Make the SMS box optional and the email box required — someone who won't take
+texts should still get a seat.
+
+Submit button text: **Save my seat**. Redirect on submit: step 3.
+
+## Step 3 — thank you
+
+One Custom JS/HTML element, paste `thanks-WITH-CSS.html`. Same as step 1: the
+stylesheet is included.
+
+## Then the workflow
+
+Trigger **Form Submitted** on step 2's form →
+
+1. Tag `masterclass-2026-09-03`
+2. Email: the join link (Zoom/Demio — GHL does not host live webinars)
+3. SMS, filtered to contacts where SMS consent is true: the join link
+4. Reminders at 24h and 1h
+5. Replay email after, to everyone who registered
+
+## Why the blocks can't break your GHL page
 
 The original stylesheet declares `*`, `html`, `body`, `a`, `p`, `h1`, `h2`, `h3`,
 `footer` and 120 classes including `.btn`, `.card`, `.field`, `.badge`, `.bar`.
-Pasted into GHL as-is, that restyles **GHL's own buttons, form inputs and
-typography** on the page — and GHL's CSS leaks back the other way.
+Pasted as-is, that restyles **GHL's own buttons, form inputs and typography** on
+the page — and GHL's CSS leaks back the other way.
 
 So the conversion does three things:
 
@@ -47,8 +122,9 @@ Consequence worth knowing: **your own tweaks in GHL will also need
 
 Verified adversarially, not by eye — `node ghl/verify.mjs` renders the blocks
 against deliberately hostile page-builder CSS and confirms the result is
-pixel-identical, that a mock GHL form on the same page keeps its own styling, and
-that no block has unbalanced tags. Twelve hostile rules, all defended.
+pixel-identical, that a mock GHL form on the same page keeps its own styling,
+that every CTA links forward rather than at a dead in-page anchor, and that no
+block has unbalanced tags. Twelve hostile rules, all defended.
 
 ## Copying a block without mangling it
 
@@ -63,31 +139,9 @@ select-all copies the actual source. (`Cmd/Ctrl+U` in a browser also shows sourc
 quotes to curly ones, so `class="ech-scope"` becomes `class="ech-scope"` with
 smart quotes, and the HTML silently breaks.
 
-## Paste order
-
-1. **Funnel Settings → Custom CSS** — paste `masterclass-styles.css`. No `<style>`
-   tags; GHL adds them. Do this first, or the blocks look unstyled.
-2. **Page head** (Settings → Tracking Code → Head) — the fonts, once:
-   ```html
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-   ```
-   Without this the page falls back to system fonts — readable, but not the design.
-3. **Set the page background to `#FFFFFF`** and row padding to 0. The blocks bring
-   their own spacing; GHL's default row padding will double it.
-4. Add a Custom JS/HTML element per block, in order: `1-hero`, `2-body`,
-   `3-cta-heading`.
-5. **Add GHL's form element in its own row directly below block 3.** Set that
-   row's background to `#16324F` and its top padding to 0, so the form reads as
-   part of the dark card above it.
-6. Add `4-footer` below the form row.
-7. Thank-you page: one Custom JS/HTML element, paste `thanks.html`.
-
 ## Home page
 
-Same stylesheet, two blocks: `home-1-body.html` then `home-2-cta.html`. No form,
-so nothing goes between them.
+Two blocks: `home-1-WITH-CSS.html` then `home-2-cta.html`.
 
 **A designed home page did not exist before this.** The app's `/` was a
 placeholder to make the build work; the masterclass was the only finished page.
@@ -102,23 +156,6 @@ The logo is embedded as a data URI, so nothing needs uploading. If you'd rather
 serve it from GHL's media library, replace the `src="data:image/png;base64,…"`
 with the hosted URL and the blocks shrink to ~2KB.
 
-## Form fields to create
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| First Name | standard | |
-| Email | standard | |
-| Store URL | custom, text | Optional. Useful for qualifying who's in the room. |
-| Consent | custom, checkbox | Own field, so the agreement is evidenced |
-
-Consent label to match the design:
-
-> Send me the invite, the replay, and Q4 emails from eCommHarvest. Unsubscribe
-> anytime. See our Privacy Policy.
-
-Set the form's submit button text to **Save my seat** and redirect on submit to
-the thank-you page.
-
 ## What still needs doing
 
 Carried over — none of it is code:
@@ -127,12 +164,19 @@ Carried over — none of it is code:
    `git show 60ca590^:public/privacy.html` and `…:public/terms.html`. Both need
    legal review, both have bracketed placeholders, and one real decision sits
    inside: whether the three host brands receive registrant details. Required
-   before you run Meta ads.
-2. **Host logos** — still `T3T` / `BOM` / `CFM` monograms. See `docs/logos.md`.
+   before you run Meta ads. The landing page's footer links to `/privacy` and
+   `/terms`, so those two GHL pages need to exist at those paths.
+2. **Host logos** — B.O.M.Socks is live, from their site, but it's their *white*
+   logo so it sits on a navy disc. Send the dark or colour version and the disc
+   goes away. Tiny 3D Temples and Come Follow Me FHE are still `T3T` / `CFM`
+   monograms. See `docs/logos.md`.
 3. **Speaker photos and bios** — `DL` / `DC` monograms; both bios are drafts, and
    Derek hasn't seen his.
 4. **The join link.** GHL doesn't host live webinars. Zoom/Demio link goes in the
-   confirmation email; GHL can host the replay.
+   confirmation email and SMS; GHL can host the replay.
+5. **The `-3154` URL suffix.** GHL appended it because the path was already
+   taken. Fix it in the funnel step's settings so the URL reads
+   `ecommharvest.com/masterclass`.
 
 ## Regenerating
 

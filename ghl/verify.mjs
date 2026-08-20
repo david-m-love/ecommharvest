@@ -27,9 +27,16 @@ mkdirSync(tmp, { recursive: true })
 const block = (name) => readFileSync(join(here, 'blocks', name), 'utf8')
 const css = block('masterclass-styles.css')
 
-const BLOCKS = ['1-hero.html', '2-body.html', '3-cta-heading.html', '4-footer.html']
+const BLOCKS = ['1-hero.html', '2-body.html', '3-cta-footer.html']
 // Checked for tag balance and isolation alongside the masterclass blocks.
-const EXTRA_BLOCKS = ['thanks.html', 'home-1-body.html', 'home-2-cta.html']
+const EXTRA_BLOCKS = [
+  'thanks.html',
+  'home-1-body.html',
+  'home-2-cta.html',
+  'LANDING-PAGE.html',
+  'thanks-WITH-CSS.html',
+  'home-1-WITH-CSS.html',
+]
 const launchOptions = process.env.PLAYWRIGHT_CHROMIUM_PATH
   ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
   : {}
@@ -67,6 +74,37 @@ for (const name of [...BLOCKS, ...EXTRA_BLOCKS]) {
   }
   check(balanced, `${name} tags balanced`, culprit)
 }
+
+// --- 1b. the CTAs actually go somewhere ---------------------------------
+//
+// The landing page holds no form: registration is the next funnel step. So a
+// button still pointing at an in-page anchor is a dead end that looks fine in
+// the builder and loses the lead on the live page.
+
+console.log('\nCTAs point forward, not at an in-page anchor')
+for (const name of ['1-hero.html', '3-cta-footer.html', 'LANDING-PAGE.html']) {
+  const html = block(name)
+  const hrefs = [...html.matchAll(/<a\s[^>]*class="[^"]*ech-btn[^"]*"[^>]*>/g)].map(
+    (m) => (m[0].match(/href="([^"]*)"/) || [, ''])[1],
+  )
+  check(hrefs.length > 0, `${name} has at least one CTA button`)
+  check(
+    hrefs.every((h) => h && !h.startsWith('#')),
+    `${name} CTA hrefs all link forward`,
+    hrefs.join(' '),
+  )
+}
+// The whole page in one block must carry every CTA the split blocks do.
+const splitCtas = ['1-hero.html', '2-body.html', '3-cta-footer.html'].reduce(
+  (n, name) => n + (block(name).match(/class="ech-btn/g) || []).length,
+  0,
+)
+const wholeCtas = (block('LANDING-PAGE.html').match(/class="ech-btn/g) || []).length
+check(
+  wholeCtas === splitCtas,
+  'LANDING-PAGE.html carries every CTA the split blocks do',
+  `${wholeCtas} vs ${splitCtas}`,
+)
 
 // --- 2 & 3. render comparison ------------------------------------------
 

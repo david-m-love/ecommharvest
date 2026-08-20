@@ -187,47 +187,17 @@
     </div>
   </div>
 
-  <!-- FINAL CTA / REGISTRATION -->
+  <!-- FINAL CTA -->
+  <!-- The registration form is NOT on this page. It is the next step in the
+       funnel, built natively in GoHighLevel, so this card's only job is to send
+       people there. -->
   <div class="final-in" id="register">
     <div class="finalcard">
       <p class="eyebrow">Thursday, September 3 &middot; 11:00 AM MT &middot; free &middot; 90 minutes</p>
       <h2>Your Q4 Revenue Playbook, Built in 90 Minutes.</h2>
-
-      <form class="formcard" id="reg-form" action="/api/register" method="post" novalidate>
-        <div class="formerr" id="form-error" role="alert" hidden></div>
-
-        <div class="field">
-          <label for="f-name">First name</label>
-          <input type="text" id="f-name" name="name" autocomplete="given-name" required>
-          <span class="err" id="e-name" hidden></span>
-        </div>
-
-        <div class="field">
-          <label for="f-email">Email</label>
-          <input type="email" id="f-email" name="email" autocomplete="email" inputmode="email" required>
-          <span class="err" id="e-email" hidden></span>
-        </div>
-
-        <div class="field">
-          <label for="f-store">Store URL <span class="opt">(optional)</span></label>
-          <input type="url" id="f-store" name="storeUrl" autocomplete="url" placeholder="yourstore.com">
-        </div>
-
-        <!-- honeypot: hidden from people, filled by bots -->
-        <div class="hp" aria-hidden="true">
-          <label for="f-company">Company</label>
-          <input type="text" id="f-company" name="company" tabindex="-1" autocomplete="off">
-        </div>
-
-        <div class="consent">
-          <input type="checkbox" id="f-consent" name="consent" required>
-          <label for="f-consent">Send me the invite, the replay, and Q4 emails from eCommHarvest. Unsubscribe anytime. See our <a href="/privacy">Privacy Policy</a>.</label>
-        </div>
-        <span class="err" id="e-consent" hidden></span>
-
-        <button type="submit" class="btn btn-lg" id="reg-submit">Save my seat</button>
-        <p class="formnote">Free &middot; no card required &middot; replay sent to every registrant</p>
-      </form>
+      <p class="final-lead">Two fields and you&rsquo;re in. We&rsquo;ll send the join link straight away, a reminder before we start, and the replay afterwards either way.</p>
+      <a href="#register-step" class="btn btn-lg">Save my seat</a>
+      <p class="formnote">Free &middot; no card required &middot; replay sent to every registrant</p>
     </div>
   </div>
 
@@ -244,102 +214,8 @@
   </div>
 </footer>
 
-<script>
-(function(){
-  var form = document.getElementById('reg-form');
-  if(!form) return;
-
-  var submit = document.getElementById('reg-submit');
-  var formError = document.getElementById('form-error');
-  var renderedAt = Date.now();
-  var fields = {
-    name: {input: document.getElementById('f-name'), err: document.getElementById('e-name')},
-    email: {input: document.getElementById('f-email'), err: document.getElementById('e-email')},
-    consent: {input: document.getElementById('f-consent'), err: document.getElementById('e-consent')}
-  };
-
-  function clearErrors(){
-    formError.hidden = true;
-    formError.textContent = '';
-    Object.keys(fields).forEach(function(k){
-      fields[k].err.hidden = true;
-      fields[k].err.textContent = '';
-      fields[k].input.removeAttribute('aria-invalid');
-    });
-  }
-
-  function showErrors(message, perField){
-    if(message){
-      formError.textContent = message;
-      formError.hidden = false;
-    }
-    var first = null;
-    Object.keys(perField || {}).forEach(function(k){
-      var f = fields[k];
-      if(!f) return;
-      f.err.textContent = perField[k];
-      f.err.hidden = false;
-      f.input.setAttribute('aria-invalid', 'true');
-      if(!first) first = f.input;
-    });
-    (first || formError).focus && (first || formError).focus();
-  }
-
-  // Same rules the API enforces, so obvious mistakes never cost a round trip.
-  function validate(payload){
-    var e = {};
-    if(payload.name.length < 2) e.name = 'Please enter your first name.';
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(payload.email)) e.email = 'Please enter a valid email address.';
-    if(!payload.consent) e.consent = 'Please agree to receive the invite and reminders.';
-    return e;
-  }
-
-  form.addEventListener('submit', function(ev){
-    ev.preventDefault();
-    clearErrors();
-
-    var payload = {
-      name: fields.name.input.value.trim(),
-      email: fields.email.input.value.trim(),
-      storeUrl: document.getElementById('f-store').value.trim(),
-      consent: fields.consent.input.checked,
-      company: document.getElementById('f-company').value,
-      t: renderedAt
-    };
-
-    var local = validate(payload);
-    if(Object.keys(local).length){
-      showErrors('Please check the highlighted fields.', local);
-      return;
-    }
-
-    submit.disabled = true;
-    submit.textContent = 'Saving your seat\u2026';
-
-    fetch('/api/register', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    }).then(function(res){
-      return res.json().catch(function(){ return {}; }).then(function(data){
-        return {ok: res.ok, data: data};
-      });
-    }).then(function(r){
-      if(r.ok && r.data.ok){
-        window.location.href = '/thanks';
-        return;
-      }
-      showErrors(r.data.error || 'Something went wrong. Please try again.', r.data.errors);
-      submit.disabled = false;
-      submit.textContent = 'Save my seat';
-    }).catch(function(){
-      showErrors('We could not reach the server. Please check your connection and try again.');
-      submit.disabled = false;
-      submit.textContent = 'Save my seat';
-    });
-  });
-})();
-</script>
+<!-- No JavaScript. Registration is the next funnel step, handled natively by
+     GoHighLevel. Nothing on this page submits anything. -->
 
 </body>
 </html>

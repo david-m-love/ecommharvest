@@ -192,7 +192,10 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .consent a{color:var(--cream);text-decoration:underline;text-underline-offset:2px}
 .formcard .btn{width:100%}
 .formcard .btn[disabled]{opacity:.6;cursor:progress}
-.formnote{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--chalk);text-align:center;margin:16px 0 0}
+/* max-width:none because the base `p{max-width:66ch}` resolves against the mono
+   font here and caps the line at ~437px, which centres the text inside a
+   left-hugging box rather than under the button. */
+.formnote{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--chalk);text-align:center;max-width:none;margin:16px 0 0}
 .formerr{background:rgba(224,137,78,.15);border:1px solid rgba(242,179,122,.4);border-radius:var(--r-sm);
   padding:13px 16px;font-size:14.5px;font-weight:600;color:#F7C99B;margin:0 0 18px;max-width:none}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -376,5 +379,10 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .plainlink:hover{text-decoration:underline}
 
 /* GHL only: the final CTA card ends where a native form row begins, so square
-   off its bottom corners and drop the bottom padding. */
+   off its bottom corners and drop the bottom padding. Unused now the form lives
+   on its own funnel step; kept in case the form ever returns to this page. */
 .finalcard-top{border-bottom-left-radius:0;border-bottom-right-radius:0;padding-bottom:34px}
+
+/* The dark CTA card with no form in it. Chalk rather than cream, so the button
+   is the brightest thing in the card and nothing competes with it. */
+.final-lead{color:var(--chalk);font-size:17.5px;line-height:1.62;max-width:48ch;margin:0 auto 34px}
