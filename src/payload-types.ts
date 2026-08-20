@@ -184,7 +184,7 @@ export interface User {
   id: number;
   name?: string | null;
   /**
-   * Only admins can change this.
+   * Only admins can change this. The very first account is always created as an admin, whatever this says — otherwise nobody could sign in.
    */
   roles: ('admin' | 'member')[];
   /**

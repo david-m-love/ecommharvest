@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { adminOnly, adminOnlyField, adminOrSelf, isAdmin } from '@/lib/access'
 import { auditUserRoleChange } from '@/lib/audit'
 import { can, requireCapabilityField } from '@/lib/capabilities'
+import { ensureFirstUserIsAdmin } from '@/lib/first-user'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -71,6 +72,9 @@ export const Users: CollectionConfig = {
     },
   },
   hooks: {
+    // Order matters: this must run before the row is written, so the first
+    // account cannot be created as a non-admin and lock everyone out.
+    beforeChange: [ensureFirstUserIsAdmin],
     afterChange: [auditUserRoleChange],
   },
   fields: [
@@ -87,7 +91,10 @@ export const Users: CollectionConfig = {
       ],
       // Critical: without this a member could PATCH themselves to admin.
       access: { create: adminOnlyField, update: adminOnlyField },
-      admin: { description: 'Only admins can change this.' },
+      admin: {
+        description:
+          'Only admins can change this. The very first account is always created as an admin, whatever this says — otherwise nobody could sign in.',
+      },
     },
     {
       name: 'roleRefs',

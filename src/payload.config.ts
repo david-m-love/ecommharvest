@@ -89,9 +89,33 @@ export default buildConfig({
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URI },
+    /**
+     * Schema changes ship as migrations in `src/migrations`, never as an
+     * automatic push against production.
+     *
+     * `push` is Payload's dev convenience: it diffs the schema and alters the
+     * database on boot. Wonderful locally, unacceptable against a live database,
+     * where it can drop a column to match a rename. In production the adapter
+     * disables it anyway; pinning it to the environment makes the rule visible
+     * rather than inherited.
+     *
+     * The consequence is the one thing to remember: after changing a collection,
+     * run `npm run migrate:create <name>` and commit the result, or the next
+     * deploy will build fine and then fail at runtime on a missing column.
+     */
+    push: process.env.NODE_ENV !== 'production',
   }),
   secret: process.env.PAYLOAD_SECRET,
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
+  /**
+   * Vercel sets VERCEL_PROJECT_PRODUCTION_URL on every deployment, so the app
+   * has a correct absolute origin without anyone remembering to configure one.
+   * Needed for the links in emailed sign-in messages, which are useless relative.
+   */
+  serverURL:
+    process.env.NEXT_PUBLIC_SERVER_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : undefined),
   /**
    * Cookie auth is only honoured for requests from these origins, which is what
    * stops another site from riding a member's session. Verified: a request with
@@ -105,10 +129,19 @@ export default buildConfig({
     'https://ecommharvest.com',
     'https://www.ecommharvest.com',
     'https://app.ecommharvest.com',
+    // The Vercel deployment. Named explicitly as well as picked up from the
+    // environment below, so signing in there never depends on which Vercel
+    // variables happen to be present.
+    'https://ecommharvest.vercel.app',
+    'https://ecommharvest-git-claude-build-publish-ver-e2fa5e-love-marketing.vercel.app',
     process.env.VERCEL_PROJECT_PRODUCTION_URL
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : undefined,
     process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+    // The stable per-branch alias. Distinct from VERCEL_URL, which changes with
+    // every deployment — without this, a branch preview you sign in on works
+    // until the next push and then silently does not.
+    process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : undefined,
   ].filter((origin): origin is string => Boolean(origin)),
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

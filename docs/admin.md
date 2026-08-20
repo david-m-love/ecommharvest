@@ -19,6 +19,42 @@ routes because the canvas needs the whole window — squeezed beside the admin
 sidebar it is unusable. There is a **Page builder** link in the admin sidebar, so
 it reads as one place.
 
+## Deploying, and the first sign-in
+
+Schema changes ship as **migrations** in `src/migrations`, never as an automatic
+push against a live database — a push can drop a column to match a rename.
+
+Vercel runs `npm run vercel-build`, which is `payload migrate && next build`. So
+**a deploy creates or updates the schema by itself**; there is nothing to run by
+hand and no local Postgres needed. If a migration fails the build fails, which is
+correct — better than a deployment that serves a broken app.
+
+After changing a collection:
+
+```bash
+npm run migrate:create some-name   # writes src/migrations/<timestamp>_some-name.ts
+git add src/migrations && git commit
+```
+
+Skip that and the next deploy builds fine, then fails at runtime on a missing
+column. `npm run migrate:status` lists what has run.
+
+### The first admin
+
+Visit `/admin` on a fresh database and Payload shows a **create-first-user**
+screen. Fill in email and password; that account is made an **admin
+automatically**.
+
+That last part is deliberate and load-bearing. The screen shows `Roles`
+pre-filled with `Member` and labelled "only admins can change this" — leave it
+alone and you would create a member, land on "unauthorized", and be locked out
+for good, because the create-first-user route disappears the moment a user
+exists. `src/lib/first-user.ts` forces the first account to be an admin so that
+dead end cannot happen. Every later account still defaults to member.
+
+Verified on a genuinely empty database with `next start`, not `next dev` — see
+"Why production is tested separately" below.
+
 ## Signing in
 
 Email and password, at `/admin`. Ten wrong attempts locks the account for ten
@@ -192,6 +228,32 @@ Considered and rejected:
 The four **dompurify** advisories were real and are fixed, via an `overrides`
 entry in `package.json` — it arrives under Payload's admin UI through
 monaco-editor, which pins an old version.
+
+## Why production is tested separately
+
+Two failures on this project were invisible in `npm run dev` and broke the
+deployed app:
+
+1. **The admin panel had no styling.** Payload's compiled stylesheet — the theme
+   variables, fonts and reset — ships as a production-only file that must be
+   imported as `@payloadcms/next/css`. `next dev` compiles the SCSS itself, so
+   the admin looks perfect locally while a real deployment renders unstyled Times
+   New Roman, on a build that succeeded. Now imported in
+   `src/app/(payload)/layout.tsx`.
+2. **The schema was never created.** Dev pushes it automatically; production does
+   not. Hence migrations, and hence `vercel-build`.
+
+So before trusting a deploy:
+
+```bash
+createdb something_empty
+DATABASE_URI=postgres://…/something_empty npm run vercel-build   # migrate + build
+DATABASE_URI=postgres://…/something_empty npx next start -p 3002
+# then open http://localhost:3002/admin and create the first user
+```
+
+If the login screen shows the Payload logo and a dark **Login** button, the
+stylesheet is loading. Serif text on a white page means it is not.
 
 ## Tests
 

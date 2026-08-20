@@ -22,7 +22,11 @@
     "ghl:build": "node ghl/build.mjs",
     "ghl:verify": "node ghl/verify.mjs",
     "test:builder": "node test/builder.e2e.mjs",
-    "test:builder:ui": "node test/builder.ui.mjs"
+    "test:builder:ui": "node test/builder.ui.mjs",
+    "migrate": "payload migrate",
+    "migrate:create": "payload migrate:create",
+    "migrate:status": "payload migrate:status",
+    "vercel-build": "payload migrate && next build"
   },
   "dependencies": {
     "@measured/puck": "^0.20.2",

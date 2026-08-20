@@ -20,8 +20,14 @@
 > provider, signed playback, passwordless auth, an audited admin.
 >
 > **Deploying needs a Postgres database.** On Vercel: Storage → Create Database →
-> Neon Postgres, which sets `DATABASE_URI`, then add `PAYLOAD_SECRET`. Without
-> them the build fails outright, marketing pages included.
+> Neon Postgres, then add `PAYLOAD_SECRET`. Without them the build fails
+> outright, marketing pages included.
+>
+> Two Vercel-specific gotchas, both now handled but worth knowing:
+> - The Neon integration sets `DATABASE_URL`, not `DATABASE_URI`. Add
+>   `DATABASE_URI` yourself with the **pooled** connection string.
+> - The Framework Preset must be **Next.js**. Set to "Other" the build succeeds
+>   and every URL returns Vercel's own 404.
 
 Marketing site, member area, and admin for eCommHarvest — one Next.js app with
 Payload CMS running inside it.
@@ -90,6 +96,12 @@ npm run test:security     # access boundaries
 npm run test:builder      # admin, roles, and the page builder over HTTP
 npm run test:builder:ui   # the builder driven in a real browser
 ```
+
+**`npm run dev` cannot catch everything.** Two real failures here were invisible
+in dev and broke production: Payload's admin stylesheet is a production-only
+import, and the schema is only pushed automatically in dev. Before trusting a
+deploy, run `vercel-build` and `next start` against an empty database — the
+recipe is in `docs/admin.md`.
 
 If your Chromium does not match the version Playwright expects (common in CI
 images and sandboxes), point at it:
@@ -163,12 +175,37 @@ curl -H "Authorization: Bearer $ADMIN_TOKEN" https://<site>/api/registrations > 
 
 ## Deploy
 
-Vercel auto-detects Next. Set the environment variables, attach a Neon Postgres
-database and a Blob store, then deploy. `next.config.mjs` carries the headers and
-the legacy `.html` redirects; there is no `vercel.json`.
+Vercel runs `npm run vercel-build` — `payload migrate && next build` — so **the
+schema is created and updated by the deploy itself**. Nothing to run by hand.
+`build` stays plain `next build`, so a local build never touches a database.
+
+Checklist for a new project:
+
+1. Framework Preset **Next.js**. Left on "Other", the build succeeds and every
+   URL returns Vercel's own 404.
+2. Storage → Create Database → **Neon Postgres**. The integration sets
+   `DATABASE_URL`; this app reads **`DATABASE_URI`**, so add that too, with the
+   pooled connection string.
+3. `PAYLOAD_SECRET` — any long random string.
+4. Deploy, then open `/admin` and create the first user. It becomes an admin
+   automatically; see `docs/admin.md`.
+
+`next.config.mjs` carries the headers and the legacy `.html` redirects; there is
+no `vercel.json`.
 
 Add every domain you sign in on to `csrf` in `src/payload.config.ts`, including
-preview URLs, or cookie auth will silently not work there.
+preview URLs, or cookie auth will silently not work there. `VERCEL_URL`,
+`VERCEL_BRANCH_URL` and `VERCEL_PROJECT_PRODUCTION_URL` are picked up
+automatically.
+
+### After changing a collection
+
+```bash
+npm run migrate:create some-name    # then commit src/migrations/
+```
+
+Skip it and the next deploy builds fine, then fails at runtime on a missing
+column.
 
 ## Open items
 
