@@ -63,6 +63,17 @@ const REGISTER_URL = process.env.REGISTER_URL || 'https://go.ecommharvest.com/re
  */
 const SITE_URL = (process.env.SITE_URL || 'https://ecommharvest.com').replace(/\/$/, '')
 
+/**
+ * Where the home page's CTAs send people.
+ *
+ * The funnel is the canonical masterclass page — it holds the form, the tracking
+ * and the workflows. `ecommharvest.com/masterclass` is a noindex mirror of the
+ * same block, kept for proofing a design change before pasting it into GHL, and
+ * the home page should not be routing real traffic through a proof.
+ */
+const MASTERCLASS_URL =
+  process.env.MASTERCLASS_URL || 'https://go.ecommharvest.com/masterclass'
+
 // Element selectors we rewrite as descendants of the scope. `html` and `body`
 // have no meaningful equivalent inside a block, so they collapse onto the
 // wrapper itself.
@@ -176,8 +187,20 @@ function convertHtml(html, classes) {
   // Point every CTA at funnel step 2. The source keeps in-page anchors so it
   // still previews standalone in a browser; here they become the real link.
   result = result.replace(/href="#register(-step)?"/g, `href="${REGISTER_URL}"`)
-  // Site links become absolute, so they work from either host. See SITE_URL.
-  result = result.replace(/href="\/(privacy|terms)"/g, (_all, page) => `href="${SITE_URL}/${page}"`)
+  result = result.replace(/href="\/masterclass"/g, `href="${MASTERCLASS_URL}"`)
+  /**
+   * Site links become absolute, so they work from either host. See SITE_URL.
+   *
+   * `.ics` is in here for a reason worth remembering: the calendar file is a
+   * static asset of the Next app, and the thank-you block is pasted into
+   * GoHighLevel as funnel step 3. Left root-relative, "Add to calendar" 404'd on
+   * the GHL host — silently, on the page every registrant sees. Caught by the
+   * no-root-relative-links check in ghl/verify.mjs.
+   */
+  result = result.replace(
+    /href="\/(privacy|terms|masterclass\.ics)"/g,
+    (_all, page) => `href="${SITE_URL}/${page}"`,
+  )
   result = result.replace(/href="\/"/g, `href="${SITE_URL}/"`)
   // Rewrite class attributes only — never text content.
   result = result.replace(/\sclass="([^"]*)"/g, (_all, value) => {

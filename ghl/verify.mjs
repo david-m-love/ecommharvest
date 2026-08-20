@@ -106,6 +106,25 @@ check(
   `${wholeCtas} vs ${splitCtas}`,
 )
 
+// --- 1c. no root-relative links ----------------------------------------
+//
+// Every block is served from two hosts: pasted into GoHighLevel on
+// go.ecommharvest.com, and rendered by the app on ecommharvest.com. A
+// root-relative href therefore means two different things depending on where the
+// page is being viewed — and the footer's `/privacy` would 404 outright on the
+// GHL host, on the page that has to carry a working privacy link before any Meta
+// ad can run. So every link out must be absolute.
+
+console.log('\nlinks are absolute, because each block is served from two hosts')
+for (const name of [...BLOCKS, ...EXTRA_BLOCKS]) {
+  const rootRelative = [...block(name).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1])
+  check(
+    rootRelative.length === 0,
+    `${name} has no root-relative links`,
+    rootRelative.join(' ') || 'none',
+  )
+}
+
 // --- 2 & 3. render comparison ------------------------------------------
 
 // The kind of global CSS a page builder emits. Every one of these would visibly
