@@ -36,17 +36,32 @@ const SCOPE = 'ech-scope'
 /**
  * Where every "Save my seat" button points.
  *
- * There is no form on the landing page any more: registration is step 2 of the
- * funnel, built natively in GoHighLevel. So the buttons' whole job is to send
- * people forward.
+ * Absolute, and deliberately so. The domains are split three ways:
  *
- * A root-relative path is deliberate — funnel steps are paths on the same
- * domain, so this keeps working on the preview domain, the custom domain, and
- * after a rename of step 1. Override if the step's path differs:
+ *   ecommharvest.com      the site — Vercel, published builder pages
+ *   app.ecommharvest.com  admin, page builder, member area — Vercel
+ *   go.ecommharvest.com   funnels, forms, email and SMS — GoHighLevel
  *
- *   REGISTER_URL=/save-my-seat node ghl/build.mjs
+ * This block gets pasted into GoHighLevel *and* served by the Next app at
+ * /masterclass, on two different hosts. A root-relative `/register` would
+ * therefore mean two different things — the real funnel step on `go.`, and a
+ * placeholder on the site. An absolute URL means the button reaches the actual
+ * form wherever the page is being viewed.
+ *
+ * Override if step 2's path differs:
+ *   REGISTER_URL=https://go.ecommharvest.com/save-my-seat node ghl/build.mjs
  */
-const REGISTER_URL = process.env.REGISTER_URL || '/register'
+const REGISTER_URL = process.env.REGISTER_URL || 'https://go.ecommharvest.com/register'
+
+/**
+ * Where links to the *site* point — the logo, and the footer's legal links.
+ *
+ * Also absolute, for a sharper reason: the legal pages live on the site, not in
+ * GoHighLevel. Left root-relative, the footer's "Privacy Policy" would resolve
+ * to go.ecommharvest.com/privacy and 404 — on the page that has to carry a
+ * working privacy link before any Meta ad can run.
+ */
+const SITE_URL = (process.env.SITE_URL || 'https://ecommharvest.com').replace(/\/$/, '')
 
 // Element selectors we rewrite as descendants of the scope. `html` and `body`
 // have no meaningful equivalent inside a block, so they collapse onto the
@@ -161,6 +176,9 @@ function convertHtml(html, classes) {
   // Point every CTA at funnel step 2. The source keeps in-page anchors so it
   // still previews standalone in a browser; here they become the real link.
   result = result.replace(/href="#register(-step)?"/g, `href="${REGISTER_URL}"`)
+  // Site links become absolute, so they work from either host. See SITE_URL.
+  result = result.replace(/href="\/(privacy|terms)"/g, (_all, page) => `href="${SITE_URL}/${page}"`)
+  result = result.replace(/href="\/"/g, `href="${SITE_URL}/"`)
   // Rewrite class attributes only — never text content.
   result = result.replace(/\sclass="([^"]*)"/g, (_all, value) => {
     const rewritten = value

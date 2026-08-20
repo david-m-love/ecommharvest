@@ -8,13 +8,14 @@ export const metadata: Metadata = {
 }
 
 /**
- * Funnel step 2 is GoHighLevel's native form, on GHL's domain. Nothing is built
- * here on purpose — a second registration form would be a second place for
+ * Funnel step 2 is GoHighLevel's native form, on go.ecommharvest.com. Nothing is
+ * built here on purpose — a second registration form would be a second place for
  * leads to land and a second consent record to keep straight.
  *
- * This page exists so the landing page's four CTAs resolve while it is being
- * proofed on this deployment, and it says what it is rather than pretending.
- * Once the GHL step's URL is settled, this becomes a redirect to it.
+ * Nothing links here any more: the landing page's CTAs point at the absolute GHL
+ * URL, so they reach the real form from either host. This page survives only as
+ * a signpost for anyone who types the path or follows an old link, and it says
+ * where the form actually is.
  */
 export default function RegisterPlaceholder() {
   return (
@@ -25,11 +26,17 @@ export default function RegisterPlaceholder() {
             ← Back to the masterclass page
           </Link>
         </p>
-        <h1>This is where GoHighLevel’s form goes.</h1>
+        <h1>Registration lives on the funnel.</h1>
         <p className="lede">
-          Funnel step 2. This placeholder exists so the “Save my seat” buttons can be clicked while
-          the landing page is being proofed.
+          Funnel step 2 is a GoHighLevel page, so the form, the contact record and the email and SMS
+          all stay in one place.
         </p>
+        <p className="cta-row">
+          <a className="btn" href="https://go.ecommharvest.com/register">
+            Go to registration
+          </a>
+        </p>
+        <p className="lede" style={{ marginTop: 34 }}>What that page needs:</p>
         <ul className="bullets">
           <li>
             <span className="b-t">

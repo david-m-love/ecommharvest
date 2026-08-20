@@ -47,6 +47,46 @@ const nextConfig = {
   },
 
   async redirects() {
+    /**
+     * Three hostnames, two platforms:
+     *
+     *   ecommharvest.com      the public site — this app, published builder pages
+     *   app.ecommharvest.com  admin, page builder, member area — this app
+     *   go.ecommharvest.com   funnels, forms, email and SMS — GoHighLevel
+     *
+     * Both Vercel hostnames point at the same deployment, so every route is
+     * technically reachable on both. These redirects make each host mean one
+     * thing, which keeps links shareable and stops `ecommharvest.com/admin`
+     * existing as a second address for the same screen.
+     *
+     * They are tidiness, not security. The security boundary is authentication,
+     * which does not care which hostname you arrived on.
+     */
+    /**
+     * Bare hostnames only — no port, no scheme. Next strips the port from the
+     * Host header before matching (`prepare-destination.js`), so `localhost:3005`
+     * silently matches nothing. The value is also treated as a regex anchored
+     * with ^…$, which is why a literal hostname works but a URL does not.
+     */
+    const SITE_HOST = process.env.SITE_HOST || 'ecommharvest.com'
+    const APP_HOST = process.env.APP_HOST || 'app.ecommharvest.com'
+    const onSite = [{ type: 'host', value: SITE_HOST }]
+
+    /** Private areas belong on app. — sent there rather than served twice. */
+    const privateAreas = ['admin', 'builder', 'learn', 'members'].map((area) => ({
+      source: `/${area}/:path*`,
+      has: onSite,
+      destination: `https://${APP_HOST}/${area}/:path*`,
+      permanent: false,
+    }))
+    // `:path*` does not match the bare path, so each area needs its own root rule.
+    const privateRoots = ['admin', 'builder', 'learn', 'members'].map((area) => ({
+      source: `/${area}`,
+      has: onSite,
+      destination: `https://${APP_HOST}/${area}`,
+      permanent: false,
+    }))
+
     return [
       // The static build served these as .html; keep those URLs working.
       { source: '/index.html', destination: '/masterclass', permanent: true },
@@ -54,6 +94,8 @@ const nextConfig = {
       { source: '/terms.html', destination: '/terms', permanent: true },
       { source: '/thanks.html', destination: '/masterclass/thanks', permanent: true },
       { source: '/thanks', destination: '/masterclass/thanks', permanent: true },
+      ...privateRoots,
+      ...privateAreas,
     ]
   },
 }

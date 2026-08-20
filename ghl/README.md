@@ -46,14 +46,28 @@ inside the block.
 
 ### Where the buttons point
 
-All four "Save my seat" buttons link to **`/register`** — a root-relative path, so
-it works on the preview domain and the custom domain without editing.
+All four "Save my seat" buttons link to **`https://go.ecommharvest.com/register`**,
+and the footer's legal links to **`https://ecommharvest.com/privacy`** and
+`/terms`.
 
-Name step 2's path `register` and it just works. If you name it something else,
-tell me and I rebuild in a minute:
+Absolute, not root-relative, because the domains are split three ways:
+
+| Hostname | Platform |
+| --- | --- |
+| `ecommharvest.com` | Vercel — the site, legal pages, builder pages |
+| `app.ecommharvest.com` | Vercel — admin and page builder |
+| `go.ecommharvest.com` | **GoHighLevel** — this funnel, the form, email and SMS |
+
+The same block is pasted into GHL *and* served by the app at
+`ecommharvest.com/masterclass`, on two different hosts. A root-relative
+`/register` would therefore mean two different things, and `/privacy` in the
+footer would 404 on `go.` — on the page that has to carry a working privacy link
+before any Meta ad can run.
+
+Name step 2's path `register` and it works as built. Different path, rebuild:
 
 ```bash
-REGISTER_URL=/save-my-seat node ghl/build.mjs
+REGISTER_URL=https://go.ecommharvest.com/save-my-seat node ghl/build.mjs
 ```
 
 Do not leave it pointing at a path that doesn't exist — the buttons look fine in

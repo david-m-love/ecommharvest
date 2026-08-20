@@ -32,6 +32,36 @@
 Marketing site, member area, and admin for eCommHarvest — one Next.js app with
 Payload CMS running inside it.
 
+## Domains
+
+Three hostnames, two platforms. DNS points a *hostname*, not a path — so a
+single domain cannot be split across two providers, which is why this is a
+subdomain split rather than a path split.
+
+| Hostname | Platform | What lives there |
+| --- | --- | --- |
+| `ecommharvest.com` | **Vercel** (this app) | The public site and published builder pages |
+| `app.ecommharvest.com` | **Vercel** (same deployment) | `/admin`, `/builder`, `/learn`, `/members` |
+| `go.ecommharvest.com` | **GoHighLevel** | Funnels, forms, contacts, email and SMS |
+
+Both Vercel hostnames are added to the same project, so every route is
+technically reachable on both. `next.config.mjs` redirects the private areas from
+the site host to `app.`, so each address means one thing. That is tidiness, not
+security — the security boundary is authentication, which does not care which
+hostname you arrived on.
+
+**The auth cookie is deliberately host-scoped**, not set on `.ecommharvest.com`.
+A wildcard cookie would be sent to *every* subdomain — including
+`go.ecommharvest.com`, which is GoHighLevel's servers. Sending an admin session
+to a third-party platform is not a trade worth making for the convenience of one
+login across both hosts. Practical consequence: sign in at `app.`, and preview
+unpublished pages at `app.ecommharvest.com/p/<slug>` rather than on the site host,
+where you are not logged in and a draft correctly 404s.
+
+`go.ecommharvest.com` is **not** in the `csrf` list, on purpose. Nothing there
+needs to call this app's authenticated API, and listing it would let a
+GoHighLevel-hosted page do so.
+
 | URL | What |
 | --- | --- |
 | `/` | Marketing home |
@@ -187,8 +217,33 @@ Checklist for a new project:
    `DATABASE_URL`; this app reads **`DATABASE_URI`**, so add that too, with the
    pooled connection string.
 3. `PAYLOAD_SECRET` — any long random string.
-4. Deploy, then open `/admin` and create the first user. It becomes an admin
-   automatically; see `docs/admin.md`.
+4. `NEXT_PUBLIC_SERVER_URL=https://app.ecommharvest.com` — the host people sign
+   in on, so emailed sign-in links are absolute and correct.
+5. Settings → Domains → add **both** `ecommharvest.com` and
+   `app.ecommharvest.com`. Vercel shows the exact DNS record to create; copy it
+   from there rather than from memory, since the values differ by account.
+6. Deploy, then open `app.ecommharvest.com/admin` and create the first user. It
+   becomes an admin automatically; see `docs/admin.md`.
+
+`SITE_HOST` and `APP_HOST` override the redirect hostnames if the domains ever
+change. Bare hostnames only — Next strips the port before matching, so
+`localhost:3000` matches nothing.
+
+### Moving GoHighLevel to `go.`
+
+Do it in this order, or the masterclass page goes dark mid-flight:
+
+1. In GHL, add `go.ecommharvest.com` to the funnel and confirm the page loads
+   there, **while `ecommharvest.com` still points at GHL**.
+2. Only then re-point `ecommharvest.com` at Vercel.
+3. Rebuild the GHL blocks if step 2's path is not `register`:
+   `REGISTER_URL=https://go.ecommharvest.com/<path> npm run ghl:build`
+
+The blocks' links are absolute (`https://go.…/register` for the CTAs,
+`https://ecommharvest.com/privacy` for the legal links) precisely because the
+same block is served from two hosts. Root-relative links would have meant two
+different things — and the footer's privacy link would have 404'd on `go.`, on
+the page that must carry a working privacy link before any Meta ad runs.
 
 `next.config.mjs` carries the headers and the legacy `.html` redirects; there is
 no `vercel.json`.
