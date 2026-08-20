@@ -81,7 +81,14 @@ p{margin:0 0 20px;max-width:66ch;color:var(--brown)}
 
 /* ---- cards ---- */
 h3{font-weight:800;font-size:20px;line-height:1.28;letter-spacing:-.022em;margin:0 0 10px}
-.cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px}
+/* The masterclass page only ever needed three columns. The page builder lets a
+   card row hold two or four, so those exist too — otherwise a four-card row
+   would silently render as one stacked column. */
+.cols-2,.cols-3,.cols-4{display:grid;gap:20px;margin-top:34px}
+.cols-2{grid-template-columns:repeat(2,1fr)}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+.cols-4{grid-template-columns:repeat(4,1fr)}
+.cols-1{display:grid;gap:20px;margin-top:34px;grid-template-columns:1fr}
 .card{background:var(--wash);border:1px solid var(--line-2);border-radius:var(--r);padding:32px}
 .card p{margin:0;font-size:15.5px;color:var(--muted)}
 .card-dark{background:linear-gradient(163deg,#183551 0%,var(--navy) 50%,#102439 100%);color:var(--cream);border-radius:var(--r);padding:44px}
@@ -120,6 +127,11 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   display:flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--gold-deep)}
 .host-name{font-size:14.5px;font-weight:700;color:var(--navy);letter-spacing:-.018em;white-space:nowrap}
+/* A logo plate. The B.O.M.Socks file supplied is the WHITE variant, which would
+   be invisible on this near-white bar, so it sits on a navy disc. Swap to the
+   dark/colour logo and this can revert to the plain cream chip. */
+.host-mark-plate{background:var(--navy);border-color:var(--navy);padding:8px;overflow:hidden}
+.host-mark-plate img{height:auto;width:100%;max-height:26px;object-fit:contain;display:block}
 
 /* ---- when / logistics line ---- */
 .when{font-family:var(--mono);font-size:13px;letter-spacing:.01em;color:var(--brown);background:var(--cream);
@@ -160,7 +172,7 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   .foot-in{padding:28px 20px}
   .btn-lg{padding:17px 30px;font-size:16px}
   .topbar-right{display:none}
-  .cols-3{grid-template-columns:1fr;gap:14px;margin-top:26px}
+  .cols-1,.cols-2,.cols-3,.cols-4{grid-template-columns:1fr;gap:14px;margin-top:26px}
   .card{padding:26px 22px}
   .hostbar-in{padding:26px 20px}
   .hosts{gap:16px 26px}
@@ -187,7 +199,10 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .consent a{color:var(--cream);text-decoration:underline;text-underline-offset:2px}
 .formcard .btn{width:100%}
 .formcard .btn[disabled]{opacity:.6;cursor:progress}
-.formnote{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--chalk);text-align:center;margin:16px 0 0}
+/* max-width:none because the base `p{max-width:66ch}` resolves against the mono
+   font here and caps the line at ~437px, which centres the text inside a
+   left-hugging box rather than under the button. */
+.formnote{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--chalk);text-align:center;max-width:none;margin:16px 0 0}
 .formerr{background:rgba(224,137,78,.15);border:1px solid rgba(242,179,122,.4);border-radius:var(--r-sm);
   padding:13px 16px;font-size:14.5px;font-weight:600;color:#F7C99B;margin:0 0 18px;max-width:none}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -369,3 +384,12 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .sidecol h4.spaced{margin-top:28px}
 .plainlink{color:inherit;text-decoration:none}
 .plainlink:hover{text-decoration:underline}
+
+/* GHL only: the final CTA card ends where a native form row begins, so square
+   off its bottom corners and drop the bottom padding. Unused now the form lives
+   on its own funnel step; kept in case the form ever returns to this page. */
+.finalcard-top{border-bottom-left-radius:0;border-bottom-right-radius:0;padding-bottom:34px}
+
+/* The dark CTA card with no form in it. Chalk rather than cream, so the button
+   is the brightest thing in the card and nothing competes with it. */
+.final-lead{color:var(--chalk);font-size:17.5px;line-height:1.62;max-width:48ch;margin:0 auto 34px}

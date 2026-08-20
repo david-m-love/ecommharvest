@@ -19,8 +19,22 @@ const nextConfig = {
       },
       {
         // Member and admin pages must never be cached by a shared proxy.
-        source: '/:path(learn|members)/:rest*',
+        source: '/:path(learn|members|builder|admin)/:rest*',
         headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
+      },
+      {
+        /**
+         * The admin and the page builder must never be framed at all.
+         * Clickjacking an authenticated admin session is the attack this
+         * closes, and unlike /learn there is no Cloudflare embed to allow for,
+         * so this can be DENY rather than SAMEORIGIN. `frame-ancestors` is the
+         * modern equivalent and covers browsers that ignore X-Frame-Options.
+         */
+        source: '/:path(admin|builder)/:rest*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'none'" },
+        ],
       },
       {
         source: '/masterclass.ics',

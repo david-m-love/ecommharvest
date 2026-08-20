@@ -16,6 +16,7 @@ ghl/blocks/home-2-cta.html          HOME: masterclass CTA + footer
 ghl/course-outline.md               5 categories / 14 lessons for Memberships
 ghl/paste-me/*.txt                  the same blocks as .txt (generated, gitignored)
 ghl/src/                            source the blocks are generated from
+src/styles/design-system.css        the design tokens and CSS (single source)
 ghl/build.mjs                       regenerates blocks (node ghl/build.mjs)
 ghl/verify.mjs                      proves the blocks are safe to paste
 ```
@@ -188,3 +189,12 @@ PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome node ghl/verify.mjs
 ```
 
 Never edit `ghl/blocks/` directly — it's generated.
+
+The stylesheet lives at **`src/styles/design-system.css`**, not under `ghl/`. It
+used to exist twice — once here, once in the Next app — and the two copies had
+already drifted apart by three fixes before it was noticed. One file, two
+consumers.
+
+`ecommharvest.com/masterclass` on the Vercel deployment serves
+`ghl/blocks/LANDING-PAGE.html` directly, so what you proof there is byte-for-byte
+what you paste into GHL.

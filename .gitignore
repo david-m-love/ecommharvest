@@ -8,6 +8,5 @@ node_modules
 ghl/.verify/
 ghl/paste-me/
 
-# generated
-proof/dist
 proof/artifact.html
+tsconfig.tsbuildinfo

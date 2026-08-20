@@ -182,7 +182,13 @@ const between = (text, start, end) => {
 
 // --- read sources -------------------------------------------------------
 
-const css = src('styles.css')
+/**
+ * The design system, read from its single home in src/styles/.
+ *
+ * It used to exist twice — once here and once in the Next app — and the two
+ * copies had already drifted apart by three fixes. One file, two consumers.
+ */
+const css = readFileSync(join(here, '..', 'src', 'styles', 'design-system.css'), 'utf8')
 const classes = declaredClasses(css)
 const masterclass = src('masterclass.html')
 const thanks = src('thanks.html')

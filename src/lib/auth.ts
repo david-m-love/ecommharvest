@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 
 import type { User } from '@/payload-types'
 import { isAdmin } from '@/lib/access'
+import { type Capability, can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
 
 /**
@@ -36,5 +37,25 @@ export const requireUser = async (returnTo?: string): Promise<User> => {
 export const requireAdmin = async (): Promise<User> => {
   const user = await getCurrentUser()
   if (!user || !isAdmin(user)) redirect('/learn')
+  return user
+}
+
+/**
+ * Requires one capability, or bounces.
+ *
+ * Signed out goes to /login with a return path — they may well be allowed in
+ * once they authenticate. Signed in but not permitted goes to /learn rather
+ * than showing a 403, because a 403 confirms the page exists.
+ */
+export const requireCapability = async (
+  capability: Capability,
+  returnTo?: string,
+): Promise<User> => {
+  const user = await getCurrentUser()
+  if (!user) {
+    const next = returnTo ? `?next=${encodeURIComponent(returnTo)}` : ''
+    redirect(`/login${next}`)
+  }
+  if (!can(user, capability)) redirect('/learn')
   return user
 }

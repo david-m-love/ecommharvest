@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import React from 'react'
 
-import './styles.css'
+import '@/styles/design-system.css'
 
 export const metadata: Metadata = {
   title: {

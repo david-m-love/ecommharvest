@@ -20,9 +20,12 @@
     "seed": "payload run scripts/seed.ts",
     "test:security": "node test/security.e2e.mjs",
     "ghl:build": "node ghl/build.mjs",
-    "ghl:verify": "node ghl/verify.mjs"
+    "ghl:verify": "node ghl/verify.mjs",
+    "test:builder": "node test/builder.e2e.mjs",
+    "test:builder:ui": "node test/builder.ui.mjs"
   },
   "dependencies": {
+    "@measured/puck": "^0.20.2",
     "@payloadcms/db-postgres": "^3.88.0",
     "@payloadcms/email-resend": "^3.88.0",
     "@payloadcms/next": "^3.88.0",
@@ -44,5 +47,8 @@
     "playwright": "^1.62.1",
     "tsx": "^4.23.12",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "dompurify": "^3.4.14"
   }
 }

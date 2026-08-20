@@ -67,10 +67,12 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    pages: Page;
     courses: Course;
     modules: Module;
     lessons: Lesson;
     users: User;
+    roles: Role;
     entitlements: Entitlement;
     progress: Progress;
     registrations: Registration;
@@ -83,10 +85,12 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    pages: PagesSelect<false> | PagesSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     modules: ModulesSelect<false> | ModulesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
     entitlements: EntitlementsSelect<false> | EntitlementsSelect<true>;
     progress: ProgressSelect<false> | ProgressSelect<true>;
     registrations: RegistrationsSelect<false> | RegistrationsSelect<true>;
@@ -130,6 +134,113 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Pages you build yourself. Open one in the builder to edit its layout.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  /**
+   * Internal name and the browser tab title.
+   */
+  title: string;
+  /**
+   * Used in the URL. Auto-filled from the title; safe to edit before publishing.
+   */
+  slug: string;
+  /**
+   * Drafts are visible only to your team.
+   */
+  status?: ('draft' | 'published') | null;
+  /**
+   * The one-line summary search engines and link previews show.
+   */
+  description?: string | null;
+  content?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Keep this page out of Google. Leave on for anything you are still proofing.
+   */
+  noindex?: boolean | null;
+  updatedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name?: string | null;
+  /**
+   * Only admins can change this.
+   */
+  roles: ('admin' | 'member')[];
+  /**
+   * Roles granted to this person. Leave empty for no admin access. Admins ignore this and have everything.
+   */
+  roleRefs?: (number | Role)[] | null;
+  stripeCustomerId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * A role is a set of permissions you can hand to a teammate. Admins always have every permission, regardless of roles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles".
+ */
+export interface Role {
+  id: number;
+  /**
+   * What this person does, in your words. "Copywriter", "VA", "Bookkeeper".
+   */
+  name: string;
+  /**
+   * Optional. A note to your future self about who this is for.
+   */
+  description?: string | null;
+  /**
+   * Tick everything this role may do. Handle with care: users:manage lets someone change permissions, including their own.
+   */
+  capabilities: (
+    | 'pages:read'
+    | 'pages:write'
+    | 'pages:publish'
+    | 'users:manage'
+    | 'registrations:read'
+    | 'courses:manage'
+    | 'media:manage'
+  )[];
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -284,37 +395,6 @@ export interface Lesson {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  name?: string | null;
-  /**
-   * Only admins can change roles.
-   */
-  roles: ('admin' | 'member')[];
-  stripeCustomerId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "entitlements".
  */
 export interface Entitlement {
@@ -422,6 +502,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
         relationTo: 'courses';
         value: number | Course;
       } | null)
@@ -436,6 +520,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: number | Role;
       } | null)
     | ({
         relationTo: 'entitlements';
@@ -501,6 +589,21 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  description?: T;
+  content?: T;
+  noindex?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "courses_select".
  */
 export interface CoursesSelect<T extends boolean = true> {
@@ -559,6 +662,7 @@ export interface LessonsSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   roles?: T;
+  roleRefs?: T;
   stripeCustomerId?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -576,6 +680,17 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles_select".
+ */
+export interface RolesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  capabilities?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -13,18 +13,30 @@ import { Entitlements } from './collections/Entitlements'
 import { Lessons } from './collections/Lessons'
 import { Media } from './collections/Media'
 import { Modules } from './collections/Modules'
+import { Pages } from './collections/Pages'
 import { Progress } from './collections/Progress'
 import { Registrations } from './collections/Registrations'
+import { Roles } from './collections/Roles'
 import { Users } from './collections/Users'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
-if (!process.env.DATABASE_URI) {
-  throw new Error('DATABASE_URI is not set. Copy .env.example to .env and fill it in.')
-}
-if (!process.env.PAYLOAD_SECRET) {
-  throw new Error('PAYLOAD_SECRET is not set. Copy .env.example to .env and fill it in.')
-}
+/**
+ * These are checked here rather than at first use because `next build` imports
+ * this file: without them the whole deployment fails, including the marketing
+ * pages, and the default error gives no clue why. Fail early and say what to do.
+ */
+const missingEnv = (name: string) =>
+  new Error(
+    `${name} is not set.\n\n` +
+      `Locally:  copy .env.example to .env and fill it in, then \`npm run db:start\`.\n` +
+      `On Vercel: Storage -> Create Database -> Neon Postgres, which sets DATABASE_URI ` +
+      `for you, then add PAYLOAD_SECRET (any long random string) under ` +
+      `Settings -> Environment Variables and redeploy.`,
+  )
+
+if (!process.env.DATABASE_URI) throw missingEnv('DATABASE_URI')
+if (!process.env.PAYLOAD_SECRET) throw missingEnv('PAYLOAD_SECRET')
 
 // Vercel's filesystem is ephemeral, so uploads must go to blob storage in
 // production. Locally we fall back to disk, which keeps `npm run dev` working
@@ -55,12 +67,19 @@ export default buildConfig({
     meta: {
       titleSuffix: ' — eCommHarvest',
     },
+    components: {
+      // Puts "Page builder" in the admin sidebar. The canvas itself is a
+      // full-window route at /builder — see the component for why.
+      afterNavLinks: ['@/components/BuilderNavLink#BuilderNavLink'],
+    },
   },
   collections: [
+    Pages,
     Courses,
     Modules,
     Lessons,
     Users,
+    Roles,
     Entitlements,
     Progress,
     Registrations,

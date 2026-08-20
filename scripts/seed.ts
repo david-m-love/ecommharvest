@@ -13,6 +13,29 @@ import config from '../src/payload.config'
 const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'david@lovemarketing.digital'
 const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD || 'change-me-locally-8f2a'
 const MEMBER_EMAIL = process.env.SEED_MEMBER_EMAIL || 'member@example.com'
+/**
+ * A teammate with real but limited permissions, so the role system can be seen
+ * working rather than taken on trust. Signs in with the same dev password.
+ */
+const TEAMMATE_EMAIL = process.env.SEED_TEAMMATE_EMAIL || 'teammate@example.com'
+
+/**
+ * Two starter roles, chosen because they are the two shapes almost every small
+ * team needs first: someone who writes pages but must not publish them, and
+ * someone who needs the registrant list and nothing else.
+ */
+const ROLES = [
+  {
+    name: 'Page editor',
+    description: 'Builds and edits pages, but an admin publishes them.',
+    capabilities: ['pages:read', 'pages:write', 'media:manage'] as const,
+  },
+  {
+    name: 'Publisher',
+    description: 'Everything a page editor can do, plus making pages live.',
+    capabilities: ['pages:read', 'pages:write', 'pages:publish', 'media:manage'] as const,
+  },
+]
 
 type LessonSeed = { title: string; body: string; isPreview?: boolean }
 type ModuleSeed = { title: string; summary: string; lessons: LessonSeed[] }
@@ -127,7 +150,12 @@ const richText = (text: string) => ({
 const seed = async () => {
   const payload = await getPayload({ config })
 
-  const upsertUser = async (email: string, roles: ('admin' | 'member')[], name: string) => {
+  const upsertUser = async (
+    email: string,
+    roles: ('admin' | 'member')[],
+    name: string,
+    roleRefs: number[] = [],
+  ) => {
     const existing = await payload.find({
       collection: 'users',
       where: { email: { equals: email } },
@@ -138,7 +166,7 @@ const seed = async () => {
       const doc = await payload.update({
         collection: 'users',
         id: existing.docs[0].id,
-        data: { roles, name },
+        data: { roles, name, roleRefs },
         overrideAccess: true,
       })
       console.log(`  = ${email} (${roles.join(', ')})`)
@@ -146,16 +174,50 @@ const seed = async () => {
     }
     const doc = await payload.create({
       collection: 'users',
-      data: { email, password: ADMIN_PASSWORD, roles, name },
+      data: { email, password: ADMIN_PASSWORD, roles, name, roleRefs },
       overrideAccess: true,
     })
     console.log(`  + ${email} (${roles.join(', ')})`)
     return doc
   }
 
+  const upsertRole = async (role: (typeof ROLES)[number]) => {
+    const existing = await payload.find({
+      collection: 'roles',
+      where: { name: { equals: role.name } },
+      limit: 1,
+      overrideAccess: true,
+    })
+    const data = {
+      name: role.name,
+      description: role.description,
+      capabilities: [...role.capabilities],
+    }
+    if (existing.docs.length > 0) {
+      const doc = await payload.update({
+        collection: 'roles',
+        id: existing.docs[0].id,
+        data,
+        overrideAccess: true,
+      })
+      console.log(`  = ${role.name} (${role.capabilities.length} permissions)`)
+      return doc
+    }
+    const doc = await payload.create({ collection: 'roles', data, overrideAccess: true })
+    console.log(`  + ${role.name} (${role.capabilities.length} permissions)`)
+    return doc
+  }
+
+  console.log('Roles')
+  const roleDocs = await Promise.all(ROLES.map(upsertRole))
+  const pageEditor = roleDocs[0]
+
   console.log('Users')
   const admin = await upsertUser(ADMIN_EMAIL, ['admin', 'member'], 'David Love')
   await upsertUser(MEMBER_EMAIL, ['member'], 'Test Member')
+  // Not an admin, and holds Page editor — so they can build but not publish.
+  // test/security.e2e.mjs asserts exactly that.
+  await upsertUser(TEAMMATE_EMAIL, ['member'], 'Test Teammate', [pageEditor.id])
 
   console.log('Course')
   const existingCourse = await payload.find({
@@ -270,7 +332,7 @@ const seed = async () => {
   }
 
   const counts = await Promise.all(
-    (['courses', 'modules', 'lessons', 'users', 'entitlements'] as const).map(async (c) => {
+    (['courses', 'modules', 'lessons', 'users', 'roles', 'pages', 'entitlements'] as const).map(async (c) => {
       const r = await payload.count({ collection: c, overrideAccess: true })
       return `${c}=${r.totalDocs}`
     }),

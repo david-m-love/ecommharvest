@@ -1,24 +1,27 @@
 # eCommHarvest
 
-> ## Parked — 19 August 2026
+> ## Status — 20 August 2026
 >
-> **This platform is not the live system.** eCommHarvest is being built in
-> GoHighLevel instead. The masterclass is 15 days out and GHL already provides
-> memberships, courses, video hosting, checkout and workflows natively — so
-> buying beat building on this timeline.
+> **Live and in use for the admin and the page builder.** GoHighLevel keeps the
+> masterclass funnel: its form, contacts, email and SMS. This app is what David
+> controls himself.
 >
-> What that means for this repo:
+> - **`/admin`** — login, teammates, permission roles. See **`docs/admin.md`**.
+> - **`/builder`** — drag-and-drop page builder with preset blocks built from the
+>   existing design system.
+> - **`/masterclass`** — serves the *same* block that gets pasted into GHL, read
+>   from `ghl/blocks/`. One source, so a proof cannot disagree with what ships.
+> - **`ghl/`** — the page designs converted into paste-ready GHL blocks, plus the
+>   course outline.
 >
-> - **`ghl/`** holds the live deliverable: the page designs converted into
->   paste-ready GoHighLevel blocks, plus the course outline. Start there.
-> - Everything below still works and is fully tested. It stays as a fallback and
->   as the design source of truth — `ghl/` is generated from it.
-> - Nothing here is deployed. There is no Vercel project.
+> The member area, courses, entitlements and signed video playback are all built
+> and tested but **not in use** — GHL handles memberships for now. They stay
+> because the hard parts are done: entitlements decoupled from any payment
+> provider, signed playback, passwordless auth, an audited admin.
 >
-> If you are revisiting this to reconsider a custom build, the honest summary is
-> that the hard parts were finished: entitlements decoupled from any payment
-> provider, signed video playback, passwordless auth, and an audited admin. What
-> remained was Stripe checkout and a webinar integration.
+> **Deploying needs a Postgres database.** On Vercel: Storage → Create Database →
+> Neon Postgres, which sets `DATABASE_URI`, then add `PAYLOAD_SECRET`. Without
+> them the build fails outright, marketing pages included.
 
 Marketing site, member area, and admin for eCommHarvest — one Next.js app with
 Payload CMS running inside it.
@@ -27,9 +30,12 @@ Payload CMS running inside it.
 | --- | --- |
 | `/` | Marketing home |
 | `/masterclass` | Q4 Masterclass landing page (Thursday, September 3, 11:00 AM MT) |
-| `/learn` | Member area — courses, lessons, progress |
-| `/members` | Admin: who has access to what, grant/revoke, impersonate |
-| `/admin` | Payload admin — content CRUD, generated from the schema |
+| `/register` | Placeholder — funnel step 2 is GHL's form |
+| `/admin` | Admin: login, people, permission roles, page records |
+| `/builder` | **Page builder** — drag and drop, preset blocks |
+| `/p/[slug]` | A page built in the builder |
+| `/learn` | Member area — courses, lessons, progress (built, not in use) |
+| `/members` | Access management: grant/revoke, impersonate |
 | `/privacy`, `/terms` | Legal pages (**drafts, need legal review**) |
 
 Paths rather than subdomains on purpose: a separate `admin.` host means a
@@ -41,6 +47,9 @@ deployment.
 
 - **Next.js 16** (App Router) + React 19, TypeScript
 - **Payload CMS 3** — admin panel, auth, and REST/GraphQL inside the same app
+- **Puck** (`@measured/puck`, MIT) — the drag-and-drop page builder. Blocks are
+  our own React components, so the design system *is* the block library. Why it
+  beat GrapesJS and Craft.js here: `docs/admin.md`.
 - **Postgres** (Neon in production; a local cluster for development)
 - **Cloudflare Stream** for video, behind an adapter so Bunny/Mux is a swap
 - **Resend** for transactional email (optional; dev logs links to the console)
@@ -61,6 +70,10 @@ Seeded accounts (development only — override with `SEED_ADMIN_PASSWORD`):
 | --- | --- | --- |
 | `david@lovemarketing.digital` | admin + member | `change-me-locally-8f2a` |
 | `member@example.com` | member | `change-me-locally-8f2a` |
+| `teammate@example.com` | member + **Page editor** role | `change-me-locally-8f2a` |
+
+The teammate exists to make the permission system visible: they can build pages
+and cannot publish them. `npm run test:builder` asserts exactly that.
 
 Members normally sign in without a password: `/login` emails a one-time link. In
 development the link is printed to the server console, because Payload's fallback
@@ -69,8 +82,13 @@ email adapter logs only the subject.
 ## Tests
 
 ```bash
-npm test            # registration + video adapter, no network or database needed
-npm run test:security   # access boundaries, needs `npm run dev` running + seed data
+npm test                  # registration + video adapter, no network or database
+npm run ghl:verify        # the GHL blocks are safe to paste (needs Chromium)
+
+# these three need `npm run dev` running against a seeded database:
+npm run test:security     # access boundaries
+npm run test:builder      # admin, roles, and the page builder over HTTP
+npm run test:builder:ui   # the builder driven in a real browser
 ```
 
 If your Chromium does not match the version Playwright expects (common in CI
@@ -83,6 +101,18 @@ PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome npm run test:security
 `test/security.e2e.mjs` sets an `Origin` header on every request deliberately.
 Payload only honours cookie auth for origins listed in `csrf`, so without one
 every call reads as unauthenticated and the suite passes for the wrong reason.
+
+## How permissions work
+
+Two layers, kept separate:
+
+- `roles` on a user is identity — `admin` or `member`.
+- A **Role** record is a named bundle of capabilities, created from the admin
+  panel. So a new job title is data, not a deploy.
+
+Admins short-circuit every check, as a rule rather than as stored data, so a new
+feature can never lock the owner out. `users:manage` can assign any custom role
+but cannot mint an admin — see `src/lib/capabilities.ts` and `docs/admin.md`.
 
 ## How access works
 
