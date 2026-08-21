@@ -141,16 +141,29 @@ npm run test:builder      # admin, roles, and the page builder over HTTP
 npm run test:builder:ui   # the builder driven in a real browser
 npm run test:styles       # brand colours, logo upload, / and /masterclass
 
-# reads the build output, so it needs a build rather than a dev server:
+npm run test:importmap    # the admin's component registry is complete
+
+# these read a real build, so they need one — a dev server will not do:
 npm run build && npm run test:prerender   # no page is frozen at deploy time
+npm run start                              # then, with BLOB_READ_WRITE_TOKEN set:
+npm run test:admin                         # the admin boots in a browser
 ```
 
-**`npm run dev` cannot catch everything.** Three real failures here were
+**`npm run dev` cannot catch everything.** Four real failures here were
 invisible in dev and broke production: Payload's admin stylesheet is a
-production-only import, the schema is only pushed automatically in dev, and
-`next build` prerendered `/` and `/masterclass` into static HTML — so
+production-only import; the schema is only pushed automatically in dev;
+`next build` prerendered `/` and `/masterclass` into static HTML, so
 republishing a page in the builder changed the database and nothing a visitor
-saw. Dev renders every request fresh, which hides all three. Before trusting a
+saw; and connecting the Vercel Blob store activated a plugin whose component was
+missing from the admin's generated import map, which took the admin down to a
+blank page while every server-side check passed. Dev renders fresh and
+regenerates that map on every start, which hides all four.
+
+That last one is worth the general lesson: **the admin's import map depends on
+which plugins are active, and plugins activate on their credentials.** Adding a
+service in Vercel can therefore break the admin without a single line of code
+changing. `vercel-build` now regenerates the map on every deploy, so production
+self-corrects, and `npm run test:importmap` catches it before that. Before trusting a
 deploy, run `vercel-build` and `next start` against an empty database — the
 recipe is in `docs/admin.md` — and run `test:prerender` after the build.
 

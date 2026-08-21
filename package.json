@@ -26,9 +26,11 @@
     "migrate": "payload migrate",
     "migrate:create": "payload migrate:create",
     "migrate:status": "payload migrate:status",
-    "vercel-build": "payload migrate && next build",
+    "vercel-build": "payload generate:importmap && payload migrate && next build",
     "test:styles": "node test/styles.ui.mjs",
     "test:prerender": "node test/prerender.mjs",
+    "test:importmap": "node test/importmap.mjs",
+    "test:admin": "node test/admin-boots.ui.mjs",
     "extract:pages": "node scripts/extract-pages.mjs"
   },
   "dependencies": {
