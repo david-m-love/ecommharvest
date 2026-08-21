@@ -26,6 +26,7 @@ const MUST_BE_DYNAMIC = [
   ['/privacy', 'a Site Styles colour change has to reach every page'],
   ['/terms', 'a Site Styles colour change has to reach every page'],
   ['/masterclass/thanks', 'a Site Styles colour change has to reach every page'],
+  ['/status', 'the health page has to report the state right now, not at deploy time'],
 ]
 
 let manifest

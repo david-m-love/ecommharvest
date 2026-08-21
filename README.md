@@ -115,6 +115,20 @@ Members normally sign in without a password: `/login` emails a one-time link. In
 development the link is printed to the server console, because Payload's fallback
 email adapter logs only the subject.
 
+## When `/admin` is a blank white page
+
+Go to **`/status`**. It says in plain English what is wrong and what to do about
+it — no login needed, which is the point, because a blank admin is exactly when
+you cannot log in.
+
+The reason that page exists: when the app cannot reach its database, `/admin`
+returns a 500 and browsers render a 500 as *nothing at all*, while the public
+pages carry on working from their built-in fallback copy. The site therefore
+looks healthy and the admin looks broken, which points at the admin — the one
+place the problem is not. `/status` opens its own database connection with a
+short timeout, so it answers even when Payload cannot start, and it reports
+whether each setting is present, never its value.
+
 ## Tests
 
 ```bash
