@@ -28,6 +28,7 @@
     "migrate:status": "payload migrate:status",
     "vercel-build": "payload migrate && next build",
     "test:styles": "node test/styles.ui.mjs",
+    "test:prerender": "node test/prerender.mjs",
     "extract:pages": "node scripts/extract-pages.mjs"
   },
   "dependencies": {

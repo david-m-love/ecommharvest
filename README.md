@@ -126,13 +126,19 @@ npm run test:security     # access boundaries
 npm run test:builder      # admin, roles, and the page builder over HTTP
 npm run test:builder:ui   # the builder driven in a real browser
 npm run test:styles       # brand colours, logo upload, / and /masterclass
+
+# reads the build output, so it needs a build rather than a dev server:
+npm run build && npm run test:prerender   # no page is frozen at deploy time
 ```
 
-**`npm run dev` cannot catch everything.** Two real failures here were invisible
-in dev and broke production: Payload's admin stylesheet is a production-only
-import, and the schema is only pushed automatically in dev. Before trusting a
+**`npm run dev` cannot catch everything.** Three real failures here were
+invisible in dev and broke production: Payload's admin stylesheet is a
+production-only import, the schema is only pushed automatically in dev, and
+`next build` prerendered `/` and `/masterclass` into static HTML — so
+republishing a page in the builder changed the database and nothing a visitor
+saw. Dev renders every request fresh, which hides all three. Before trusting a
 deploy, run `vercel-build` and `next start` against an empty database — the
-recipe is in `docs/admin.md`.
+recipe is in `docs/admin.md` — and run `test:prerender` after the build.
 
 If your Chromium does not match the version Playwright expects (common in CI
 images and sandboxes), point at it:

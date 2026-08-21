@@ -4,6 +4,23 @@ import React from 'react'
 import { getSiteStyles } from '@/lib/site-styles'
 import '@/styles/design-system.css'
 
+/**
+ * Every page under this layout renders per request, rather than being frozen
+ * into HTML at deploy time.
+ *
+ * This is here and not on individual pages because it is the layout that does
+ * the request-time read: the brand palette below comes from the database, and
+ * the two builder pages read their content from it too. Without this, `next
+ * build` prerenders anything that does not look request-specific — so changing a
+ * colour in Site Styles, or pressing "Update live page" in the builder, would
+ * change the database and nothing a visitor sees, until the next deploy.
+ *
+ * Development cannot show that: `next dev` renders every request fresh. The
+ * check in `test/prerender.mjs` reads the build output and fails if these routes
+ * go static again.
+ */
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: {
     default: 'eCommHarvest',
