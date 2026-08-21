@@ -1,0 +1,130 @@
+{
+  "root": {},
+  "content": [
+    {
+      "type": "Header",
+      "props": {
+        "id": "seed-header-0",
+        "logoText": "eCommHarvest",
+        "homeUrl": "https://ecommharvest.com/",
+        "rightText": "Thursday, September 3 · 11:00 AM MT · free"
+      }
+    },
+    {
+      "type": "Hero",
+      "props": {
+        "id": "seed-hero-1",
+        "eyebrow": "Q4 growth for e-commerce founders",
+        "heading": "Better traffic. Bigger orders. More repeat purchases.",
+        "deck": "Three arms. One number that matters.",
+        "body": "eCommHarvest is where the strategy behind your most important quarter gets built — the promotional calendar, the offers, the flows, and the paid social that makes all three cheaper.",
+        "ctaLabel": "Start with the free masterclass",
+        "ctaHref": "https://go.ecommharvest.com/masterclass",
+        "ctaMicro": "Thursday, September 3 · 11:00 AM MT · free"
+      }
+    },
+    {
+      "type": "Prose",
+      "props": {
+        "id": "seed-prose-2",
+        "eyebrow": "How the growth actually compounds",
+        "heading": "Your CAC isn’t decided inside the ad account.",
+        "body": "It’s decided by what happens after the click, and after the first order. Which is why we never work on one arm alone.",
+        "background": "wash"
+      }
+    },
+    {
+      "type": "FormulaBar",
+      "props": {
+        "id": "seed-formulabar-3",
+        "terms": [
+          {
+            "term": "Ads"
+          },
+          {
+            "term": "Offer"
+          },
+          {
+            "term": "Repeat"
+          }
+        ],
+        "result": "the CAC you can afford",
+        "caption": "Each arm makes the other two cheaper"
+      }
+    },
+    {
+      "type": "CardRow",
+      "props": {
+        "id": "seed-cardrow-4",
+        "background": "wash",
+        "cards": [
+          {
+            "title": "Paid social",
+            "body": "What the creative has to communicate, which offers deserve spend, and when to scale — so you’re not paying peak CPMs for a message that was never going to convert."
+          },
+          {
+            "title": "Offers & AOV",
+            "body": "A stronger offer lifts conversion rate, so the same clicks buy more customers. A bigger basket means you can afford to pay more for a customer than the competitor bidding beside you."
+          },
+          {
+            "title": "Email & SMS",
+            "body": "The second and third order don’t carry an ad cost. Flows and campaigns that bring buyers back are what pull blended CAC down across a whole quarter."
+          }
+        ]
+      }
+    },
+    {
+      "type": "BulletList",
+      "props": {
+        "id": "seed-bulletlist-5",
+        "eyebrow": "Section placeholder — replace with your copy",
+        "bullets": [
+          {
+            "lead": "Point one",
+            "text": "— the change a founder sees in the first month."
+          },
+          {
+            "lead": "Point two",
+            "text": "— the thing you do that nobody else does."
+          },
+          {
+            "lead": "Point three",
+            "text": "— the proof, ideally with a number."
+          }
+        ]
+      }
+    },
+    {
+      "type": "CtaCard",
+      "props": {
+        "id": "seed-ctacard-6",
+        "eyebrow": "Free · 90 minutes · Thursday, September 3",
+        "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
+        "ctaLabel": "Save my seat",
+        "ctaHref": "https://go.ecommharvest.com/masterclass"
+      }
+    },
+    {
+      "type": "Footer",
+      "props": {
+        "id": "seed-footer-7",
+        "copyright": "© 2026 eCommHarvest",
+        "links": [
+          {
+            "label": "Masterclass",
+            "href": "https://go.ecommharvest.com/masterclass"
+          },
+          {
+            "label": "Privacy Policy",
+            "href": "https://ecommharvest.com/privacy"
+          },
+          {
+            "label": "Terms & Conditions",
+            "href": "https://ecommharvest.com/terms"
+          }
+        ],
+        "note": "© 2026 eCommHarvest"
+      }
+    }
+  ]
+}

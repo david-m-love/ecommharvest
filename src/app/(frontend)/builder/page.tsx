@@ -5,6 +5,14 @@ import { requireCapability } from '@/lib/auth'
 import { can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
 
+/**
+ * The home page and the masterclass page live at their own URLs rather than
+ * under /p/, so the list has to show where they actually are — otherwise the
+ * View button sends you to a redirect and the path shown is wrong.
+ */
+const pathFor = (slug: string) =>
+  slug === 'home' ? '/' : slug === 'masterclass' ? '/masterclass' : `/p/${slug}`
+
 export const metadata = { title: 'Pages' }
 export const dynamic = 'force-dynamic'
 
@@ -80,7 +88,7 @@ export default async function BuilderIndex() {
                       {/* .stamp, not .sp-role: the latter uppercases, which
                           turns a URL into something that looks wrong. */}
                       <p className="stamp" style={{ margin: 0 }}>
-                        /p/{page.slug} ·{' '}
+                        {pathFor(page.slug)} ·{' '}
                         {page.status === 'published' ? 'Live' : 'Draft — only your team can see it'}
                       </p>
                     </div>
@@ -89,7 +97,7 @@ export default async function BuilderIndex() {
                         Edit
                       </Link>
                       {page.status === 'published' ? (
-                        <Link className="btn btn-ghost" href={`/p/${page.slug}`}>
+                        <Link className="btn btn-ghost" href={pathFor(page.slug)}>
                           View
                         </Link>
                       ) : null}

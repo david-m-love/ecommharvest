@@ -64,10 +64,10 @@ GoHighLevel-hosted page do so.
 
 | URL | What |
 | --- | --- |
-| `/` | Marketing home |
-| `/masterclass` | Q4 Masterclass landing page (Thursday, September 3, 11:00 AM MT) |
+| `/` | Marketing home — **editable in the page builder** |
+| `/masterclass` | Q4 Masterclass landing page — **editable in the page builder** |
 | `/register` | Placeholder — funnel step 2 is GHL's form |
-| `/admin` | Admin: login, people, permission roles, page records |
+| `/admin` | Admin: login, people, roles, page records, **Site Styles**, Media |
 | `/builder` | **Page builder** — drag and drop, preset blocks |
 | `/p/[slug]` | A page built in the builder |
 | `/learn` | Member area — courses, lessons, progress (built, not in use) |
@@ -125,6 +125,7 @@ npm run ghl:verify        # the GHL blocks are safe to paste (needs Chromium)
 npm run test:security     # access boundaries
 npm run test:builder      # admin, roles, and the page builder over HTTP
 npm run test:builder:ui   # the builder driven in a real browser
+npm run test:styles       # brand colours, logo upload, / and /masterclass
 ```
 
 **`npm run dev` cannot catch everything.** Two real failures here were invisible

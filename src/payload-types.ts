@@ -105,8 +105,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-styles': SiteStyle;
+  };
+  globalsSelect: {
+    'site-styles': SiteStylesSelect<false> | SiteStylesSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -285,6 +289,8 @@ export interface Course {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Logos and images. Upload here, then pick them in the page builder.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -830,6 +836,71 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * The logo and colours used across every page. Change one here and it changes everywhere.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-styles".
+ */
+export interface SiteStyle {
+  id: number;
+  /**
+   * Shown in the top-left of every page that has a Header block. PNG or SVG, transparent background, around 400px wide.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Used as the logo’s alt text, and shown if no logo image is set.
+   */
+  logoText?: string | null;
+  /**
+   * Buttons, the × in the formula bar, highlights.
+   */
+  gold: string;
+  /**
+   * Small uppercase labels above headings.
+   */
+  goldDeep: string;
+  /**
+   * Headings, and the dark cards.
+   */
+  navy: string;
+  /**
+   * Ordinary paragraph text.
+   */
+  brown: string;
+  /**
+   * Lead paragraphs and quieter text.
+   */
+  muted: string;
+  /**
+   * The pill behind the badge, the date chip.
+   */
+  cream: string;
+  /**
+   * Alternating section backgrounds.
+   */
+  wash: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-styles_select".
+ */
+export interface SiteStylesSelect<T extends boolean = true> {
+  logo?: T;
+  logoText?: T;
+  gold?: T;
+  goldDeep?: T;
+  navy?: T;
+  brown?: T;
+  muted?: T;
+  cream?: T;
+  wash?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

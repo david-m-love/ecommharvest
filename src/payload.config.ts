@@ -18,6 +18,7 @@ import { Progress } from './collections/Progress'
 import { Registrations } from './collections/Registrations'
 import { Roles } from './collections/Roles'
 import { Users } from './collections/Users'
+import { SiteStyles } from './globals/SiteStyles'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -86,6 +87,7 @@ export default buildConfig({
     Media,
     AuditLog,
   ],
+  globals: [SiteStyles],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URI },

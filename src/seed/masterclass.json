@@ -1,0 +1,236 @@
+{
+  "root": {},
+  "content": [
+    {
+      "type": "Header",
+      "props": {
+        "id": "seed-header-0",
+        "logoText": "eCommHarvest",
+        "homeUrl": "https://ecommharvest.com/",
+        "rightText": "Thursday, September 3 · 11:00 AM MT · free"
+      }
+    },
+    {
+      "type": "Hero",
+      "props": {
+        "id": "seed-hero-1",
+        "eyebrow": "Free masterclass for LDS e-commerce founders",
+        "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
+        "deck": "…without headaches or sacrificing family time.",
+        "body": "Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, how you’ll structure the offers, and what email, SMS, creative, and conversion systems need to be ready before the holiday rush.",
+        "when": "Thursday, September 3 · 11:00 AM MT (1:00 PM ET / 10:00 AM PT)",
+        "ctaLabel": "Save my seat",
+        "ctaHref": "https://go.ecommharvest.com/register",
+        "ctaMicro": "Free · 90 minutes · replay available"
+      }
+    },
+    {
+      "type": "HostedBy",
+      "props": {
+        "id": "seed-hostedby-2",
+        "label": "Hosted by",
+        "hosts": [
+          {
+            "name": "Tiny 3D Temples",
+            "monogram": "T3T",
+            "href": "https://tiny3dtemples.com/"
+          },
+          {
+            "name": "B.O.M.Socks",
+            "monogram": "BOM",
+            "href": "https://bomsocks.com/"
+          },
+          {
+            "name": "Come Follow Me FHE",
+            "monogram": "CFM",
+            "href": "https://www.comefollowmefhe.com/"
+          }
+        ]
+      }
+    },
+    {
+      "type": "DarkCard",
+      "props": {
+        "id": "seed-darkcard-3",
+        "eyebrow": "Faith first, then strategy",
+        "heading": "What if your Q4 wasn’t just built on strategy, but founded on faith first?",
+        "body": "Q4 is the quarter that quietly eats December. The late-night inventory panic. The Sunday spent putting out fires. The school concert you half-watched from the parking lot while answering support tickets. Most founders accept that as the price of a good holiday season.\n\nIt isn’t. The scramble comes from deciding in November what should have been decided in September. When your promotional calendar, your offers, and your automated flows are planned early and built once, Q4 runs on systems instead of adrenaline — and your Sabbath, your ministering, and your family stay where they belong.",
+        "kicker": "Faith first. Family second. Then a Q4 that funds both."
+      }
+    },
+    {
+      "type": "BulletList",
+      "props": {
+        "id": "seed-bulletlist-4",
+        "eyebrow": "What you’ll learn",
+        "leadIn": "We build it together. You leave with a plan you can execute:",
+        "bullets": [
+          {
+            "lead": "Your promotional calendar",
+            "text": "— what to run, when to run it, and how the promotions build on each other"
+          },
+          {
+            "lead": "Your offer strategy",
+            "text": "— including bundles, tiered discounts, gifts with purchase, thresholds, and other ways to sell beyond “25% off”"
+          },
+          {
+            "lead": "Your AOV plan",
+            "text": "— how to use those offers to encourage bigger baskets while protecting margin"
+          },
+          {
+            "lead": "Your email + SMS roadmap",
+            "text": "— the campaigns and must-have automated flows that support the quarter"
+          },
+          {
+            "lead": "Your Meta ads plan",
+            "text": "— where paid social sits in the calendar, which offers deserve spend, and how to scale without bidding against everyone else on the same three days"
+          },
+          {
+            "lead": "Your Q4 creative plan",
+            "text": "— what your ads need to communicate and the creative you’ll need before you scale traffic"
+          },
+          {
+            "lead": "Your pre-Q4 fix list",
+            "text": "— the conversion and retention pieces to tighten before pouring more money into Meta"
+          },
+          {
+            "lead": "Your build-by date",
+            "text": "— what has to be finished before Thanksgiving so December runs on automation instead of your evenings"
+          }
+        ],
+        "ctaLabel": "Save my seat",
+        "ctaHref": "https://go.ecommharvest.com/register",
+        "ctaMicro": "Thursday, September 3 · 11:00 AM MT · replay available"
+      }
+    },
+    {
+      "type": "Prose",
+      "props": {
+        "id": "seed-prose-5",
+        "eyebrow": "Where paid social fits",
+        "heading": "Your Meta ads don’t need a bigger budget. They need the other two arms working.",
+        "body": "Most Q4 plans treat paid social as the entire strategy: raise the budget in November and hope it clears. But your cost per acquisition isn’t decided inside the ad account. It’s decided by what happens after the click, and after the first order.",
+        "background": "white"
+      }
+    },
+    {
+      "type": "FormulaBar",
+      "props": {
+        "id": "seed-formulabar-6",
+        "terms": [
+          {
+            "term": "Ads"
+          },
+          {
+            "term": "Offer"
+          },
+          {
+            "term": "Repeat"
+          }
+        ],
+        "result": "the CAC you can afford",
+        "caption": "Each arm makes the other two cheaper",
+        "note": "That compounding is the reason we build all three arms in one sitting instead of one at a time."
+      }
+    },
+    {
+      "type": "CardRow",
+      "props": {
+        "id": "seed-cardrow-7",
+        "background": "white",
+        "cards": [
+          {
+            "title": "Paid social",
+            "body": "What your Q4 creative has to communicate, which offers to put spend behind, and when to scale — so you’re not paying peak CPMs for a message that was never going to convert."
+          },
+          {
+            "title": "Offers & AOV",
+            "body": "A stronger offer lifts conversion rate, so the same clicks buy more customers. A bigger basket means you can afford to pay more for a customer than the competitor bidding beside you."
+          },
+          {
+            "title": "Email & SMS",
+            "body": "The second and third order don’t carry an ad cost. Flows and campaigns that bring buyers back are what pull your blended CAC down across the whole quarter."
+          }
+        ]
+      }
+    },
+    {
+      "type": "CardRow",
+      "props": {
+        "id": "seed-cardrow-8",
+        "eyebrow": "Who this is for",
+        "heading": "Built for founders running a real store and a real life.",
+        "body": "If you’re selling online, carrying a calling, and trying to grow without letting Q4 take over your home, you’re in the right room.",
+        "background": "white",
+        "cards": [
+          {
+            "title": "A store, not a hobby",
+            "body": "You have products shipping and traffic coming in. Q4 genuinely matters to your number. What you don’t have yet is the quarter mapped out on one page."
+          },
+          {
+            "title": "Small team or solo",
+            "body": "No CMO, no agency retainer. You’re the strategist, the copywriter, and the one packing boxes — so the plan has to be something one person can actually execute."
+          },
+          {
+            "title": "A calling and a family",
+            "body": "Sundays aren’t workdays. Weeknights belong to your kids. Any Q4 plan worth building has to respect both, and this one is designed around them."
+          }
+        ]
+      }
+    },
+    {
+      "type": "Speakers",
+      "props": {
+        "id": "seed-speakers-9",
+        "eyebrow": "Who you’re learning from",
+        "heading": "Live with David Love and special guest Derek Crimin.",
+        "people": [
+          {
+            "label": "Presenter",
+            "name": "David Love",
+            "title": "E-commerce growth strategist",
+            "monogram": "DL",
+            "body": "David spends his days on the unglamorous side of e-commerce growth — offer strategy, email and SMS, paid social, and the conversion work that turns existing traffic into more orders. Most of it comes down to decisions made before the quarter starts.\n\nHe built this masterclass the way he builds Q4 for a store: one page, one calendar, and a hard build-by date."
+          },
+          {
+            "label": "Special guest",
+            "name": "Derek Crimin",
+            "title": "Owner, B.O.M.Socks",
+            "monogram": "DC",
+            "body": "Derek owns and operates B.O.M.Socks, so he walks into Q4 as an operator rather than a theorist — same inventory calls, same ad costs, same deadline you’re working against.\n\nHe’s joining to show what these plays look like inside a real store, and where the plan meets reality."
+          }
+        ]
+      }
+    },
+    {
+      "type": "CtaCard",
+      "props": {
+        "id": "seed-ctacard-10",
+        "eyebrow": "Thursday, September 3 · 11:00 AM MT · free · 90 minutes",
+        "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
+        "body": "Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.",
+        "ctaLabel": "Save my seat",
+        "ctaHref": "https://go.ecommharvest.com/register",
+        "note": "Free · no card required · replay sent to every registrant"
+      }
+    },
+    {
+      "type": "Footer",
+      "props": {
+        "id": "seed-footer-11",
+        "copyright": "© 2026 eCommHarvest",
+        "links": [
+          {
+            "label": "Privacy Policy",
+            "href": "https://ecommharvest.com/privacy"
+          },
+          {
+            "label": "Terms & Conditions",
+            "href": "https://ecommharvest.com/terms"
+          }
+        ],
+        "note": "Hosted by Tiny 3D Temples · B.O.M.Socks · Come Follow Me FHE"
+      }
+    }
+  ]
+}

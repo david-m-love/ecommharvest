@@ -1,6 +1,8 @@
 import type { Config, Data } from '@measured/puck'
 import React from 'react'
 
+import { type PickedImage, imageField } from './image-field'
+
 /**
  * The block library the page builder drags and drops.
  *
@@ -65,6 +67,12 @@ const linkField = {
 // --- the blocks ---------------------------------------------------------
 
 export type Blocks = {
+  Header: {
+    logo?: PickedImage
+    logoText?: string
+    homeUrl?: string
+    rightText?: string
+  }
   Hero: {
     eyebrow?: string
     heading?: string
@@ -77,7 +85,7 @@ export type Blocks = {
   }
   HostedBy: {
     label?: string
-    hosts?: { name: string; monogram?: string; logoUrl?: string; href?: string }[]
+    hosts?: { name: string; monogram?: string; logo?: PickedImage; href?: string }[]
   }
   DarkCard: { eyebrow?: string; heading?: string; body?: string; kicker?: string }
   BulletList: {
@@ -99,7 +107,14 @@ export type Blocks = {
   Speakers: {
     eyebrow?: string
     heading?: string
-    people?: { label?: string; name?: string; title?: string; monogram?: string; body?: string }[]
+    people?: {
+      label?: string
+      name?: string
+      title?: string
+      monogram?: string
+      photo?: PickedImage
+      body?: string
+    }[]
   }
   CtaCard: {
     eyebrow?: string
@@ -124,7 +139,11 @@ export const config: Config<Blocks> = {
    */
   root: { fields: {} },
   categories: {
-    'Top of page': { title: 'Top of page', components: ['Hero', 'HostedBy'], defaultExpanded: true },
+    'Top of page': {
+      title: 'Top of page',
+      components: ['Header', 'Hero', 'HostedBy'],
+      defaultExpanded: true,
+    },
     Body: {
       title: 'Body sections',
       components: ['DarkCard', 'BulletList', 'FormulaBar', 'CardRow', 'Speakers', 'Prose'],
@@ -133,6 +152,40 @@ export const config: Config<Blocks> = {
     'Bottom of page': { title: 'Bottom of page', components: ['CtaCard', 'Footer'] },
   },
   components: {
+    Header: {
+      label: 'Header (logo bar)',
+      fields: {
+        logo: imageField('Logo', 'Upload logos under Media in the admin, then pick one here.'),
+        logoText: { type: 'text', label: 'Name (used if no logo is chosen)' },
+        homeUrl: { type: 'text', label: 'Logo links to' },
+        rightText: { type: 'text', label: 'Small text on the right' },
+      },
+      defaultProps: {
+        logoText: 'eCommHarvest',
+        homeUrl: 'https://ecommharvest.com/',
+        rightText: 'Thursday, September 3 · 11:00 AM MT · free',
+      },
+      render: ({ logo, logoText, homeUrl, rightText }) => (
+        <header className="topbar">
+          <div className="topbar-in">
+            <a className="brand" href={homeUrl || '/'} aria-label={logoText || 'Home'}>
+              {logo?.url ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={logo.url} alt={logo.alt || logoText || ''} />
+              ) : (
+                <strong style={{ fontSize: 18, letterSpacing: '-0.02em' }}>{logoText}</strong>
+              )}
+            </a>
+            {rightText ? (
+              <div className="topbar-right">
+                <span className="stamp">{rightText}</span>
+              </div>
+            ) : null}
+          </div>
+        </header>
+      ),
+    },
+
     Hero: {
       label: 'Hero',
       fields: {
@@ -186,11 +239,11 @@ export const config: Config<Blocks> = {
           type: 'array',
           label: 'Brands',
           getItemSummary: (item) => item?.name || 'Brand',
-          defaultItemProps: { name: 'Brand name', monogram: 'ABC', logoUrl: '', href: '' },
+          defaultItemProps: { name: 'Brand name', monogram: 'ABC', logo: null, href: '' },
           arrayFields: {
             name: { type: 'text', label: 'Name' },
             monogram: { type: 'text', label: 'Initials (shown when there is no logo)' },
-            logoUrl: { type: 'text', label: 'Logo image URL (optional)' },
+            logo: imageField('Logo'),
             href: { type: 'text', label: 'Link (optional)' },
           },
         },
@@ -211,8 +264,13 @@ export const config: Config<Blocks> = {
               {(hosts || []).map((host, i) => {
                 const inner = (
                   <>
-                    <span className={`host-mark${host.logoUrl ? ' host-mark-plate' : ''}`}>
-                      {host.logoUrl ? <img src={host.logoUrl} alt={host.name} /> : host.monogram}
+                    <span className={`host-mark${host.logo?.url ? ' host-mark-plate' : ''}`}>
+                      {host.logo?.url ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={host.logo.url} alt={host.logo.alt || host.name} />
+                      ) : (
+                        host.monogram
+                      )}
                     </span>
                     <span className="host-name">{host.name}</span>
                   </>
@@ -430,12 +488,13 @@ export const config: Config<Blocks> = {
           type: 'array',
           label: 'People',
           getItemSummary: (item) => item?.name || 'Person',
-          defaultItemProps: { label: 'Presenter', name: 'Full name', title: 'What they do', monogram: 'AB', body: 'A sentence about them.' },
+          defaultItemProps: { label: 'Presenter', name: 'Full name', title: 'What they do', monogram: 'AB', photo: null, body: 'A sentence about them.' },
           arrayFields: {
             label: { type: 'text', label: 'Role label' },
             name: { type: 'text', label: 'Name' },
             title: { type: 'text', label: 'Title' },
-            monogram: { type: 'text', label: 'Initials' },
+            monogram: { type: 'text', label: 'Initials (shown when there is no photo)' },
+            photo: imageField('Photo'),
             body: { type: 'textarea', label: 'Bio (blank line = new paragraph)' },
           },
         },
@@ -458,7 +517,12 @@ export const config: Config<Blocks> = {
                 <div className="speaker" key={i}>
                   {person.label ? <p className="sp-tag">{person.label}</p> : null}
                   <div className="sp-top">
-                    {person.monogram ? (
+                    {person.photo?.url ? (
+                      <span className="sp-photo">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={person.photo.url} alt={person.photo.alt || person.name || ''} />
+                      </span>
+                    ) : person.monogram ? (
                       <span className="sp-photo" aria-hidden="true">
                         {person.monogram}
                       </span>

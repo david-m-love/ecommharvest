@@ -10,3 +10,6 @@ ghl/paste-me/
 
 proof/artifact.html
 tsconfig.tsbuildinfo
+
+# local upload directory — production uses Vercel Blob
+media/

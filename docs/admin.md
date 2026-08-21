@@ -124,6 +124,62 @@ request, so permissions are never cached in a token.
 Do **not** give a teammate `admin` unless you mean "can do absolutely anything,
 including deleting people and changing my permissions".
 
+## Site Styles — the logo and the colours
+
+`/admin` → **Site** → **Site Styles**. One screen, and it applies to every page.
+
+- **Logo** — pick an image, or upload one. Shown top-left on any page with a
+  Header block. Leave it empty and the site name shows as text instead.
+- **Seven brand colours**, prepopulated with the real palette and labelled by
+  what they actually affect ("Buttons, the × in the formula bar, highlights"),
+  not by internal names.
+
+Change the accent here and every button, chip and eyebrow on every page follows,
+with no deploy and nothing per-section to touch.
+
+### Why there are no per-section colour controls
+
+This is the Squarespace split, on purpose: **global** things (logo, colours) live
+in Site Styles; **local** things (words, links, how many cards) are edited per
+block. What is deliberately absent is per-section colour, padding, spacing and
+corner radius.
+
+Those are the controls that let a page drift off-brand, and they are the reason
+DIY pages end up looking like a different site. Every block renders from the same
+stylesheet and has no colours of its own to get wrong, which is what makes a page
+built in five minutes still look like the rest of the site.
+
+Adding them later is possible but is a real change of direction, not a setting —
+it means giving every block its own style props and accepting that pages can
+disagree with each other.
+
+### How the colours actually reach the page
+
+`src/styles/design-system.css` defines the palette as CSS custom properties on
+`:root`. Site Styles emits a second `:root` block after it with only the changed
+values, so the override is global, instant and costs a few hundred bytes. That
+is the whole reason "editable colours" is easy globally and messy per section:
+the design system was built on variables from the start.
+
+Hex values are validated twice — in the admin form, and again before they are
+interpolated into the `<style>` tag, so a pasted value cannot inject CSS.
+
+## Uploading logos and images
+
+`/admin` → **Site** → **Media** → **Create New**. Then pick the image in the
+builder: the Logo field on a Header block, the logo on each brand in the
+hosted-by bar, or a speaker's photo. Each shows a searchable picker of what you
+have uploaded.
+
+Speakers and hosts fall back to initials when no image is chosen, so a page never
+shows an empty circle.
+
+**On Vercel this needs a Blob store.** Vercel's filesystem is ephemeral, so
+without one a file uploads fine, shows a working thumbnail, and disappears on the
+next deploy — leaving broken images on every page that used it. Rather than let
+that happen silently, uploads are **refused** with the fix in the message:
+Storage → Create Database → Blob, connect it, redeploy.
+
 ## The page builder
 
 `/builder` → **New page** → the canvas opens on a working page: hero, hosted-by
@@ -161,6 +217,29 @@ Every block arrives carrying real copy rather than empty boxes.
 Any button's link field takes a full URL, so point it straight at a funnel step:
 `https://ecommharvest.com/register`. Pages built here are for the parts you want
 to control; GHL keeps the forms, contacts and workflows.
+
+### The home page and the masterclass page
+
+`/` and `/masterclass` are page-builder pages like any other — edit and
+republish them without a deploy. They keep their own URLs rather than living
+under `/p/` because those are the addresses that get printed and advertised.
+`/p/home` and `/p/masterclass` redirect to them, so each page has exactly one
+address.
+
+Their content was extracted from the pages that already existed, by
+`scripts/extract-pages.mjs` walking the real DOM — so the first version in the
+builder *is* the page that was live, curly quotes and all, rather than a retyped
+approximation. They are installed by a migration, so a deploy creates them once
+and never touches them again.
+
+Until that migration runs, both routes fall back to the generated block. That
+matters during a deploy: the site keeps showing the real page rather than a 404.
+
+**One thing to know:** the masterclass page here and the block pasted into
+GoHighLevel are now two separate things. They started identical, but editing one
+does not change the other. The GHL funnel on `go.ecommharvest.com` takes the
+registrations; this is the page on the site. Keep them in step by hand, or decide
+which one you advertise.
 
 ### Renaming a page, and its URL
 
@@ -261,7 +340,13 @@ stylesheet is loading. Serif text on a white page means it is not.
 npm run dev                                  # in another terminal, seeded
 npm run test:builder                         # 51 checks, HTTP
 npm run test:builder:ui                      # 30 checks, real browser
+npm run test:styles                          # 23 checks: colours, logo upload, / and /masterclass
 ```
+
+`test/styles.ui.mjs` executes the claims that are invisible until they are wrong
+on a live page: that one colour change reaches both pages with no deploy, that a
+non-hex value is refused rather than written into a `<style>` tag, and that an
+uploaded logo can be picked in the builder and ends up in the published markup.
 
 `test/builder.e2e.mjs` covers permissions and the API. `test/builder.ui.mjs`
 drives the actual editor, and it earns its keep: it caught a bug nothing else

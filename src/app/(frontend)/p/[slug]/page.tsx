@@ -1,6 +1,6 @@
 import { Render } from '@measured/puck/rsc'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import React from 'react'
 
 import { type PageData, config } from '@/blocks'
@@ -17,6 +17,16 @@ import { payload } from '@/lib/entitlements'
  * still ships its own React runtime; the point is that the page builder is not
  * part of the page it builds.)
  */
+
+/**
+ * Pages that own a route of their own, so they are not served twice.
+ *
+ * `home` and `masterclass` are page-builder pages rendered at `/` and
+ * `/masterclass`. Without this, `/p/home` would render the same page at a second
+ * URL — duplicate content, and two addresses to keep straight. Redirecting means
+ * every page has exactly one address.
+ */
+const OWN_ROUTE: Record<string, string> = { home: '/', masterclass: '/masterclass' }
 
 const findPage = async (slug: string) => {
   const p = await payload()
@@ -62,6 +72,7 @@ export async function generateMetadata({
 
 export default async function BuiltPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
+  if (OWN_ROUTE[slug]) permanentRedirect(OWN_ROUTE[slug])
   const page = await findPage(slug)
   if (!page || !(await visible(page))) notFound()
 

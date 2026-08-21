@@ -26,7 +26,9 @@
     "migrate": "payload migrate",
     "migrate:create": "payload migrate:create",
     "migrate:status": "payload migrate:status",
-    "vercel-build": "payload migrate && next build"
+    "vercel-build": "payload migrate && next build",
+    "test:styles": "node test/styles.ui.mjs",
+    "extract:pages": "node scripts/extract-pages.mjs"
   },
   "dependencies": {
     "@measured/puck": "^0.20.2",
