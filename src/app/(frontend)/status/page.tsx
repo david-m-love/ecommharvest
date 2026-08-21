@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import React from 'react'
 
 /**
@@ -141,6 +142,63 @@ const checkDatabase = async (): Promise<Check[]> => {
   }
 }
 
+/**
+ * Asks the admin page for its HTTP status, from the server side.
+ *
+ * "The admin is a blank page" has two quite different causes, and a browser
+ * shows them identically: a 500 (the server failed, and browsers draw a 500 body
+ * of nothing as nothing) or a 200 whose JavaScript never started. Knowing which
+ * halves the search, and reading a status code should not require opening
+ * developer tools.
+ *
+ * A redirect to the login screen is the healthy answer when nobody is signed in,
+ * so it counts as a pass and says so.
+ */
+const checkAdmin = async (): Promise<Check> => {
+  const h = await headers()
+  const host = h.get('host')
+  if (!host)
+    return { label: 'Admin page', ok: true, detail: 'Not checked — no host header.' }
+  const proto = h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
+
+  try {
+    const res = await fetch(`${proto}://${host}/admin`, {
+      // Follows redirects, so an unauthenticated visit ends at the login screen
+      // rather than reporting the redirect itself as the answer.
+      cache: 'no-store',
+      headers: { 'user-agent': 'ecommharvest-status-check' },
+      signal: AbortSignal.timeout(12_000),
+    })
+
+    if (res.ok)
+      return {
+        label: 'Admin page',
+        ok: true,
+        detail: `Answered ${res.status}. It is loading${res.url.includes('/login') ? ' the sign-in screen' : ''}.`,
+      }
+
+    return {
+      label: 'Admin page',
+      ok: false,
+      detail: `Answered ${res.status}, which a browser shows as a blank white page.`,
+      fix:
+        'The database, secret and storage checks above are the usual causes. If they all pass, the exact error is in Vercel: open Logs in the left sidebar, load /admin in another tab, then read the newest red row.',
+    }
+  } catch (err) {
+    const timedOut = err instanceof Error && /timeout|abort/i.test(err.name + err.message)
+    return {
+      label: 'Admin page',
+      ok: false,
+      detail: timedOut
+        ? 'Took longer than 12 seconds to answer.'
+        : 'Could not be reached from the server.',
+      fix: timedOut
+        ? 'Usually a cold start on a sleeping database. Reload this page, then try /admin again. If it keeps timing out, Vercel: Logs will name it.'
+        : 'Check Vercel: Logs in the left sidebar for the newest red row.',
+    }
+  }
+}
+
 const settingChecks = (): Check[] => [
   {
     label: 'Login secret',
@@ -161,7 +219,8 @@ const settingChecks = (): Check[] => [
 ]
 
 export default async function StatusPage() {
-  const checks = [...(await checkDatabase()), ...settingChecks()]
+  const [dbChecks, adminCheck] = await Promise.all([checkDatabase(), checkAdmin()])
+  const checks = [...dbChecks, adminCheck, ...settingChecks()]
   const broken = checks.filter((c) => !c.ok)
 
   return (
