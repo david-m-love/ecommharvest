@@ -1,7 +1,26 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 
+/**
+ * A stamp that changes with every deploy, which is what stops a browser holding
+ * a stale copy of a page from rendering nothing.
+ *
+ * Without it, a tab opened before a deploy asks for JavaScript files that the
+ * new deploy no longer has. The request 404s and the page renders blank — no
+ * error, no message. It hits the admin hardest, because the admin *is*
+ * JavaScript: the server answers 200 and the screen stays white, which sends
+ * you looking for a server fault that is not there.
+ *
+ * With it, Next stamps asset URLs and navigation responses, notices the
+ * mismatch, and does a full page reload instead of failing. Vercel exposes the
+ * deployment id; the commit SHA is the fallback, since it also changes every
+ * deploy. Undefined locally, where there is nothing to skew.
+ */
+const deploymentId = process.env.VERCEL_DEPLOYMENT_ID || process.env.VERCEL_GIT_COMMIT_SHA
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  ...(deploymentId ? { deploymentId } : {}),
+
   // Course video is served by Cloudflare Stream, so Next only handles images.
   images: { remotePatterns: [{ protocol: 'https', hostname: '**.cloudflarestream.com' }] },
 

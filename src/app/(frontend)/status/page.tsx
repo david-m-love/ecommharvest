@@ -174,7 +174,17 @@ const checkAdmin = async (): Promise<Check> => {
       return {
         label: 'Admin page',
         ok: true,
-        detail: `Answered ${res.status}. It is loading${res.url.includes('/login') ? ' the sign-in screen' : ''}.`,
+        /**
+         * A healthy server and a blank screen at the same time means the browser
+         * is at fault, and the cause is nearly always a cached copy of the page
+         * from before the last deploy: it asks for JavaScript files that no
+         * longer exist and renders nothing. Say so here — the person reading
+         * this page is looking at that blank screen in another tab.
+         */
+        detail:
+          `Answered ${res.status}${res.url.includes('/login') ? ' — the sign-in screen' : ''}. ` +
+          `The server is fine. If your browser still shows a blank page, it is holding an old ` +
+          `copy: reload with Ctrl+Shift+R, or Cmd+Shift+R on a Mac.`,
       }
 
     return {
