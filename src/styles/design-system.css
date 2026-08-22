@@ -64,6 +64,18 @@ a{color:inherit}
 .navbars-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 .navpanel{display:none}
 
+/* ---- the builder on a small screen ---- */
+/* Hidden above 1024px, covering everything below it. The breakpoint is Puck's
+   own: that is where its panels stop being shown, which is what makes the editor
+   unusable rather than merely cramped. */
+.editor-toosmall{display:none}
+@media(max-width:1023px){
+  .editor-toosmall{display:flex;position:fixed;inset:0;z-index:100;background:var(--white);
+    align-items:center;justify-content:center;padding:28px 22px;text-align:left}
+  .editor-toosmall h2{font-size:clamp(24px,7vw,32px)}
+  .editor-toosmall p{font-size:16.5px}
+}
+
 /* ---- consent bar ---- */
 /* Bottom of the screen, above everything, and it does not cover the page's own
    controls: a bar rather than a modal, because blocking a landing page to ask
@@ -442,6 +454,10 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   border-radius:999px;white-space:nowrap;transition:border-color .12s ease,color .12s ease}
 .minibtn:hover{border-color:var(--gold);color:var(--ink)}
 .minibtn.is-on{background:var(--cream);border-color:#E0CFA8;color:var(--brown)}
+/* Destructive, and looking it — but only on hover, so a row of buttons is not a
+   row of warnings. */
+.minibtn-danger{color:#8A4B1E}
+.minibtn-danger:hover{background:#FBEAE0;border-color:#E8BFA0;color:#7A3E17}
 .minibtn.is-on:hover{border-color:#C4553A;color:#8A3520}
 .memsearch{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 26px}
 .memsearch input[type=search]{font-family:var(--font);font-size:15px;padding:12px 15px;

@@ -31,6 +31,7 @@
     "test:logo": "node test/logo.ui.mjs",
     "test:nav": "node test/nav.ui.mjs",
     "test:tracking": "node test/tracking.ui.mjs",
+    "test:manage": "node test/builder-manage.ui.mjs",
     "test:images": "node test/image-upload.ui.mjs",
     "test:prerender": "node test/prerender.mjs",
     "test:importmap": "node test/importmap.mjs",

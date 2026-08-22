@@ -124,6 +124,35 @@ request, so permissions are never cached in a token.
 Do **not** give a teammate `admin` unless you mean "can do absolutely anything,
 including deleting people and changing my permissions".
 
+## Managing pages
+
+The list at `/builder` has, per page: **Edit**, **View** (or **Preview** for a
+draft, since a draft has no public page), **Rename & settings**, **Duplicate** and
+**Delete**.
+
+Two rules worth knowing, both enforced on the server rather than only hidden in
+the interface:
+
+- **A duplicate is always a draft**, whatever the original was. Publishing is a
+  decision, and "duplicate" should never be the thing that puts a second copy of
+  a live page on the internet. It opens straight into the canvas, because the
+  point of duplicating is to change something.
+- **The site's own pages cannot be deleted** — `/`, `/masterclass`, `/privacy`
+  and `/terms` are rendered by routes, so deleting one takes a URL off the
+  internet rather than tidying a list. They can be duplicated and unpublished.
+  Deleting a *published* page needs permission to publish, because it is the same
+  act in reverse.
+
+**Unsaved work survives a closed laptop.** The canvas is kept in your browser as
+you type, and reopening the page offers to restore it. Offered, never applied:
+the local copy might be older than what someone else published. It is per browser
+and never sent anywhere — autosaving to the database would mean every keystroke
+on a live page could become the live page.
+
+**The editor needs a laptop.** Below about 1024px it says so and offers to show
+you the page instead, rather than presenting a canvas with no panels and no
+publish button.
+
 ## Advertising and measurement
 
 **Page views** are counted by Vercel Analytics — no cookies, no cross-site

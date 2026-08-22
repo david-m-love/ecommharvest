@@ -159,7 +159,7 @@ if (hasHeadingField) {
  * were.
  */
 console.log('\nleaving the editor')
-const backLink = page.locator('a[href="/builder"]')
+const backLink = page.locator('a.editornav[href="/builder"]')
 check((await backLink.count()) > 0, 'the editor has a way back to the page list')
 check(
   (await page.locator('text=Unsaved changes').count()) > 0,
