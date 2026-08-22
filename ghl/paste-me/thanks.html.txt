@@ -32,7 +32,8 @@
       <li><span class="ech-b-t"><strong>Pull last year&rsquo;s Q4 numbers</strong> &mdash; revenue, AOV, conversion rate, and what you spent on ads. We build your plan against your real baseline, not a generic one.</span></li>
       <li><span class="ech-b-t"><strong>Write down the promotions you&rsquo;re already considering</strong> &mdash; even half-formed ones. We&rsquo;ll slot them into the calendar rather than starting from a blank page.</span></li>
     </ul>
-    <p class="ech-closer">Can&rsquo;t make it live? Register anyway &mdash; every registrant gets the replay.</p>
+    
+    <p class="ech-closer">Can&rsquo;t make it live? You&rsquo;re still covered &mdash; the replay comes to the same inbox.</p>
   </div>
 </div>
 </div>
