@@ -38,6 +38,15 @@ export function Editor({
   const [message, setMessage] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)
   const [currentStatus, setCurrentStatus] = React.useState(status)
+  /**
+   * Whether the canvas differs from what is stored.
+   *
+   * Tracked so leaving can warn. A back button without this is worse than no
+   * back button: it makes discarding an afternoon's work a single click with no
+   * confirmation, which is precisely the accident it would cause most often.
+   */
+  const [dirty, setDirty] = React.useState(false)
+  const savedRef = React.useRef('')
 
   /**
    * A brand-new page opens as a working page rather than an empty canvas — an
@@ -46,6 +55,26 @@ export function Editor({
   const data: Partial<Data> = initialData?.content?.length
     ? initialData
     : { content: starterContent as Data['content'], root: {} }
+
+  /**
+   * The browser's own warning, for closing the tab or hitting reload — routes
+   * the back link cannot intercept. Deliberately only while there is something
+   * to lose: an unconditional prompt trains people to dismiss it.
+   */
+  React.useEffect(() => {
+    if (!dirty) return
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault()
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [dirty])
+
+  const leaveEditor = (event: React.MouseEvent) => {
+    if (!dirty) return
+    const stay = !window.confirm(
+      'You have changes that are not saved. Leave the editor and lose them?',
+    )
+    if (stay) event.preventDefault()
+  }
 
   const save = async (next: Data, publish: boolean) => {
     setSaving(true)
@@ -63,6 +92,9 @@ export function Editor({
         return
       }
       if (body.status) setCurrentStatus(body.status)
+      // What is on screen is now what is stored, so leaving is safe again.
+      savedRef.current = JSON.stringify(next)
+      setDirty(false)
       setMessage(publish ? 'Published.' : 'Saved.')
       // Refresh so the public page picks the change up immediately.
       router.refresh()
@@ -94,6 +126,41 @@ export function Editor({
        */
       iframe={{ enabled: false }}
       onPublish={(next) => save(next, true)}
+      /**
+       * The first change is what makes the page dirty; comparing against the
+       * last saved snapshot rather than trusting the event means undoing back to
+       * where you started correctly counts as clean again.
+       */
+      onChange={(next) => {
+        if (!savedRef.current) savedRef.current = JSON.stringify(data)
+        setDirty(JSON.stringify(next) !== savedRef.current)
+      }}
+      /**
+       * A way out.
+       *
+       * Puck's header has no back control, so without this the editor is a
+       * one-way door: the only exits are the browser's back button and typing a
+       * URL. `overrides.header` hands back the default header as children, so
+       * this adds a row above it rather than reimplementing it — the publish
+       * controls, viewport buttons and undo history all keep working.
+       */
+      overrides={{
+        header: ({ children }) => (
+          <>
+            <div style={backBarStyle}>
+              <a href="/builder" onClick={leaveEditor} style={backLinkStyle}>
+                <span aria-hidden="true">&larr;</span> All pages
+              </a>
+              {dirty ? (
+                <span style={{ font: '500 12px/1 "Plus Jakarta Sans", system-ui', color: '#8B6423' }}>
+                  Unsaved changes
+                </span>
+              ) : null}
+            </div>
+            {children}
+          </>
+        ),
+      }}
       renderHeaderActions={({ state }) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 12, color: error ? '#B4241C' : '#4E627A' }}>
@@ -133,6 +200,25 @@ export function Editor({
       )}
     />
   )
+}
+
+const backBarStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 12,
+  padding: '10px 16px',
+  background: '#FBF8F3',
+  borderBottom: '1px solid #DCE5EC',
+}
+
+const backLinkStyle: React.CSSProperties = {
+  font: '600 13px/1 "Plus Jakarta Sans", system-ui, sans-serif',
+  color: '#16324F',
+  textDecoration: 'none',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 8,
 }
 
 const buttonStyle = (primary: boolean): React.CSSProperties => ({

@@ -147,6 +147,41 @@ if (hasHeadingField) {
   )
 }
 
+// --- the way out --------------------------------------------------------
+
+/**
+ * The editor was a one-way door: Puck's header has no back control, so the only
+ * exits were the browser's back button and typing a URL.
+ *
+ * The guard is the part worth testing. A back button that discards an
+ * afternoon's work on one click, silently, is worse than no back button at all —
+ * so with unsaved changes it must ask, and dismissing must leave you where you
+ * were.
+ */
+console.log('\nleaving the editor')
+const backLink = page.locator('a[href="/builder"]')
+check((await backLink.count()) > 0, 'the editor has a way back to the page list')
+check(
+  (await page.locator('text=Unsaved changes').count()) > 0,
+  'an edited page says it has unsaved changes',
+)
+
+let leavePrompt = null
+const onDialog = async (dialog) => {
+  leavePrompt = dialog.message()
+  await dialog.dismiss()
+}
+page.on('dialog', onDialog)
+await backLink.first().click()
+await page.waitForTimeout(2500)
+check(Boolean(leavePrompt), 'leaving with unsaved changes asks first', leavePrompt || 'no prompt')
+check(
+  page.url().includes(`/builder/${pageId}`),
+  'dismissing the prompt keeps you in the editor',
+  page.url().replace(BASE, ''),
+)
+page.off('dialog', onDialog)
+
 // --- save, then publish -------------------------------------------------
 
 console.log('\nsave and publish')
