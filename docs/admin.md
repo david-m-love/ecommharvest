@@ -367,9 +367,29 @@ Every block arrives carrying real copy rather than empty boxes.
 
 ### Linking out to GoHighLevel
 
-Any button's link field takes a full URL, so point it straight at a funnel step:
-`https://ecommharvest.com/register`. Pages built here are for the parts you want
-to control; GHL keeps the forms, contacts and workflows.
+Any link field takes an address anywhere, so point a button straight at a funnel
+step. All three of these work and mean the same thing:
+
+```
+go.ecommharvest.com/register
+https://go.ecommharvest.com/register
+//go.ecommharvest.com/register
+```
+
+**The `https://` is filled in for you** when you leave it out. That is not
+cosmetic: an address written without it is, by HTML's rules, a *path* — so
+`go.ecommharvest.com/register` used to send people to
+`app.ecommharvest.com/go.ecommharvest.com/register`, with no error and nothing
+looking wrong until the button was clicked. The rule now is the one you would
+apply reading it: something with a dot before the first slash is an address,
+anything else is a path on this site. `/register` stays a path, and `register`
+becomes `/register`.
+
+Links that leave the site open in a new tab, decided the same way — so a visitor
+mid-funnel keeps the page they came from.
+
+Pages built here are for the parts you want to control; GHL keeps the forms,
+contacts and workflows.
 
 ### The home page and the masterclass page
 

@@ -2,6 +2,8 @@ import type { Config, Data } from '@measured/puck'
 import React from 'react'
 
 import { BlockImage } from './BlockImage'
+import { isExternalHref, toHref } from '@/lib/href'
+
 import { SiteNav } from './SiteNav'
 import { type PickedImage, imageField } from './image-field'
 
@@ -47,12 +49,13 @@ const Paragraphs = ({ text, className }: { text?: string; className?: string }) 
 
 /** A CTA button. Blank link renders as no button rather than a dead one. */
 const Cta = ({ label, href, large }: { label?: string; href?: string; large?: boolean }) => {
-  if (!label || !href) return null
-  const external = /^https?:\/\//.test(href)
+  const target = toHref(href)
+  if (!label || !target) return null
+  const external = isExternalHref(target)
   return (
     <a
       className={large ? 'btn btn-lg' : 'btn'}
-      href={href}
+      href={target}
       {...(external ? { target: '_blank', rel: 'noopener' } : {})}
     >
       {label}
@@ -102,10 +105,18 @@ const DocumentBody = ({ text }: { text?: string }) => {
   )
 }
 
+/**
+ * Where a button goes.
+ *
+ * A full web address or a path on this site — `go.ecommharvest.com/register` and
+ * `/register` both work, and `https://` is filled in when it is missing. See
+ * `src/lib/href.ts` for why that matters: without it, an address typed without
+ * `https://` is glued onto the end of the current one.
+ */
 const linkField = {
   type: 'text' as const,
   label: 'Button link',
-  placeholder: 'https://ecommharvest.com/register',
+  placeholder: 'go.ecommharvest.com/register',
 }
 
 // --- the blocks ---------------------------------------------------------
@@ -277,7 +288,7 @@ export const config: Config<Blocks> = {
             space and the centred logo would sit visibly off-centre.
           */}
           <div className={links.length ? 'topbar-in has-nav' : 'topbar-in'}>
-            <a className="brand" href={homeUrl || '/'} aria-label={logoText || 'Home'}>
+            <a className="brand" href={toHref(homeUrl) || '/'} aria-label={logoText || 'Home'}>
               {url ? (
                 <BlockImage
                   image={{ url, alt, width: site?.siteLogoWidth, height: site?.siteLogoHeight }}
@@ -400,7 +411,7 @@ export const config: Config<Blocks> = {
                   </>
                 )
                 return host.href ? (
-                  <a key={i} className="host" href={host.href} target="_blank" rel="noopener">
+                  <a key={i} className="host" href={toHref(host.href)} target="_blank" rel="noopener">
                     {inner}
                   </a>
                 ) : (
@@ -831,7 +842,7 @@ export const config: Config<Blocks> = {
             <span>{copyright}</span>
             <nav className="foot-nav">
               {(links || []).map((link, i) => (
-                <a key={i} href={link.href}>
+                <a key={i} href={toHref(link.href)}>
                   {link.label}
                 </a>
               ))}

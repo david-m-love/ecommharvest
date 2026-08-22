@@ -2,6 +2,7 @@
 
 import React from 'react'
 
+import { isExternalHref, toHref } from '@/lib/href'
 import type { NavLink } from '@/lib/site-styles'
 
 /**
@@ -36,13 +37,15 @@ export function SiteNav({ links }: { links: NavLink[] }) {
      * External links open in a new tab; internal ones do not. Judged by the
      * href rather than a checkbox, because the GoHighLevel funnel is on another
      * host and leaving the site mid-funnel is the one case worth keeping the
-     * original tab for.
+     * original tab for. Judged after normalising, since a link typed without
+     * `https://` is external and does not look it yet.
      */
-    const external = /^https?:\/\//.test(link.href)
+    const href = toHref(link.href)
+    const external = isExternalHref(href)
     return (
       <a
         key={`${link.label}-${link.href}`}
-        href={link.href}
+        href={href}
         className={link.emphasis ? 'navlink navlink-cta' : 'navlink'}
         onClick={() => setOpen(false)}
         {...(external ? { target: '_blank', rel: 'noopener' } : {})}

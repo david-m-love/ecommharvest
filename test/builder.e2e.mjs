@@ -106,7 +106,7 @@ const layout = {
     { type: 'CardRow', props: { id: 'b5', eyebrow: 'eyebrow', heading: `cards-heading-${MARK}`, body: 'intro', background: 'wash', cards: [{ title: `card-title-${MARK}`, body: 'card body' }, { title: 'second', body: 'body' }] } },
     { type: 'Speakers', props: { id: 'b6', eyebrow: 'eyebrow', heading: `speakers-heading-${MARK}`, people: [{ label: 'Presenter', name: `speaker-name-${MARK}`, title: 'their title', monogram: 'DL', body: 'their bio' }] } },
     { type: 'Prose', props: { id: 'b7', eyebrow: 'eyebrow', heading: `prose-heading-${MARK}`, body: `prose-body-${MARK}`, background: 'white' } },
-    { type: 'CtaCard', props: { id: 'b8', eyebrow: 'eyebrow', heading: `cta-heading-${MARK}`, body: `cta-body-${MARK}`, ctaLabel: 'Save my seat', ctaHref: '/register', note: `cta-note-${MARK}` } },
+    { type: 'CtaCard', props: { id: 'b8', eyebrow: 'eyebrow', heading: `cta-heading-${MARK}`, body: `cta-body-${MARK}`, ctaLabel: 'Save my seat', ctaHref: 'go.ecommharvest.com/register', note: `cta-note-${MARK}` } },
     { type: 'Footer', props: { id: 'b9', copyright: `foot-copy-${MARK}`, links: [{ label: `foot-link-${MARK}`, href: '/privacy' }], note: 'footer note' } },
   ],
 }
@@ -233,6 +233,33 @@ for (const [block, [text, className]] of Object.entries(EXPECT)) {
   check(html.includes(text), `${block} renders its content`, text)
   check(html.includes(className), `${block} uses the design system`, className)
 }
+
+/**
+ * A link typed without `https://` goes to the other domain, not to a path on
+ * this one.
+ *
+ * The CtaCard above is set to `go.ecommharvest.com/register`, which is how
+ * anyone writes an address down. Left as typed, HTML reads it as a relative path
+ * and the button points at `app.ecommharvest.com/go.ecommharvest.com/register` —
+ * which is what happened to the masterclass button in production. Both halves
+ * are asserted: the address that should be there, and the mangled one that
+ * should not.
+ */
+check(
+  html.includes('href="https://go.ecommharvest.com/register"'),
+  'a link typed without https:// still leaves the site',
+)
+check(
+  // Matched on the href itself. A plain substring search for
+  // "/go.ecommharvest.com" finds it inside the *correct* URL — the second slash
+  // of "https://" — and fails on a page that is perfectly fine.
+  !/href="\/?go\.ecommharvest\.com/.test(html),
+  'and is not glued onto the end of this domain',
+)
+check(
+  html.includes('href="/register"'),
+  'while a path stays a path on this site',
+)
 
 /**
  * Two paragraphs from one textarea, split on the blank line.
