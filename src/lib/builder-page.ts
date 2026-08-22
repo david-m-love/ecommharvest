@@ -23,6 +23,8 @@ import { payload } from '@/lib/entitlements'
 export type LoadedPage = {
   data: PageData
   title: string
+  /** The headline for search and shared links, when the page sets one. */
+  seoTitle?: string
   description?: string
   noindex: boolean
   isDraft: boolean
@@ -54,6 +56,7 @@ export const loadBuilderPage = async (slug: string): Promise<LoadedPage | null> 
     return {
       data,
       title: page.title,
+      seoTitle: page.seoTitle || undefined,
       description: page.description || undefined,
       noindex: Boolean(page.noindex),
       isDraft: page.status !== 'published',
@@ -65,19 +68,45 @@ export const loadBuilderPage = async (slug: string): Promise<LoadedPage | null> 
   }
 }
 
-/** Metadata from the page record, with the route's own values as the default. */
-export const builderMetadata = (
-  page: LoadedPage | null,
-  fallback: Metadata,
-): Metadata => {
-  if (!page) return fallback
+/**
+ * Metadata from the page record, with the route's own values as the default.
+ *
+ * Also builds the share card. The picture is drawn from the page's own title, so
+ * a page renamed in the builder gets a new card without anyone remembering to
+ * make one — which is the only way this stays true over time.
+ */
+export const builderMetadata = (page: LoadedPage | null, fallback: Metadata): Metadata => {
+  /**
+   * Order of preference: the page's own SEO headline, then the route's built-in
+   * one, then the page's internal name. The route's default beats the internal
+   * name because "Masterclass" is a filing label and the route knows the real
+   * headline — that ordering is what stopped every share card saying
+   * "Masterclass".
+   */
+  const routeTitle = typeof fallback.title === 'string' ? fallback.title : undefined
+  const title = page?.seoTitle || routeTitle || page?.title || 'eCommHarvest'
+  const description = page?.description ?? fallback.description ?? undefined
+  const social = socialImage(title)
+
+  if (!page) return { ...fallback, openGraph: { ...fallback.openGraph, title, description, images: [social] }, twitter: { card: 'summary_large_image', title, description, images: [social.url] } }
+
   return {
     ...fallback,
-    title: page.title,
-    description: page.description ?? fallback.description,
+    title,
+    description,
     robots: page.noindex || page.isDraft ? { index: false, follow: false } : fallback.robots,
+    openGraph: { ...fallback.openGraph, title, description, images: [social] },
+    twitter: { card: 'summary_large_image', title, description, images: [social.url] },
   }
 }
+
+/** The generated share picture for a given title. */
+export const socialImage = (title: string, kicker?: string) => ({
+  url: `/social?title=${encodeURIComponent(title)}${kicker ? `&kicker=${encodeURIComponent(kicker)}` : ''}`,
+  width: 1200,
+  height: 630,
+  alt: title,
+})
 
 /**
  * Where a page actually lives.

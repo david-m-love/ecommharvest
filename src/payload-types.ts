@@ -148,9 +148,13 @@ export interface UserAuthOperations {
 export interface Page {
   id: number;
   /**
-   * Internal name and the browser tab title.
+   * What this page is called in the builder list. Short is better.
    */
   title: string;
+  /**
+   * Shown in Google results, the browser tab, and the preview card when the link is shared. Aim for under 60 characters. Leave blank to use the page name.
+   */
+  seoTitle?: string | null;
   /**
    * Used in the URL. Auto-filled from the title; safe to edit before publishing.
    */
@@ -599,6 +603,7 @@ export interface PayloadMigration {
  */
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
+  seoTitle?: T;
   slug?: T;
   status?: T;
   description?: T;

@@ -48,7 +48,24 @@ export const Pages: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-      admin: { description: 'Internal name and the browser tab title.' },
+      admin: { description: 'What this page is called in the builder list. Short is better.' },
+    },
+    {
+      /**
+       * The headline for search results, browser tabs and shared links.
+       *
+       * Separate from `title` because the two want different things: the list
+       * wants "Masterclass", and Google and Facebook want "Your Q4 Revenue
+       * Playbook, Built in 90 Minutes". They were the same field, so every share
+       * card read "Masterclass" — technically correct and worth nothing in an ad.
+       */
+      name: 'seoTitle',
+      label: 'Headline for search and shared links',
+      type: 'text',
+      admin: {
+        description:
+          'Shown in Google results, the browser tab, and the preview card when the link is shared. Aim for under 60 characters. Leave blank to use the page name.',
+      },
     },
     ...slugField('title'),
     {

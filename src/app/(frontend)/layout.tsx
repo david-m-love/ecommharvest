@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import React from 'react'
 
 import { getSiteStyles } from '@/lib/site-styles'
+import { absolute, siteUrl } from '@/lib/site-url'
 import '@/styles/design-system.css'
 
 /**
@@ -21,12 +22,50 @@ import '@/styles/design-system.css'
  */
 export const dynamic = 'force-dynamic'
 
+/**
+ * Site-wide metadata, including what a shared link looks like.
+ *
+ * `metadataBase` is what makes relative URLs elsewhere resolve to absolute ones:
+ * without it, an `og:image` given as a path is silently dropped by Facebook's
+ * scraper, and a canonical of `/masterclass` means nothing to a crawler. Silent
+ * is the problem — nothing on the site looks wrong when this is missing.
+ *
+ * Individual pages override title, description and image; everything else is
+ * inherited, so a new page gets a working share card without doing anything.
+ */
+const DESCRIPTION =
+  'The strategy behind the quarter that decides your year: the promotional calendar, the offers, the email and SMS flows, and the paid social that makes all three cheaper.'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
-    default: 'eCommHarvest',
+    default: 'eCommHarvest — Q4 growth for e-commerce founders',
     template: '%s — eCommHarvest',
   },
-  description: 'Q4 growth strategy for e-commerce founders.',
+  description: DESCRIPTION,
+  applicationName: 'eCommHarvest',
+  openGraph: {
+    type: 'website',
+    siteName: 'eCommHarvest',
+    locale: 'en_US',
+    url: siteUrl(),
+    title: 'eCommHarvest — Q4 growth for e-commerce founders',
+    description: DESCRIPTION,
+    images: [
+      {
+        url: '/social',
+        width: 1200,
+        height: 630,
+        alt: 'eCommHarvest — Q4 growth for e-commerce founders',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'eCommHarvest — Q4 growth for e-commerce founders',
+    description: DESCRIPTION,
+    images: ['/social'],
+  },
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
@@ -47,6 +86,32 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           rel="stylesheet"
         />
         {css ? <style id="site-styles" dangerouslySetInnerHTML={{ __html: css }} /> : null}
+        {/*
+          Who runs this site, in the form search engines read. Names the legal
+          entity behind the trading name, which is the same thing the legal pages
+          say — one claim, two audiences.
+        */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'eCommHarvest',
+              legalName: 'Love Your Marketing LLC',
+              url: siteUrl(),
+              logo: absolute('/logo.png'),
+              email: 'privacy@ecommharvest.com',
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Rexburg',
+                addressRegion: 'ID',
+                addressCountry: 'US',
+              },
+              description: DESCRIPTION,
+            }),
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>
