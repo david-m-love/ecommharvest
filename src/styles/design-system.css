@@ -32,9 +32,10 @@ a{color:inherit}
 .topbar{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-2)}
 .topbar-in{max-width:var(--maxw);margin:0 auto;padding:16px 32px;display:flex;align-items:center;gap:18px}
 .brand{display:flex;align-items:center;text-decoration:none}
-/* Height comes from Site Styles via --logo-h; 34px is the default if it is
-   unset, so the header looks right before anyone touches that screen. */
-.brand img{height:var(--logo-h,34px);width:auto;display:block}
+/* Height comes from Site Styles via --logo-h; 41px — the "Medium" value — is
+   the default if it is unset, so the header looks right before anyone touches
+   that screen. */
+.brand img{height:var(--logo-h,41px);width:auto;display:block}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
 .stamp{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
 
@@ -167,9 +168,9 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   :root{--r:20px}
   .topbar-in{padding:12px 18px}
   .legalhead,.legalblock{padding-left:20px;padding-right:20px}
-  /* Capped, not scaled: an "extra large" logo chosen on a desktop must not eat
-     a phone screen, but a small one should stay small. */
-  .brand img{height:min(var(--logo-h,34px),34px)}
+  /* Capped at Medium, not scaled: an "extra large" logo chosen on a desktop
+     must not eat a phone screen, but a small one should stay small. */
+  .brand img{height:min(var(--logo-h,41px),41px)}
   .slot-in{padding:52px 20px}
   .lede{font-size:18px}
   .card-dark{padding:30px 24px}

@@ -46,10 +46,10 @@ const HEX = /^#[0-9a-fA-F]{6}$/
  * natural size — usually enormous.
  */
 const LOGO_HEIGHTS: Record<string, number> = {
-  small: 26,
-  medium: 34,
-  large: 46,
-  xlarge: 60,
+  small: 31,
+  medium: 41,
+  large: 55,
+  xlarge: 72,
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {

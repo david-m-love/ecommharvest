@@ -138,7 +138,7 @@ logo again, and no one could say what either control would do. One logo, one
 size, four sizes to choose from.
 
 Sizes are names rather than a number for the same reason there are no padding
-controls: 26/34/46/60px all look deliberate, and a box that accepts 200 wrecks a
+controls: 31/41/55/72px all look deliberate, and a box that accepts 200 wrecks a
 sticky header. Tall logos are capped on phones so a desktop choice cannot eat a
 small screen.
 

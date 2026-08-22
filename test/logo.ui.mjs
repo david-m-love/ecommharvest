@@ -111,33 +111,33 @@ check(
   'the Site Styles logo shows in the header with no per-page edit',
   medium?.src || 'no logo rendered',
 )
-check(medium?.height === 34, 'medium renders at 34px', `${medium?.height}px`)
+check(medium?.height === 41, "medium renders at 41px", `${medium?.height}px`)
 
 await setSize('xlarge')
 const [xlHome, xlMasterclass] = [await logoOn(desktop, '/'), await logoOn(desktop, '/masterclass')]
-check(xlHome?.height === 60, 'extra large renders at 60px on /', `${xlHome?.height}px`)
+check(xlHome?.height === 72, 'extra large renders at 72px on /', `${xlHome?.height}px`)
 check(
-  xlMasterclass?.height === 60,
+  xlMasterclass?.height === 72,
   'and on /masterclass, with no edit to that page',
   `${xlMasterclass?.height}px`,
 )
 
 await setSize('small')
 const small = await logoOn(desktop, '/')
-check(small?.height === 26, 'small renders at 26px', `${small?.height}px`)
+check(small?.height === 31, 'small renders at 31px', `${small?.height}px`)
 
 // --- phones cap it -------------------------------------------------------
 
 await setSize('xlarge')
 const phone = await browser.newContext({ viewport: { width: 390, height: 844 } })
 const onPhone = await logoOn(phone, '/')
-check(onPhone?.height === 34, 'an extra-large logo is capped on a phone', `${onPhone?.height}px`)
+check(onPhone?.height === 41, 'an extra-large logo is capped on a phone', `${onPhone?.height}px`)
 await phone.close()
 
 // Leave it where a person would want it.
 await setSize('medium')
 const restored = await logoOn(desktop, '/')
-check(restored?.height === 34, 'and the size can be set back', `${restored?.height}px`)
+check(restored?.height === 41, 'and the size can be set back', `${restored?.height}px`)
 
 await desktop.close()
 await browser.close()

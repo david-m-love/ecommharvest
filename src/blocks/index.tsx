@@ -250,7 +250,7 @@ export const config: Config<Blocks> = {
                   style={{
                     // Tied to the same --logo-h Site Styles sets, so "Logo size"
                     // means one thing whether the logo is a picture or a name.
-                    fontSize: 'calc(var(--logo-h, 34px) * 0.55)',
+                    fontSize: 'calc(var(--logo-h, 41px) * 0.55)',
                     letterSpacing: '-0.02em',
                   }}
                 >
