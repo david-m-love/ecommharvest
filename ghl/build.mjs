@@ -474,6 +474,50 @@ written.push(
   ),
 )
 
+// --- registration step: the page GoHighLevel's form sits inside -----------
+
+/**
+ * Two blocks, one form between them.
+ *
+ * The form itself stays GoHighLevel's — that is the entire reason for moving to
+ * GHL, and rebuilding it here in HTML would put the contact record back in our
+ * hands where it does no good. So these blocks bracket it: the brand above, the
+ * reassurance and proof below, and nothing that competes with the form's own
+ * button.
+ *
+ * Split at the `<!-- FORM -->` marker in the source rather than at a line
+ * number, so editing the copy cannot silently move the seam.
+ */
+const register = src('register.html')
+const registerTop = topbar + '\n' + between(register, '<!-- No <main> wrapper', '<!-- FORM -->').replace(/^<!--[\s\S]*?-->/, '')
+const registerBottom = between(register, '<!-- FORM -->', '</body>')
+
+written.push(
+  out(
+    'REGISTER-1-above-form.html',
+    `<!-- eCommHarvest — registration step, block 1 of 2: ABOVE the form
+     SELF-CONTAINED: includes the stylesheet, so no GHL CSS field is involved.
+     Paste into a "Custom JS/HTML" element placed ABOVE your form element.
+     Block 2 goes below the form and does not repeat the stylesheet.
+-->
+<style>
+${convertedCss.replace(HEADER, INLINE_HEADER)}
+</style>
+
+${noCssNote(wrap('registration step, above the form', registerTop))}`,
+  ),
+)
+
+written.push(
+  out(
+    'REGISTER-2-below-form.html',
+    wrap(
+      'registration step, block 2 of 2: BELOW the form — no stylesheet needed, block 1 on this page carries it',
+      registerBottom,
+    ),
+  ),
+)
+
 /**
  * Self-contained variants: the stylesheet inlined into the block itself.
  *

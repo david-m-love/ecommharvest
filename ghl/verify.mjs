@@ -36,7 +36,21 @@ const EXTRA_BLOCKS = [
   'LANDING-PAGE.html',
   'thanks-WITH-CSS.html',
   'home-1-WITH-CSS.html',
+  // These two sit directly above and below GoHighLevel's own form element, so
+  // the isolation checks below matter more for them than for anything else here:
+  // a leak lands on the form that takes the registrations.
+  'REGISTER-1-above-form.html',
+  'REGISTER-2-below-form.html',
 ]
+
+/**
+ * Blocks that must not contain a form control or a button of their own.
+ *
+ * The registration blocks bracket GHL's form. A stray input would be a second
+ * place to type that submits nowhere, and a stray button would compete with the
+ * only one that counts.
+ */
+const NO_CONTROLS = ['REGISTER-1-above-form.html', 'REGISTER-2-below-form.html']
 const launchOptions = process.env.PLAYWRIGHT_CHROMIUM_PATH
   ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
   : {}
@@ -106,6 +120,27 @@ check(
   `${wholeCtas} vs ${splitCtas}`,
 )
 
+// --- 1b2. the registration blocks add nothing to type or click -----------
+
+/**
+ * The form on that page is GoHighLevel's, and it must be the only one.
+ *
+ * A leftover input from the old self-hosted version would be a box that takes
+ * typing and submits nowhere; a leftover button would sit beside "Save my seat!"
+ * competing for the click. Both are the kind of mistake that looks fine in a
+ * screenshot and costs registrations.
+ */
+console.log('\nthe registration blocks leave the form to GoHighLevel')
+for (const name of NO_CONTROLS) {
+  const html = block(name)
+  const controls = (html.match(/<(input|textarea|select|form|button)\b/gi) || []).map((m) =>
+    m.replace(/[<]/, ''),
+  )
+  check(controls.length === 0, `${name} adds no form controls of its own`, controls.join(', ') || 'none')
+  const buttons = (html.match(/class="ech-btn/g) || []).length
+  check(buttons === 0, `${name} adds no competing button`, `${buttons}`)
+}
+
 // --- 1c. no root-relative links ----------------------------------------
 //
 // Every block is served from two hosts: pasted into GoHighLevel on
@@ -117,10 +152,20 @@ check(
 
 console.log('\nlinks are absolute, because each block is served from two hosts')
 for (const name of [...BLOCKS, ...EXTRA_BLOCKS]) {
-  const rootRelative = [...block(name).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1])
+  /**
+   * `src` as well as `href`, which was a real gap: a hand-written block used
+   * `src="/logo.png"` and the check passed, because it only looked at links. On
+   * GoHighLevel's host that path does not exist, so the logo — the first thing
+   * on the page — rendered as broken-image alt text. Images embed as data URIs
+   * or come from an absolute URL; nothing else.
+   */
+  const rootRelative = [
+    ...[...block(name).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]),
+    ...[...block(name).matchAll(/src="(\/[^"]*)"/g)].map((m) => m[1]),
+  ]
   check(
     rootRelative.length === 0,
-    `${name} has no root-relative links`,
+    `${name} has no root-relative links or images`,
     rootRelative.join(' ') || 'none',
   )
 }

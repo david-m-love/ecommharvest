@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Save your seat &mdash; Q4 Masterclass</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<!--
+  The registration step, wrapped around GoHighLevel's own form.
+
+  This file is a source, not something to paste. `npm run ghl:build` splits it at
+  the FORM marker and namespaces every class, producing two blocks: one that goes
+  above GHL's form element and one below it.
+
+  Two rules shaped the content:
+
+  - No buttons, and no fields. The form's own "Save my seat!" is the only thing
+    to click on this page. A second button here would compete with it, and a
+    second heading would make the page read as a new offer rather than the next
+    step of the one they already chose.
+  - It has to feel like the same page they came from. Same logo bar, same
+    typeface, same gold, the date repeated in the same words. The point of this
+    step is that nothing has changed except that it is now their turn to act.
+-->
+
+<!-- No <main> wrapper: these are fragments, and the split would leave its
+     closing tag orphaned in the second block. -->
+
+  <div class="slot hero">
+    <div class="slot-in">
+      <p class="badge">One step left</p>
+      <h1>Save your seat.</h1>
+      <p class="deck">Thursday, September 3 &middot; 11:00 AM MT &middot; 90 minutes &middot; free.</p>
+      <p class="lede">Tell us where to send the join link and your seat is held. The confirmation arrives straight away, with a reminder the day before and another an hour out &mdash; and the replay afterwards if the time doesn&rsquo;t suit.</p>
+      <div class="cta-row">
+        <span class="cta-micro">Takes about twenty seconds &mdash; the form is just below &darr;</span>
+      </div>
+    </div>
+  </div>
+
+<!-- FORM -->
+
+  <div class="slot wash">
+    <div class="slot-in">
+      <p class="eyebrow">What you&rsquo;ll walk out with</p>
+      <ul class="bullets">
+        <li><span class="b-t"><strong>A Q4 promotional calendar</strong> &mdash; what you&rsquo;re promoting, and when, from now through the holiday rush.</span></li>
+        <li><span class="b-t"><strong>Offers built to lift average order value</strong> &mdash; so the same traffic buys more.</span></li>
+        <li><span class="b-t"><strong>An email and SMS plan</strong> &mdash; the flows and campaigns that bring buyers back without ad spend.</span></li>
+      </ul>
+      <p class="plus"><strong>No spam, ever.</strong> The confirmation, two reminders, and the replay. That is all.</p>
+    </div>
+  </div>
+
+  <div class="hostbar">
+    <div class="hostbar-in">
+      <p class="host-label">Hosted by</p>
+      <div class="hosts">
+        <a class="host" href="https://tiny3dtemples.com/" target="_blank" rel="noopener">
+          <span class="host-mark" aria-hidden="true">T3T</span>
+          <span class="host-name">Tiny 3D Temples</span>
+        </a>
+        <a class="host" href="https://bomsocks.com/" target="_blank" rel="noopener">
+          <span class="host-mark host-mark-plate"><img src="https://bomsocks.com/cdn/shop/files/BOMSocks_White_Logo.png" alt="B.O.M.Socks"></span>
+          <span class="host-name">B.O.M.Socks</span>
+        </a>
+        <a class="host" href="https://www.comefollowmefhe.com/" target="_blank" rel="noopener">
+          <span class="host-mark" aria-hidden="true">CFM</span>
+          <span class="host-name">Come Follow Me FHE</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<footer>
+  <div class="foot-in">
+    <span>&copy; 2026 eCommHarvest</span>
+    <nav class="foot-nav">
+      <a href="/masterclass">Masterclass</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms &amp; Conditions</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

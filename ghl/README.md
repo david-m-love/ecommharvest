@@ -5,12 +5,14 @@ Three funnel steps. You build step 2 in GHL; steps 1 and 3 are one paste each.
 | Step | Page | Who builds it |
 | --- | --- | --- |
 | 1 | Masterclass landing page — every button links to step 2 | paste `LANDING-PAGE.html` |
-| 2 | Registration — GHL's native form, email + SMS | **you, in GHL** |
+| 2 | Registration — GHL's native form, wrapped in our brand | **the form is yours in GHL**; paste `REGISTER-1-above-form.html` above it and `REGISTER-2-below-form.html` below it |
 | 3 | Thank you | paste `thanks-WITH-CSS.html` |
 
 ```
-ghl/blocks/LANDING-PAGE.html        STEP 1 — whole page, one paste, CSS included
-ghl/blocks/thanks-WITH-CSS.html     STEP 3 — whole page, one paste, CSS included
+ghl/blocks/LANDING-PAGE.html            STEP 1 — whole page, one paste, CSS included
+ghl/blocks/REGISTER-1-above-form.html   STEP 2 — goes ABOVE your form, CSS included
+ghl/blocks/REGISTER-2-below-form.html   STEP 2 — goes BELOW your form, no CSS needed
+ghl/blocks/thanks-WITH-CSS.html         STEP 3 — whole page, one paste, CSS included
 ghl/blocks/home-1-WITH-CSS.html     HOME: first block, CSS included
 ghl/blocks/home-2-cta.html          HOME: masterclass CTA + footer
 ghl/course-outline.md               5 categories / 14 lessons for Memberships
@@ -25,6 +27,35 @@ Split versions of the landing page also exist — `1-hero.html`, `2-body.html`,
 `3-cta-footer.html` plus `masterclass-styles.css` — in case one 80kb paste ever
 misbehaves in the builder. **Ignore them unless that happens.** They need the
 stylesheet pasted separately, which is the step that failed to take effect before.
+
+## Step 2 — wrapping GHL's form
+
+Your form stays GHL's — that is the whole reason for being here, and rebuilding
+it in HTML would put the contact record back where it does no good. These two
+blocks bracket it so the page reads as a continuation of the one they clicked
+from, rather than a different site that happens to want their email.
+
+In the funnel step's editor, three rows top to bottom:
+
+1. **Custom JS/HTML** → paste `REGISTER-1-above-form.html`. Logo bar, "Save your
+   seat.", the date, and a line pointing down at the form. Carries the
+   stylesheet, so it must be the first of the two.
+2. **Your form element** — untouched.
+3. **Custom JS/HTML** → paste `REGISTER-2-below-form.html`. What they walk out
+   with, the no-spam line, the hosted-by bar, the footer. No stylesheet: block 1
+   on the same page already loaded it.
+
+Neither block contains a button or a field, and `ghl:verify` fails if one ever
+appears. A second button beside "Save my seat!" splits the click; a second input
+takes typing and submits nowhere.
+
+**Why not build this in the page builder and copy the HTML out?** The builder
+makes React pages styled by the site's own stylesheet, whose class names —
+`.btn`, `.card`, `.field` — are the ones GHL uses too. Pasting that in restyles
+GHL's form. Everything here is namespaced `ech-` and scoped, and proven against
+hostile CSS by `ghl:verify`. Same design system, different output format: edit
+`ghl/src/register.html`, run `npm run ghl:build && npm run ghl:verify`, paste
+again.
 
 ## Step 1 — the landing page
 
