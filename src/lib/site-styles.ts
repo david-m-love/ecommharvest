@@ -21,6 +21,8 @@ export type SiteStyles = {
   logoUrl: string | null
   logoText: string
   navLinks: NavLink[]
+  /** Empty until advertising is actually running: no ID, no script. */
+  metaPixelId: string | null
   css: string | null
 }
 
@@ -56,7 +58,7 @@ const LOGO_HEIGHTS: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoText: 'eCommHarvest', navLinks: [], css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoText: 'eCommHarvest', navLinks: [], metaPixelId: null, css: null }
 
   try {
     const p = await payload()
@@ -96,6 +98,12 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
       logoUrl: typeof logo === 'object' && logo && 'url' in logo ? (logo.url as string) : null,
       logoText: typeof styles.logoText === 'string' && styles.logoText ? styles.logoText : 'eCommHarvest',
       navLinks,
+      // Re-checked here as well as in the admin: this value goes into a script
+      // tag, so anything that is not plainly a run of digits is dropped.
+      metaPixelId:
+        typeof styles.metaPixelId === 'string' && /^\d{10,20}$/.test(styles.metaPixelId.trim())
+          ? styles.metaPixelId.trim()
+          : null,
       css: declarations.length ? `:root{${declarations.join(';')}}` : null,
     }
   } catch {

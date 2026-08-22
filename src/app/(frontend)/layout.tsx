@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import React from 'react'
 
+import { Analytics } from '@vercel/analytics/next'
+
+import { MetaPixel } from '@/components/MetaPixel'
+import { trackingDecision } from '@/lib/consent'
 import { getSiteStyles } from '@/lib/site-styles'
 import { absolute, siteUrl } from '@/lib/site-url'
 import '@/styles/design-system.css'
@@ -74,7 +78,15 @@ export default async function FrontendLayout({ children }: { children: React.Rea
    * system's own :root block so it overrides it. One <style> tag, a few hundred
    * bytes, and every page picks up a colour change with no rebuild.
    */
-  const { css } = await getSiteStyles()
+  const { css, metaPixelId } = await getSiteStyles()
+
+  /**
+   * Whether an advertising pixel may load for this visitor: honouring a Global
+   * Privacy Control signal everywhere, asking first in the UK, EEA and
+   * Switzerland, loading elsewhere. Decided on the server so that a visitor who
+   * has opted out never receives the script at all.
+   */
+  const tracking = metaPixelId ? await trackingDecision() : null
 
   return (
     <html lang="en">
@@ -113,7 +125,22 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/*
+          Page views, from Vercel's own analytics: no cookies, no cross-site
+          identifiers, nothing that needs a banner — which is the whole reason
+          for choosing it over Google Analytics for a site whose only job is
+          counting registrations.
+        */}
+        <Analytics />
+        {metaPixelId && tracking ? (
+          <MetaPixel
+            pixelId={metaPixelId}
+            mode={tracking.mode === 'refused' ? 'refused' : tracking.mode}
+          />
+        ) : null}
+      </body>
     </html>
   )
 }

@@ -5,6 +5,7 @@ import * as migration_20260822_020000_legal_pages_editable from './20260822_0200
 import * as migration_20260822_050000_real_legal_details from './20260822_050000_real_legal_details';
 import * as migration_20260822_052353_seo_headline from './20260822_052353_seo_headline';
 import * as migration_20260822_060931_nav_links from './20260822_060931_nav_links';
+import * as migration_20260822_063000_cookie_section from './20260822_063000_cookie_section';
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20260822_060931_nav_links.up,
     down: migration_20260822_060931_nav_links.down,
     name: '20260822_060931_nav_links'
+  },
+  {
+    up: migration_20260822_063000_cookie_section.up,
+    down: migration_20260822_063000_cookie_section.down,
+    name: '20260822_063000_cookie_section',
   },
 ];

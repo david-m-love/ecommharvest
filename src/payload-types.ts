@@ -883,6 +883,10 @@ export interface SiteStyle {
       }[]
     | null;
   /**
+   * From Meta Events Manager. Just the number. Leave empty and no tracking script is loaded at all. In the UK, EU and Switzerland it will not load until a visitor accepts, and anywhere it is switched off for people whose browser sends a Do Not Track / Global Privacy Control signal.
+   */
+  metaPixelId?: string | null;
+  /**
    * Buttons, the × in the formula bar, highlights.
    */
   gold: string;
@@ -929,6 +933,7 @@ export interface SiteStylesSelect<T extends boolean = true> {
         emphasis?: T;
         id?: T;
       };
+  metaPixelId?: T;
   gold?: T;
   goldDeep?: T;
   navy?: T;

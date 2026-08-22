@@ -64,6 +64,20 @@ a{color:inherit}
 .navbars-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 .navpanel{display:none}
 
+/* ---- consent bar ---- */
+/* Bottom of the screen, above everything, and it does not cover the page's own
+   controls: a bar rather than a modal, because blocking a landing page to ask
+   about measurement is a good way to lose the registration you were measuring. */
+.consentbar{position:fixed;left:0;right:0;bottom:0;z-index:90;background:var(--white);
+  border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(22,50,79,.10);
+  padding:18px 22px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;justify-content:center}
+.consentbar p{margin:0;font-size:14.5px;line-height:1.5;color:var(--brown);max-width:70ch}
+.consentbar a{color:var(--gold-deep)}
+.consentbar-actions{display:flex;gap:10px;flex:none}
+.consentbar .btn{font-size:13.5px;padding:11px 22px}
+.btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--wash2);color:var(--navy)}
+
 /* ---- buttons ---- */
 .btn{display:inline-block;font-family:var(--font);font-weight:700;font-size:16px;
   background:var(--gold);color:#0F2439;border:none;padding:14px 28px;border-radius:999px;

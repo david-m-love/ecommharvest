@@ -124,6 +124,30 @@ request, so permissions are never cached in a token.
 Do **not** give a teammate `admin` unless you mean "can do absolutely anything,
 including deleting people and changing my permissions".
 
+## Advertising and measurement
+
+**Page views** are counted by Vercel Analytics — no cookies, no cross-site
+identifiers, nothing that needs a consent banner. Turn it on once in Vercel:
+project → **Analytics** → Enable. Nothing to deploy.
+
+**The Meta pixel** is a field in Site Styles → *Advertising and measurement*.
+Paste the ID from Events Manager and it starts working; clear the field and no
+tracking script reaches the page at all. That switch is the honest default for a
+site that is not advertising.
+
+How it loads is not a free choice, because the privacy policy describes it:
+
+- A browser sending **Global Privacy Control** or **Do Not Track** is honoured
+  everywhere, with no banner and no exceptions.
+- In the **UK, EEA and Switzerland** a small bar asks first, and nothing is
+  requested from Meta until the visitor accepts. The answer is remembered in
+  `localStorage`, not a cookie — a cookie to record "do not track me" is a small
+  absurdity.
+- **Elsewhere** it loads, with opt-out routes named in the policy.
+
+`npm run test:tracking` checks all four paths by watching the network, so a
+change that quietly starts loading the pixel earlier will fail.
+
 ## The menu
 
 **Site Styles → Menu links.** Up to six, each with a label and a destination, and

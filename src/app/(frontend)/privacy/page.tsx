@@ -82,8 +82,14 @@ function HandBuiltPrivacyPage() {
         <p>We will disclose information if the law requires it, or to protect our rights, safety, or property.</p>
 
         <h2>Cookies and tracking</h2>
-        <p>This site sets <strong>no advertising or tracking cookies of its own</strong>. It loads Google Fonts, which serves the typefaces and receives your IP address as part of that request, and it counts page views in a way that does not identify you or follow you to other sites.</p>
-        <p>When we are running paid advertising, a <strong>Meta (Facebook) pixel</strong> may be loaded on the masterclass pages to measure how many people register. It reports that a registration happened; it does not receive your name, email or phone number from us. To opt out, use your <a href="https://accountscenter.facebook.com/ad_preferences" target="_blank" rel="noopener">Meta ad preferences</a>, your browser&rsquo;s tracking protection, or an ad blocker. Where consent is required &mdash; the UK, the EU, and US states whose law requires it &mdash; the pixel does not load until it is given.</p>
+        <p>This site sets <strong>no advertising or tracking cookies of its own</strong>. It loads Google Fonts, which serves the typefaces and receives your IP address as part of that request, and it counts page views using Vercel Analytics, which uses no cookies and no cross-site identifiers &mdash; it cannot follow you to other sites or recognise you on your next visit.</p>
+        <p>When we are running paid advertising, a <strong>Meta (Facebook) pixel</strong> may be loaded to measure how many people register. It reports that a registration happened; we never send it your name, email or phone number. Three things are true about how it loads:</p>
+        <ul>
+        <li><strong>If your browser asks us not to, it does not load.</strong> We honour Global Privacy Control and Do Not Track signals everywhere in the world, with no banner and no exceptions.</li>
+        <li><strong>In the UK, the EEA and Switzerland it does not load until you accept.</strong> You will be asked once, and nothing is requested from Meta before you answer.</li>
+        <li><strong>Elsewhere it loads, and you can opt out</strong> using your <a href="https://accountscenter.facebook.com/ad_preferences" target="_blank" rel="noopener">Meta ad preferences</a>, your browser&rsquo;s tracking protection, or an ad blocker.</li>
+        </ul>
+        <p>When no pixel ID is configured &mdash; which is the case whenever we are not advertising &mdash; no tracking script reaches this page at all.</p>
 
         <h2>How long we keep it</h2>
         <p>Registration records are kept for <strong>24 months</strong> after the event, or until you ask us to delete them. If you unsubscribe, we keep a minimal record of your email address so we can honour that choice and avoid contacting you again.</p>

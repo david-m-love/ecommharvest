@@ -138,6 +138,35 @@ export const SiteStyles: GlobalConfig = {
     },
     {
       type: 'collapsible',
+      label: 'Advertising and measurement',
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          /**
+           * The Meta pixel, off until an ID is entered.
+           *
+           * A field rather than an environment variable because turning
+           * advertising on and off is a marketing decision, not a deploy — and
+           * because the privacy policy has to describe whatever is actually
+           * loading. Empty means no pixel script reaches the page at all, which
+           * is the honest default for a site not running ads.
+           */
+          name: 'metaPixelId',
+          label: 'Meta (Facebook) pixel ID',
+          type: 'text',
+          validate: (value: unknown) =>
+            !value || (typeof value === 'string' && /^\d{10,20}$/.test(value.trim()))
+              ? true
+              : 'A pixel ID is 15 or 16 digits — just the number, no code.',
+          admin: {
+            description:
+              'From Meta Events Manager. Just the number. Leave empty and no tracking script is loaded at all. In the UK, EU and Switzerland it will not load until a visitor accepts, and anywhere it is switched off for people whose browser sends a Do Not Track / Global Privacy Control signal.',
+          },
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
       label: 'Brand colours',
       admin: { initCollapsed: false },
       fields: [
