@@ -1,6 +1,7 @@
 import * as migration_20260820_030343_initial from './20260820_030343_initial';
 import * as migration_20260820_210000_seed_editable_pages from './20260820_210000_seed_editable_pages';
 import * as migration_20260821_232804_add_logo_size from './20260821_232804_add_logo_size';
+import * as migration_20260822_020000_legal_pages_editable from './20260822_020000_legal_pages_editable';
 
 export const migrations = [
   {
@@ -17,5 +18,10 @@ export const migrations = [
     up: migration_20260821_232804_add_logo_size.up,
     down: migration_20260821_232804_add_logo_size.down,
     name: '20260821_232804_add_logo_size'
+  },
+  {
+    up: migration_20260822_020000_legal_pages_editable.up,
+    down: migration_20260822_020000_legal_pages_editable.down,
+    name: '20260822_020000_legal_pages_editable',
   },
 ];
