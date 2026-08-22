@@ -39,6 +39,21 @@ git add src/migrations && git commit
 Skip that and the next deploy builds fine, then fails at runtime on a missing
 column. `npm run migrate:status` lists what has run.
 
+**`npm run test:schema` is the check for exactly that**, and it is worth running
+before any deploy that touched a collection or a global. It builds a database
+from the committed migrations alone and asks Payload whether anything in the
+config is missing from it — naming the column if so.
+
+This has bitten twice, and it is worth understanding why it is so easy to miss.
+Locally Payload runs with `push` on, so adding a field silently alters your
+database to match: everything works, and nothing is missing until production —
+which only runs migrations — asks for a column that was never created. Payload
+selects every column a table declares, so **one missing column breaks every read
+of that table**, and the symptoms never mention a column. The second time, the
+site logo turned into plain text on every page and the Site Styles screen
+answered "Nothing found" — because the front end catches the failure and quietly
+falls back to its defaults.
+
 ### The first admin
 
 Visit `/admin` on a fresh database and Payload shows a **create-first-user**
@@ -149,9 +164,8 @@ the local copy might be older than what someone else published. It is per browse
 and never sent anywhere — autosaving to the database would mean every keystroke
 on a live page could become the live page.
 
-**The editor needs a laptop.** Below about 1024px it says so and offers to show
-you the page instead, rather than presenting a canvas with no panels and no
-publish button.
+**The editor works on a phone**, with its own layout — see "On a phone" under
+the page builder below.
 
 ## Advertising and measurement
 
@@ -491,6 +505,7 @@ npm test                                     # 15 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request
+npm run test:schema                          #  every field has a migration behind it
 npm run test:importmap                       # the admin can resolve every component
 npm run test:admin                           # /admin answers with a page, not a blank one
 ```

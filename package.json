@@ -35,6 +35,7 @@
     "test:images": "node test/image-upload.ui.mjs",
     "test:mobile": "node test/mobile-editor.ui.mjs",
     "test:prerender": "node test/prerender.mjs",
+    "test:schema": "node test/schema.mjs",
     "test:importmap": "node test/importmap.mjs",
     "test:admin": "node test/admin-boots.ui.mjs",
     "extract:pages": "node scripts/extract-pages.mjs"

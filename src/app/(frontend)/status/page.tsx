@@ -209,6 +209,66 @@ const checkAdmin = async (): Promise<Check> => {
   }
 }
 
+/**
+ * Reads Site Styles the way every page reads it, and reports what came back.
+ *
+ * Added because of the morning it cost. A field had been added to Site Styles
+ * with no migration behind it, so production asked Postgres for a column that
+ * did not exist and every read of the global failed. Nothing said so: the front
+ * end catches that failure and falls back to its defaults, so the logo became
+ * the text wordmark on every page and the admin screen for it answered "Nothing
+ * found". This page said everything was working, because everything it looked at
+ * was.
+ *
+ * One request answers it now. The global is world-readable by design — the front
+ * end reads it on every request — so this needs no credentials.
+ */
+const checkSiteStyles = async (): Promise<Check> => {
+  const h = await headers()
+  const host = h.get('host')
+  if (!host) return { label: 'Site Styles', ok: true, detail: 'Not checked — no host header.' }
+  const proto = h.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
+
+  try {
+    const res = await fetch(`${proto}://${host}/api/globals/site-styles?depth=1`, {
+      cache: 'no-store',
+      headers: { 'user-agent': 'ecommharvest-status-check' },
+      signal: AbortSignal.timeout(12_000),
+    })
+
+    if (!res.ok)
+      return {
+        label: 'Site Styles',
+        ok: false,
+        detail: `Could not be read — answered ${res.status}. Every page is falling back to the plain text logo and the default colours.`,
+        fix: 'Almost always a database column the code expects and the database does not have. Run `npm run test:schema` — it names the missing field — then write the migration and redeploy.',
+      }
+
+    const body = (await res.json()) as { logo?: { url?: string; filename?: string } | number | null }
+    const logo = typeof body.logo === 'object' ? body.logo : null
+
+    if (!body.logo)
+      return {
+        label: 'Site Styles',
+        ok: true,
+        detail: 'Readable. No logo is set, so pages show the site name as text.',
+      }
+
+    return {
+      label: 'Site Styles',
+      ok: true,
+      detail: `Readable. Logo: ${logo?.filename || 'set'}.`,
+    }
+  } catch {
+    return {
+      label: 'Site Styles',
+      ok: false,
+      detail: 'Could not be reached from the server.',
+      fix: 'Check Vercel: Logs in the left sidebar for the newest red row.',
+    }
+  }
+}
+
 const settingChecks = (): Check[] => [
   {
     label: 'Login secret',
@@ -229,8 +289,12 @@ const settingChecks = (): Check[] => [
 ]
 
 export default async function StatusPage() {
-  const [dbChecks, adminCheck] = await Promise.all([checkDatabase(), checkAdmin()])
-  const checks = [...dbChecks, adminCheck, ...settingChecks()]
+  const [dbChecks, adminCheck, stylesCheck] = await Promise.all([
+    checkDatabase(),
+    checkAdmin(),
+    checkSiteStyles(),
+  ])
+  const checks = [...dbChecks, adminCheck, stylesCheck, ...settingChecks()]
   const broken = checks.filter((c) => !c.ok)
 
   return (
