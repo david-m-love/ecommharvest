@@ -16,7 +16,7 @@ ghl/blocks/thanks-WITH-CSS.html         STEP 3 — whole page, one paste, CSS in
 ghl/blocks/home-1-WITH-CSS.html     HOME: first block, CSS included
 ghl/blocks/home-2-cta.html          HOME: masterclass CTA + footer
 ghl/course-outline.md               5 categories / 14 lessons for Memberships
-ghl/paste-me/*.txt                  the same blocks as .txt (generated, gitignored)
+ghl/paste-me/*.txt                  the same blocks as .txt — THIS is what you paste
 ghl/src/                            source the blocks are generated from
 src/styles/design-system.css        the design tokens and CSS (single source)
 ghl/build.mjs                       regenerates blocks (node ghl/build.mjs)

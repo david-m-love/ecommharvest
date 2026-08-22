@@ -18,7 +18,7 @@
  *      raises specificity so GHL's bare `p {}` loses to our `.ech-scope p {}`.
  */
 
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -562,6 +562,13 @@ written.push(selfContained('home-1-body.html', 'home-1-WITH-CSS.html', 'Home pag
  */
 const pasteDir = join(here, 'paste-me')
 mkdirSync(pasteDir, { recursive: true })
+/**
+ * Emptied first, so renaming or removing a block cannot leave a mirror behind.
+ * A stale paste file is worse than a missing one: it looks current, and it gets
+ * pasted with confidence. Three had already accumulated from blocks deleted
+ * earlier in this project.
+ */
+for (const stale of readdirSync(pasteDir)) rmSync(join(pasteDir, stale))
 const mirrored = readdirSync(join(here, 'blocks'))
 for (const name of mirrored) {
   copyFileSync(join(here, 'blocks', name), join(pasteDir, `${name}.txt`))

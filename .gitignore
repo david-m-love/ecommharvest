@@ -6,7 +6,11 @@ node_modules
 *.log
 .DS_Store
 ghl/.verify/
-ghl/paste-me/
+# ghl/paste-me/ is committed on purpose. It was ignored as "generated", which
+# made the files unreachable from GitHub — the only place they are ever needed,
+# since pasting into GoHighLevel happens in a browser and not at a terminal.
+# `ghl:verify` fails if a mirror does not match its block byte for byte, so the
+# drift that ignoring them was meant to prevent cannot happen silently.
 
 proof/artifact.html
 tsconfig.tsbuildinfo

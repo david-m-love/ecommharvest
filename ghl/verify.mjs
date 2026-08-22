@@ -15,7 +15,7 @@
  *      the wrapper, and must keep its own styling.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
@@ -169,6 +169,39 @@ for (const name of [...BLOCKS, ...EXTRA_BLOCKS]) {
     rootRelative.join(' ') || 'none',
   )
 }
+
+// --- 1d. the paste-me mirrors match the blocks --------------------------
+
+/**
+ * `ghl/paste-me/*.txt` is what actually gets pasted, so it is what has to be
+ * right.
+ *
+ * The .txt copies exist because double-clicking an .html file opens it in a
+ * browser, which renders it — copying that window yields the visible words with
+ * every tag stripped, which is useless in a page builder. A .txt opens in a text
+ * editor and copies as source.
+ *
+ * They are committed rather than generated-and-ignored, because ignoring them
+ * put them out of reach of the one place they are needed: GitHub, in a browser,
+ * on the machine doing the pasting. This check is the price of that — a stale
+ * mirror would be pasted with confidence, so byte-for-byte or fail.
+ */
+console.log('\nthe paste-me copies match the blocks they mirror')
+const blockNames = readdirSync(join(here, 'blocks'))
+const pasteNames = existsSync(join(here, 'paste-me')) ? readdirSync(join(here, 'paste-me')) : []
+for (const name of blockNames) {
+  const mirror = join(here, 'paste-me', `${name}.txt`)
+  if (!existsSync(mirror)) {
+    check(false, `paste-me/${name}.txt exists`, 'missing — run npm run ghl:build')
+    continue
+  }
+  const same = readFileSync(mirror, 'utf8') === block(name)
+  check(same, `paste-me/${name}.txt is identical to the block`, same ? '' : 'differs — run npm run ghl:build')
+}
+// A mirror of a block that no longer exists is worse than a missing one: it
+// looks current and is not.
+const orphans = pasteNames.filter((n) => !blockNames.includes(n.replace(/\.txt$/, '')))
+check(orphans.length === 0, 'no paste-me copy is left over from a deleted block', orphans.join(', ') || 'none')
 
 // --- 2 & 3. render comparison ------------------------------------------
 
