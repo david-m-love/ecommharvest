@@ -21,8 +21,25 @@ const deploymentId = process.env.VERCEL_DEPLOYMENT_ID || process.env.VERCEL_GIT_
 const nextConfig = {
   ...(deploymentId ? { deploymentId } : {}),
 
-  // Course video is served by Cloudflare Stream, so Next only handles images.
-  images: { remotePatterns: [{ protocol: 'https', hostname: '**.cloudflarestream.com' }] },
+  /**
+   * Where images may be optimised from.
+   *
+   * Uploads live in Vercel Blob in production, on a hostname the optimiser has
+   * to be told about explicitly — an unlisted host does not fall back to the
+   * original, it 400s, so a missing pattern means broken images rather than
+   * merely unoptimised ones. This app's own uploads need no entry: Payload
+   * stores them as absolute URLs, and `src/blocks/BlockImage.tsx` reduces those
+   * back to `/api/media/file/...` so they stay same-origin on any hostname —
+   * localhost, a preview deployment, or either production domain.
+   */
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.cloudflarestream.com' },
+      { protocol: 'https', hostname: '**.public.blob.vercel-storage.com' },
+      { protocol: 'https', hostname: 'ecommharvest.com' },
+      { protocol: 'https', hostname: 'app.ecommharvest.com' },
+    ],
+  },
 
   async headers() {
     return [

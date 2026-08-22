@@ -19,6 +19,9 @@ export type NavLink = { label: string; href: string; emphasis?: boolean }
 
 export type SiteStyles = {
   logoUrl: string | null
+  /** The logo's real pixel size, so the header can reserve its space. */
+  logoWidth: number | null
+  logoHeight: number | null
   logoText: string
   navLinks: NavLink[]
   /** Empty until advertising is actually running: no ID, no script. */
@@ -58,7 +61,7 @@ const LOGO_HEIGHTS: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoText: 'eCommHarvest', navLinks: [], metaPixelId: null, css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], metaPixelId: null, css: null }
 
   try {
     const p = await payload()
@@ -96,6 +99,8 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
 
     return {
       logoUrl: typeof logo === 'object' && logo && 'url' in logo ? (logo.url as string) : null,
+      logoWidth: typeof logo === 'object' && logo && typeof logo.width === 'number' ? logo.width : null,
+      logoHeight: typeof logo === 'object' && logo && typeof logo.height === 'number' ? logo.height : null,
       logoText: typeof styles.logoText === 'string' && styles.logoText ? styles.logoText : 'eCommHarvest',
       navLinks,
       // Re-checked here as well as in the admin: this value goes into a script
@@ -124,10 +129,18 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
 export type SiteMetadata = {
   siteLogoUrl: string | null
   siteLogoText: string
+  siteLogoWidth: number | null
+  siteLogoHeight: number | null
   siteNavLinks: NavLink[]
 }
 
 export const siteMetadata = async (): Promise<SiteMetadata> => {
-  const { logoUrl, logoText, navLinks } = await getSiteStyles()
-  return { siteLogoUrl: logoUrl, siteLogoText: logoText, siteNavLinks: navLinks }
+  const { logoUrl, logoText, logoWidth, logoHeight, navLinks } = await getSiteStyles()
+  return {
+    siteLogoUrl: logoUrl,
+    siteLogoText: logoText,
+    siteLogoWidth: logoWidth,
+    siteLogoHeight: logoHeight,
+    siteNavLinks: navLinks,
+  }
 }

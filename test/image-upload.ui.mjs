@@ -30,8 +30,15 @@ const check = (ok, label, detail = '') => {
 
 /** A distinctive filename, so "did *this* upload arrive" is answerable. */
 const NAME = `quick-add-${Date.now().toString(36)}.png`
+/**
+ * A real 120×40 PNG, not a stub.
+ *
+ * The stub this replaced had a valid header and corrupt pixel data, which was
+ * invisible for as long as the checks only read `src` attributes — and then quietly
+ * broke the first check that asked whether the image had actually *decoded*.
+ */
 const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAB4AAAAKCAYAAAB7ZKcRAAAAOklEQVR42u3OMQEAAAgDoJnc/9BeYQPUgAEDBgwYMGDAgAEDBgwYMGDAgAEDBgwYMGDAgAEDBgwY+HkLzQABlQnPCwAAAABJRU5ErkJggg==',
+  'iVBORw0KGgoAAAANSUhEUgAAAHgAAAAoCAYAAAA16j4lAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAA2UlEQVR4nO2VwREDMRDCrqbtlLKoKqkiA1z00N+DLPux7gP32g2e9AHgEMwlOArmEhxPtP/wS+APVl4CgguG8igUrLwEBBcM5VEoWHkJCC4YyqNQsPISEFwwlEehYOUlILhgKI9CwcpLQHDBUB6FgpWXgOCCoTwKBSsvAcEFQ3kUClZeAoILhvIoFKy8BAQXDOVRKFh5CQguGMqjULDyEhBcMJRHoWDlJSC4YCiPQsHKS0BwwVAehYKVl4DggqE8CgUrLwHBBUN5FApWXgKCC4byKBSsvIRf8gXWQrECHMquJAAAAABJRU5ErkJggg==',
   'base64',
 )
 const FILE = `/tmp/${NAME}`
@@ -137,6 +144,140 @@ if ((await uploadButton.count()) > 0) {
   if (await altBox.count()) {
     const seeded = await altBox.inputValue()
     check(seeded.length > 0, 'alt text is seeded from the filename, never empty', seeded)
+  }
+}
+
+// --- images are resized, and reserve their space -------------------------
+
+/**
+ * The logo is the image every visitor sees first, and it was being served at
+ * whatever size it was uploaded at, with no dimensions — so a 300KB file
+ * downloaded on a phone, and the header grew as it arrived and shoved the page
+ * down. Both are fixed by the same thing: recording the real dimensions when the
+ * image is chosen, which is what lets Next's optimiser in.
+ */
+console.log('\nthe logo is optimised and holds its space')
+{
+  /**
+   * Only meaningful when a logo is actually set. A database with none — a fresh
+   * seed, a clean checkout — has nothing to optimise, and failing here would
+   * report a missing setting as a broken feature.
+   */
+  const styles = await (
+    await ctx.request.get(`${BASE}/api/globals/site-styles?depth=0`, { headers: { Origin: BASE } })
+  ).json()
+
+  if (!styles?.logo) {
+    console.log(' --  skipped: no logo is set in Site Styles')
+  } else {
+    const visitor = await browser.newContext({ viewport: { width: 414, height: 900 } })
+    const p = await visitor.newPage()
+    await p.goto(`${BASE}/masterclass`, { waitUntil: 'domcontentloaded' })
+    await p.waitForTimeout(1200)
+
+    const logo = await p.evaluate(() => {
+      const img = document.querySelector('.brand img')
+      if (!img) return null
+      return {
+        src: img.getAttribute('src') || '',
+        width: img.getAttribute('width'),
+        height: img.getAttribute('height'),
+        loaded: img.naturalWidth > 0,
+      }
+    })
+    check(Boolean(logo), 'the header has a logo image')
+    if (logo) {
+      check(logo.loaded, 'it loads', logo.src.slice(0, 60))
+      check(
+        Boolean(logo.width && logo.height),
+        'and carries its dimensions, so the header cannot jump as it arrives',
+        `${logo.width}×${logo.height}`,
+      )
+      check(
+        logo.src.includes('/_next/image'),
+        'and is served through the optimiser, not at full upload size',
+        logo.src.slice(0, 60),
+      )
+    }
+    await visitor.close()
+  }
+}
+
+// --- a file still in use cannot be deleted -------------------------------
+
+/**
+ * Blocks store an image's URL, not a link to the media record, so nothing in the
+ * database connects the two — deleting the file left a live page pointing at a
+ * URL that 404s, with no warning and no way to find out except looking at the
+ * page. The delete is refused instead, naming what is using the file.
+ */
+console.log('\ndeleting a file a page is using')
+{
+  const upload = await ctx.request.post(`${BASE}/api/media`, {
+    headers: { Origin: BASE },
+    multipart: {
+      file: { name: `in-use-${Date.now().toString(36)}.png`, mimeType: 'image/png', buffer: PNG },
+      _payload: JSON.stringify({ alt: 'A file that is in use' }),
+    },
+  })
+  const uploaded = (await upload.json().catch(() => ({}))).doc
+  check(Boolean(uploaded?.url), 'uploaded a file to try deleting', `${upload.status()}`)
+  check(
+    Boolean(uploaded?.width && uploaded?.height),
+    'the library records its real dimensions',
+    `${uploaded?.width}×${uploaded?.height}`,
+  )
+
+  if (uploaded?.url) {
+    const title = `delete-guard-${Date.now().toString(36)}`
+    const created = await ctx.request.post(`${BASE}/api/pages`, {
+      headers: { Origin: BASE, 'Content-Type': 'application/json' },
+      data: {
+        title,
+        content: {
+          root: {},
+          content: [
+            {
+              type: 'Header',
+              props: {
+                id: 'header-1',
+                image: { url: uploaded.url, alt: 'A file that is in use', width: uploaded.width, height: uploaded.height },
+              },
+            },
+          ],
+        },
+      },
+    })
+    const newPageId = (await created.json().catch(() => ({}))).doc?.id
+    check(Boolean(newPageId), 'and put it on a page', `${created.status()}`)
+
+    const refused = await ctx.request.delete(`${BASE}/api/media/${uploaded.id}`, {
+      headers: { Origin: BASE },
+    })
+    const body = await refused.json().catch(() => ({}))
+    const message = body.errors?.[0]?.message || body.message || ''
+    check(
+      refused.status() >= 400 || Boolean(body.errors?.length),
+      'the delete is refused',
+      `${refused.status()}`,
+    )
+    check(message.includes(title), 'and the refusal names the page using the file', message.slice(0, 120))
+
+    // Still there, not half-deleted.
+    const stillThere = await ctx.request.get(`${BASE}/api/media/${uploaded.id}`, {
+      headers: { Origin: BASE },
+    })
+    check(stillThere.status() === 200, 'the file itself is untouched')
+
+    // Take it off the page, and the delete goes through — the guard is about use,
+    // not about the file.
+    if (newPageId) {
+      await ctx.request.delete(`${BASE}/api/pages/${newPageId}`, { headers: { Origin: BASE } })
+    }
+    const allowed = await ctx.request.delete(`${BASE}/api/media/${uploaded.id}`, {
+      headers: { Origin: BASE },
+    })
+    check(allowed.status() === 200, 'once nothing uses it, it can be deleted', `${allowed.status()}`)
   }
 }
 

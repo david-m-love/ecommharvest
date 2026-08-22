@@ -1,6 +1,7 @@
 import type { Config, Data } from '@measured/puck'
 import React from 'react'
 
+import { BlockImage } from './BlockImage'
 import { SiteNav } from './SiteNav'
 import { type PickedImage, imageField } from './image-field'
 
@@ -258,6 +259,8 @@ export const config: Config<Blocks> = {
           | {
               siteLogoUrl?: string
               siteLogoText?: string
+              siteLogoWidth?: number
+              siteLogoHeight?: number
               siteNavLinks?: { label: string; href: string; emphasis?: boolean }[]
             }
           | undefined
@@ -276,8 +279,13 @@ export const config: Config<Blocks> = {
           <div className={links.length ? 'topbar-in has-nav' : 'topbar-in'}>
             <a className="brand" href={homeUrl || '/'} aria-label={logoText || 'Home'}>
               {url ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={url} alt={alt} />
+                <BlockImage
+                  image={{ url, alt, width: site?.siteLogoWidth, height: site?.siteLogoHeight }}
+                  fallbackAlt={alt}
+                  sizes="(max-width: 760px) 200px, 320px"
+                  // The one image in the first screenful on every page.
+                  priority
+                />
               ) : (
                 <strong
                   style={{
@@ -383,8 +391,7 @@ export const config: Config<Blocks> = {
                   <>
                     <span className={`host-mark${host.logo?.url ? ' host-mark-plate' : ''}`}>
                       {host.logo?.url ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={host.logo.url} alt={host.logo.alt || host.name} />
+                        <BlockImage image={host.logo} fallbackAlt={host.name} sizes="88px" />
                       ) : (
                         host.monogram
                       )}
@@ -639,8 +646,11 @@ export const config: Config<Blocks> = {
                   <div className="sp-top">
                     {person.photo?.url ? (
                       <span className="sp-photo">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={person.photo.url} alt={person.photo.alt || person.name || ''} />
+                        <BlockImage
+                          image={person.photo}
+                          fallbackAlt={person.name || ''}
+                          sizes="132px"
+                        />
                       </span>
                     ) : person.monogram ? (
                       <span className="sp-photo" aria-hidden="true">

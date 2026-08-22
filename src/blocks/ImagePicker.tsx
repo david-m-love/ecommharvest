@@ -17,7 +17,16 @@ import React from 'react'
  * hooks cannot live in that module graph without a client boundary.
  */
 
-export type PickedImage = { url?: string; alt?: string } | null
+/**
+ * What a block stores about a chosen image.
+ *
+ * `width` and `height` are the file's real pixel dimensions, carried so the page
+ * can reserve the right space before the image arrives. Without them the header
+ * visibly jumps as the logo loads — the kind of thing that is invisible on a fast
+ * connection and obvious on a phone. Optional because images picked before this
+ * existed have neither, and a missing dimension must not break a page.
+ */
+export type PickedImage = { url?: string; alt?: string; width?: number; height?: number } | null
 
 type MediaDoc = {
   id: number
@@ -25,6 +34,8 @@ type MediaDoc = {
   filename?: string
   alt?: string
   filesize?: number
+  width?: number
+  height?: number
 }
 
 const kb = (bytes?: number) => (bytes ? `${Math.round(bytes / 1024)} KB` : '')
@@ -112,7 +123,12 @@ export function ImagePicker({
         )
       }
 
-      onChange({ url: body.doc.url, alt: body.doc.alt || altFromFilename(file.name) })
+      onChange({
+        url: body.doc.url,
+        alt: body.doc.alt || altFromFilename(file.name),
+        width: body.doc.width,
+        height: body.doc.height,
+      })
       // The new file belongs at the top of the library next time it is opened.
       setLibrary(null)
       setBrowsing(false)
@@ -125,7 +141,12 @@ export function ImagePicker({
   }
 
   const pick = (doc: MediaDoc) => {
-    onChange({ url: doc.url, alt: doc.alt || altFromFilename(doc.filename || '') })
+    onChange({
+      url: doc.url,
+      alt: doc.alt || altFromFilename(doc.filename || ''),
+      width: doc.width,
+      height: doc.height,
+    })
     setBrowsing(false)
   }
 
@@ -145,7 +166,7 @@ export function ImagePicker({
                 type="text"
                 value={value.alt || ''}
                 disabled={readOnly}
-                onChange={(event) => onChange({ url: value.url, alt: event.target.value })}
+                onChange={(event) => onChange({ ...value, alt: event.target.value })}
                 placeholder="Describe the image"
                 style={styles.altInput}
               />

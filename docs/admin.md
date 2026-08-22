@@ -255,13 +255,33 @@ interpolated into the `<style>` tag, so a pasted value cannot inject CSS.
 
 ## Uploading logos and images
 
-`/admin` → **Site** → **Media** → **Create New**. Then pick the image in the
-builder: the Logo field on a Header block, the logo on each brand in the
-hosted-by bar, or a speaker's photo. Each shows a searchable picker of what you
-have uploaded.
+You do not have to go to the admin for this. Every image field in the builder has
+**Upload an image**, which puts the file in the Media library *and* in the slot
+you are filling, in one action. **Choose from library** picks one you already
+have. The library is also at `/admin` → **Site** → **Media** if you would rather
+work there.
+
+The fields that take an image are the logo on each brand in the hosted-by bar and
+each speaker's photo. The site logo is not one of them — it is set once in Site
+Styles and appears on every page (see above).
 
 Speakers and hosts fall back to initials when no image is chosen, so a page never
 shows an empty circle.
+
+**Images are resized for the device.** A 2000px logo is not sent to a phone to be
+shown at 41px; a version scaled for the screen is served instead, in a modern
+format, from a cache. This happens because the builder records the file's real
+pixel dimensions when you choose it, which also lets the browser hold the right
+amount of space from the first paint — before, the header grew as the logo
+arrived and shoved the page down. Images chosen before this existed have no
+recorded dimensions and are served as-is; re-pick one in its field to fix that.
+
+**A file still in use cannot be deleted.** Blocks store an image's address, not a
+link to the library record, so nothing in the database connects the two — a
+delete used to leave a live page pointing at a file that no longer existed, with
+no warning. Now the delete is refused and the message names what is using it: the
+pages, a course cover, a lesson attachment, or the site logo. Change the image in
+those places first, then delete the file.
 
 **On Vercel this needs a Blob store.** Vercel's filesystem is ephemeral, so
 without one a file uploads fine, shows a working thumbnail, and disappears on the
@@ -426,11 +446,33 @@ stylesheet is loading. Serif text on a white page means it is not.
 ## Tests
 
 ```bash
-npm run dev                                  # in another terminal, seeded
-npm run test:builder                         # 51 checks, HTTP
-npm run test:builder:ui                      # 30 checks, real browser
-npm run test:styles                          # 23 checks: colours, logo upload, / and /masterclass
+npm run dev                                  # in another terminal, migrated and seeded
+npm run test:builder                         # 51 checks, HTTP: permissions and the API
+npm run test:builder:ui                      # 35 checks, real browser: the editor itself
+npm run test:manage                          # 15 checks: duplicate, delete, small screens, recovery
+npm run test:styles                          # 16 checks: colours reaching both pages
+npm run test:logo                            #  9 checks: one logo, four sizes, capped on phones
+npm run test:nav                             # 15 checks: the menu, desktop and phone
+npm run test:images                          # 23 checks: upload, resizing, the delete guard
+npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
+npm run test:security                        # roles, playback, the audit log
+npm test                                     # 15 checks, no server needed
+
+npm run build                                # then, against the build output:
+npm run test:prerender                       #  6 routes must render per request
+npm run test:importmap                       # the admin can resolve every component
+npm run test:admin                           # /admin answers with a page, not a blank one
 ```
+
+Two things the browser suites need, both of which produce failures that look like
+bugs in the code:
+
+- **A migrated database, not just a seeded one.** `npm run seed` creates the
+  course, the users and the home and masterclass pages; `/privacy` and `/terms`
+  come from a migration. Without them those routes fall back to a version with no
+  site header, and `test:nav` reports a missing menu.
+- **A Chromium that Playwright recognises.** If it is installed somewhere else,
+  pass it: `PLAYWRIGHT_CHROMIUM_PATH=/path/to/chromium npm run test:logo`.
 
 `test/styles.ui.mjs` executes the claims that are invisible until they are wrong
 on a live page: that one colour change reaches both pages with no deploy, that a

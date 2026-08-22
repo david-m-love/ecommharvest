@@ -1,4 +1,4 @@
-import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import type { CollectionBeforeChangeHook, CollectionBeforeDeleteHook, CollectionConfig } from 'payload'
 import { APIError } from 'payload'
 
 import { adminOnly } from '@/lib/access'
@@ -27,6 +27,112 @@ const refuseIfUploadsWouldVanish: CollectionBeforeChangeHook = ({ data, operatio
   )
 }
 
+/**
+ * Does this page's JSON point at this file?
+ *
+ * A full URL is specific enough to look for as-is. A bare filename is not:
+ * deleting `logo.png` must not report `old-logo.png` as a use of it, so it only
+ * counts after a slash or a quote and before the end of the JSON string.
+ */
+const mentions = (haystack: string, needle: string) => {
+  if (needle.includes('/')) return haystack.includes(needle)
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`[/"]${escaped}(?=["?])`).test(haystack)
+}
+
+/**
+ * Refuses to delete a file that a page, course or lesson is still using.
+ *
+ * Builder blocks store an image's **URL**, not a link to the media record — which
+ * is what lets a page render without a database lookup per image, and what makes
+ * a delete dangerous: nothing in the database connects the two, so removing the
+ * file leaves a live page pointing at a URL that now 404s. Payload allows it
+ * happily, and the first anyone hears about it is a broken logo on the home page.
+ *
+ * The upload fields elsewhere fail differently and just as quietly: Payload
+ * blanks the reference, so a course loses its cover and a lesson loses a
+ * worksheet its editor believes is still attached.
+ *
+ * So the delete is refused, and the message names what is using the file. The
+ * fix is always the same — swap the image on those pages first, then delete —
+ * and it is a fix that can be made without a developer.
+ */
+const refuseIfStillInUse: CollectionBeforeDeleteHook = async ({ id, req }) => {
+  const doc = await req.payload
+    .findByID({ collection: 'media', id, depth: 0, req, overrideAccess: true })
+    .catch(() => null)
+  if (!doc) return
+
+  /** Every address this one file answers to, resized versions included. */
+  const needles: string[] = []
+  const add = (value: unknown) => {
+    if (typeof value === 'string' && value.trim()) needles.push(value.trim())
+  }
+  add(doc.url)
+  add(doc.filename)
+  for (const size of Object.values(doc.sizes || {})) {
+    add(size?.url)
+    add(size?.filename)
+  }
+
+  const used: string[] = []
+
+  if (needles.length > 0) {
+    const pages = await req.payload.find({
+      collection: 'pages',
+      depth: 0,
+      pagination: false,
+      req,
+      overrideAccess: true,
+    })
+    for (const page of pages.docs) {
+      if (!page.content) continue
+      const json = JSON.stringify(page.content)
+      if (needles.some((needle) => mentions(json, needle))) {
+        used.push(`the page “${page.title}” (/p/${page.slug})`)
+      }
+    }
+  }
+
+  const styles = await req.payload
+    .findGlobal({ slug: 'site-styles', depth: 0, req, overrideAccess: true })
+    .catch(() => null)
+  if (styles?.logo && String(styles.logo) === String(id)) {
+    used.push('the site logo in Site Styles')
+  }
+
+  const courses = await req.payload.find({
+    collection: 'courses',
+    where: { coverImage: { equals: id } },
+    depth: 0,
+    pagination: false,
+    req,
+    overrideAccess: true,
+  })
+  for (const course of courses.docs) used.push(`the cover image of “${course.title}”`)
+
+  const lessons = await req.payload.find({
+    collection: 'lessons',
+    where: { 'attachments.file': { equals: id } },
+    depth: 0,
+    pagination: false,
+    req,
+    overrideAccess: true,
+  })
+  for (const lesson of lessons.docs) used.push(`an attachment on the lesson “${lesson.title}”`)
+
+  if (used.length === 0) return
+
+  const list = used.slice(0, 6).join(', ')
+  const more = used.length > 6 ? `, and ${used.length - 6} more` : ''
+  throw new APIError(
+    `“${doc.filename || 'This file'}” is still in use by ${list}${more}. ` +
+      'Deleting it would leave a broken image there. Change the image in those places first, ' +
+      'then delete this file.',
+    400,
+  )
+}
+
 export const Media: CollectionConfig = {
   slug: 'media',
   admin: {
@@ -43,7 +149,10 @@ export const Media: CollectionConfig = {
     update: ({ req }) => adminOnly({ req }) || can(req.user, 'media:manage') || can(req.user, 'pages:write'),
     delete: ({ req }) => adminOnly({ req }) || can(req.user, 'media:manage'),
   },
-  hooks: { beforeChange: [refuseIfUploadsWouldVanish] },
+  hooks: {
+    beforeChange: [refuseIfUploadsWouldVanish],
+    beforeDelete: [refuseIfStillInUse],
+  },
   upload: {
     // Worksheets and templates alongside images — this doubles as lesson attachments.
     mimeTypes: ['image/*', 'application/pdf', 'application/zip', 'text/csv'],
