@@ -11,6 +11,7 @@ import { requireCapability } from '@/lib/auth'
 import { publicPathFor as pathFor } from '@/lib/builder-page'
 import { can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
+import { SiteBar } from '@/components/SiteBar'
 
 export const metadata = { title: 'Pages' }
 export const dynamic = 'force-dynamic'
@@ -37,16 +38,7 @@ export default async function BuilderIndex() {
 
   return (
     <>
-      <header className="topbar">
-        <div className="topbar-in">
-          <Link href="/admin" className="brand" aria-label="Admin">
-            <strong style={{ fontSize: 16, letterSpacing: '-0.02em' }}>eCommHarvest</strong>
-          </Link>
-          <div className="topbar-right">
-            <span className="stamp">{user.email}</span>
-          </div>
-        </div>
-      </header>
+      <SiteBar user={user} current="pages" />
 
       <main className="slot">
         <div className="slot-in">

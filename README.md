@@ -139,7 +139,9 @@ npm run ghl:verify        # the GHL blocks are safe to paste (needs Chromium)
 npm run test:security     # access boundaries
 npm run test:builder      # admin, roles, and the page builder over HTTP
 npm run test:builder:ui   # the builder driven in a real browser
-npm run test:styles       # brand colours, logo upload, / and /masterclass
+npm run test:styles       # brand colours, / and /masterclass
+npm run test:logo         # one logo, one size, every page
+npm run test:images       # upload from inside the builder, and the page-list nav
 
 npm run test:importmap    # the admin's component registry is complete
 
