@@ -15,9 +15,12 @@ import { payload } from '@/lib/entitlements'
  * the built-in palette. A missing colour must never take the site down.
  */
 
+export type NavLink = { label: string; href: string; emphasis?: boolean }
+
 export type SiteStyles = {
   logoUrl: string | null
   logoText: string
+  navLinks: NavLink[]
   css: string | null
 }
 
@@ -53,7 +56,7 @@ const LOGO_HEIGHTS: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoText: 'eCommHarvest', css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoText: 'eCommHarvest', navLinks: [], css: null }
 
   try {
     const p = await payload()
@@ -74,9 +77,25 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
     declarations.push(`--logo-h:${height}px`)
 
     const logo = styles.logo
+    /**
+     * Only links with both a label and a destination. A half-filled row in the
+     * admin would otherwise render as an empty item or a dead link — worse than
+     * not being there.
+     */
+    const navLinks = (Array.isArray(styles.navLinks) ? styles.navLinks : [])
+      .filter((link): link is { label: string; href: string; emphasis?: boolean | null } =>
+        Boolean(link && typeof link.label === 'string' && link.label.trim() && typeof link.href === 'string' && link.href.trim()),
+      )
+      .map((link) => ({
+        label: link.label.trim(),
+        href: link.href.trim(),
+        emphasis: Boolean(link.emphasis),
+      }))
+
     return {
       logoUrl: typeof logo === 'object' && logo && 'url' in logo ? (logo.url as string) : null,
       logoText: typeof styles.logoText === 'string' && styles.logoText ? styles.logoText : 'eCommHarvest',
+      navLinks,
       css: declarations.length ? `:root{${declarations.join(';')}}` : null,
     }
   } catch {
@@ -94,9 +113,13 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
  * no per-page logo is chosen. The colours do not travel this way: they are
  * already CSS variables, and CSS reaches every block for free.
  */
-export type SiteMetadata = { siteLogoUrl: string | null; siteLogoText: string }
+export type SiteMetadata = {
+  siteLogoUrl: string | null
+  siteLogoText: string
+  siteNavLinks: NavLink[]
+}
 
 export const siteMetadata = async (): Promise<SiteMetadata> => {
-  const { logoUrl, logoText } = await getSiteStyles()
-  return { siteLogoUrl: logoUrl, siteLogoText: logoText }
+  const { logoUrl, logoText, navLinks } = await getSiteStyles()
+  return { siteLogoUrl: logoUrl, siteLogoText: logoText, siteNavLinks: navLinks }
 }

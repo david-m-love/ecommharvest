@@ -1,6 +1,7 @@
 import type { Config, Data } from '@measured/puck'
 import React from 'react'
 
+import { SiteNav } from './SiteNav'
 import { type PickedImage, imageField } from './image-field'
 
 /**
@@ -113,6 +114,7 @@ export type Blocks = {
     logoText?: string
     homeUrl?: string
     rightText?: string
+    showMenu?: boolean
   }
   Hero: {
     eyebrow?: string
@@ -217,11 +219,28 @@ export const config: Config<Blocks> = {
         logoText: { type: 'text', label: 'Name (shown if no logo is uploaded)' },
         homeUrl: { type: 'text', label: 'Logo links to' },
         rightText: { type: 'text', label: 'Small text on the right' },
+        /**
+         * Per page, while the menu's *contents* are global.
+         *
+         * That split is deliberate: a landing page whose job is one button
+         * converts better without a menu offering five ways to leave, and a
+         * normal page reads as broken without one. So the links live in one
+         * place and each page decides whether to show them.
+         */
+        showMenu: {
+          type: 'radio',
+          label: 'Menu',
+          options: [
+            { label: 'Show the site menu', value: true },
+            { label: 'Hide it (best for a landing page)', value: false },
+          ],
+        },
       },
       defaultProps: {
         logoText: 'eCommHarvest',
         homeUrl: 'https://ecommharvest.com/',
         rightText: 'Thursday, September 3 · 11:00 AM MT · free',
+        showMenu: true,
       },
       /**
        * The site logo, or the name as text if none is uploaded.
@@ -234,13 +253,27 @@ export const config: Config<Blocks> = {
        * Height is not a prop: it comes from the --logo-h variable that Site
        * Styles emits, so changing the size changes every page at once.
        */
-      render: ({ logoText, homeUrl, rightText, puck }) => {
-        const site = puck?.metadata as { siteLogoUrl?: string; siteLogoText?: string } | undefined
+      render: ({ logoText, homeUrl, rightText, showMenu, puck }) => {
+        const site = puck?.metadata as
+          | {
+              siteLogoUrl?: string
+              siteLogoText?: string
+              siteNavLinks?: { label: string; href: string; emphasis?: boolean }[]
+            }
+          | undefined
         const url = site?.siteLogoUrl
         const alt = logoText || site?.siteLogoText || ''
+        // `!== false` so a page saved before this field existed still shows the
+        // menu rather than silently losing it.
+        const links = showMenu !== false ? (site?.siteNavLinks ?? []) : []
         return (
         <header className="topbar">
-          <div className="topbar-in">
+          {/*
+            `has-nav` tells the CSS whether to leave room for a menu button on a
+            phone. Without it, a header with no menu would still reserve the
+            space and the centred logo would sit visibly off-centre.
+          */}
+          <div className={links.length ? 'topbar-in has-nav' : 'topbar-in'}>
             <a className="brand" href={homeUrl || '/'} aria-label={logoText || 'Home'}>
               {url ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -263,6 +296,7 @@ export const config: Config<Blocks> = {
                 <span className="stamp">{rightText}</span>
               </div>
             ) : null}
+            <SiteNav links={links} />
           </div>
         </header>
         )

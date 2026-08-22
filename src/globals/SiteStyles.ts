@@ -95,6 +95,48 @@ export const SiteStyles: GlobalConfig = {
       },
     },
     {
+      /**
+       * The site's menu, in one place.
+       *
+       * Here rather than on each Header block for the same reason the logo is:
+       * a menu that differs per page is a menu people stop trusting, and
+       * changing it would mean editing every page. Left empty, the header shows
+       * the logo alone — which is right for a landing page whose only job is one
+       * button, and is how the masterclass page ships.
+       */
+      name: 'navLinks',
+      label: 'Menu links',
+      type: 'array',
+      maxRows: 6,
+      admin: {
+        description:
+          'The menu shown in the header of every page. Leave empty for no menu — a landing page usually wants none. Six at most; more than that stops being a menu.',
+        initCollapsed: false,
+      },
+      fields: [
+        { name: 'label', type: 'text', required: true, admin: { description: 'What it says.' } },
+        {
+          name: 'href',
+          label: 'Links to',
+          type: 'text',
+          required: true,
+          admin: {
+            description:
+              'A path on this site like /masterclass, or a full address like https://go.ecommharvest.com/register.',
+          },
+        },
+        {
+          name: 'emphasis',
+          label: 'Show as a button',
+          type: 'checkbox',
+          defaultValue: false,
+          admin: {
+            description: 'For the one link that matters most — usually the one that takes a booking.',
+          },
+        },
+      ],
+    },
+    {
       type: 'collapsible',
       label: 'Brand colours',
       admin: { initCollapsed: false },

@@ -124,6 +124,24 @@ request, so permissions are never cached in a token.
 Do **not** give a teammate `admin` unless you mean "can do absolutely anything,
 including deleting people and changing my permissions".
 
+## The menu
+
+**Site Styles → Menu links.** Up to six, each with a label and a destination, and
+one of them can be marked "show as a button" — for the link that takes a booking.
+Set once, shown on every page.
+
+Each page then decides *whether* to show it: the Header block has a Menu setting
+with "Show the site menu" and "Hide it (best for a landing page)". That split is
+deliberate. A landing page whose only job is one button converts better without a
+menu offering five ways to leave; an ordinary page reads as broken without one.
+The links live in one place, and the page chooses.
+
+Ships empty, because this site is a landing page today. Add links when there is
+more than one page worth visiting.
+
+On a phone the menu collapses behind a button and the logo moves to the middle of
+the bar.
+
 ## The logo, and why there is only one
 
 The logo is **one image in one place**: Site Styles. Its size is set there too,

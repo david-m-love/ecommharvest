@@ -863,6 +863,26 @@ export interface SiteStyle {
    */
   logoSize: 'small' | 'medium' | 'large' | 'xlarge';
   /**
+   * The menu shown in the header of every page. Leave empty for no menu — a landing page usually wants none. Six at most; more than that stops being a menu.
+   */
+  navLinks?:
+    | {
+        /**
+         * What it says.
+         */
+        label: string;
+        /**
+         * A path on this site like /masterclass, or a full address like https://go.ecommharvest.com/register.
+         */
+        href: string;
+        /**
+         * For the one link that matters most — usually the one that takes a booking.
+         */
+        emphasis?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Buttons, the × in the formula bar, highlights.
    */
   gold: string;
@@ -901,6 +921,14 @@ export interface SiteStylesSelect<T extends boolean = true> {
   logo?: T;
   logoText?: T;
   logoSize?: T;
+  navLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        emphasis?: T;
+        id?: T;
+      };
   gold?: T;
   goldDeep?: T;
   navy?: T;

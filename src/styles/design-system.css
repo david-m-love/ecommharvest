@@ -39,6 +39,31 @@ a{color:inherit}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
 .stamp{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
 
+/* ---- site menu ---- */
+/* Inline on a desktop; behind a button on a phone. One list of links in the
+   markup either way — the CSS decides which presentation is showing, so there is
+   never a second copy to keep in step. */
+.topnav{margin-left:auto;display:flex;align-items:center;gap:26px}
+.navlink{font-size:14.5px;font-weight:700;letter-spacing:-.012em;color:var(--navy);text-decoration:none;
+  border-bottom:1px solid transparent;padding-bottom:2px;transition:border-color .15s ease,color .15s ease;white-space:nowrap}
+.navlink:hover{border-color:var(--gold)}
+/* The emphasised link is a real button, because "book a thing" should not look
+   like "read about a thing". */
+.navlink-cta{background:var(--gold);color:#0F2439;border:none;border-radius:999px;padding:10px 20px;
+  font-weight:800;font-size:13.5px;text-transform:uppercase;letter-spacing:.02em}
+.navlink-cta:hover{background:#B67F26;border-color:transparent}
+.navtoggle{display:none;background:none;border:0;padding:10px;margin:0;cursor:pointer;border-radius:10px}
+.navtoggle:hover{background:var(--wash2)}
+.navbars{display:block;width:22px;height:14px;position:relative}
+.navbars span{position:absolute;left:0;right:0;height:2px;background:var(--navy);border-radius:2px;transition:transform .18s ease,opacity .18s ease}
+.navbars span:nth-child(1){top:0}
+.navbars span:nth-child(2){top:6px}
+.navbars span:nth-child(3){top:12px}
+.navbars-open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.navbars-open span:nth-child(2){opacity:0}
+.navbars-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.navpanel{display:none}
+
 /* ---- buttons ---- */
 .btn{display:inline-block;font-family:var(--font);font-weight:700;font-size:16px;
   background:var(--gold);color:#0F2439;border:none;padding:14px 28px;border-radius:999px;
@@ -166,11 +191,29 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 @media(max-width:760px){
   body{font-size:16px}
   :root{--r:20px}
-  .topbar-in{padding:12px 18px}
+  /* The logo goes to the middle on phones.
+     Three columns rather than flex centring, because the logo has to be centred
+     in the *bar*, not in the space left over beside the menu button — those are
+     different positions, and the second one looks like a mistake. The outer
+     columns match whether or not a button is in the left one, which is what
+     `has-nav` is for: no menu, no reserved space, still centred. */
+  .topbar-in{padding:12px 14px;display:grid;grid-template-columns:1fr auto 1fr;gap:8px}
+  .topbar-in .brand{grid-column:2;grid-row:1;justify-content:center}
+  .topbar-in.has-nav .navtoggle{grid-column:1;grid-row:1;justify-self:start;display:block}
+  .topnav{display:none}
   .legalhead,.legalblock{padding-left:20px;padding-right:20px}
   /* Capped at Medium, not scaled: an "extra large" logo chosen on a desktop
      must not eat a phone screen, but a small one should stay small. */
   .brand img{height:min(var(--logo-h,41px),41px)}
+  /* The panel is positioned, so opening the menu cannot reflow the page behind
+     it. `.topbar` is sticky, which makes it the containing block. */
+  .navpanel{position:absolute;top:100%;left:0;right:0;background:var(--white);
+    border-bottom:1px solid var(--line);box-shadow:0 14px 28px rgba(22,50,79,.08);
+    display:none;flex-direction:column;align-items:stretch;padding:8px 14px 16px}
+  .navpanel-open{display:flex}
+  .navpanel .navlink{padding:15px 4px;border-bottom:1px solid var(--line-2);font-size:16.5px}
+  .navpanel .navlink:last-child{border-bottom:0}
+  .navpanel .navlink-cta{margin-top:12px;text-align:center;padding:15px 20px;border-bottom:0}
   .slot-in{padding:52px 20px}
   .lede{font-size:18px}
   .card-dark{padding:30px 24px}
