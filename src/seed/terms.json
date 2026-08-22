@@ -23,7 +23,7 @@
       "type": "LegalText",
       "props": {
         "id": "seed-legaltext-1",
-        "body": "Draft for review. This document was prepared as a starting point and has not been reviewed by a lawyer. Confirm the bracketed details and have counsel check it before launch.\nThese terms apply to this website and to the free Q4 Revenue Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by [Legal entity name], trading as eCommHarvest (“we”, “us”)."
+        "body": "Draft for review. This document was prepared as a starting point and has not been reviewed by a lawyer. Confirm the bracketed details and have counsel check it before launch.\nThese terms apply to this website and to the free Q4 Revenue Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by Love Your Marketing LLC, an Idaho limited liability company, trading as eCommHarvest (“we”, “us”)."
       }
     },
     {
@@ -95,7 +95,7 @@
       "props": {
         "id": "seed-legaltext-10",
         "heading": "Limitation of liability",
-        "body": "To the fullest extent the law allows, we are not liable for lost profits, lost revenue, lost data, wasted advertising spend, or any indirect or consequential loss arising from the masterclass, the materials, or this site. Where liability cannot be excluded, it is limited to [e.g. USD 100], reflecting that the masterclass is provided free of charge.\nNothing here excludes liability for death or personal injury caused by negligence, for fraud, or for anything else that cannot lawfully be excluded."
+        "body": "To the fullest extent the law allows, we are not liable for lost profits, lost revenue, lost data, wasted advertising spend, or any indirect or consequential loss arising from the masterclass, the materials, or this site. Where liability cannot be excluded, it is limited to USD 100, reflecting that the masterclass is provided free of charge.\nNothing here excludes liability for death or personal injury caused by negligence, for fraud, or for anything else that cannot lawfully be excluded."
       }
     },
     {
@@ -119,7 +119,7 @@
       "props": {
         "id": "seed-legaltext-13",
         "heading": "Governing law",
-        "body": "These terms are governed by the laws of [state / country], and the courts of [jurisdiction] have exclusive jurisdiction over any dispute."
+        "body": "These terms are governed by the laws of the State of Idaho, USA, and the state and federal courts serving Madison County, Idaho have exclusive jurisdiction over any dispute."
       }
     },
     {
@@ -127,7 +127,7 @@
       "props": {
         "id": "seed-legaltext-14",
         "heading": "Contact",
-        "body": "[Legal entity name][Registered address][hello@yourdomain.com]"
+        "body": "Love Your Marketing LLC (trading as eCommHarvest)Rexburg, Idaho, USAprivacy@ecommharvest.com"
       }
     },
     {

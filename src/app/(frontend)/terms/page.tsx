@@ -55,7 +55,7 @@ function HandBuiltTermsPage() {
         <p className="updated">Last updated: 19 August 2026</p>
         <div className="callout"><p><strong>Draft for review.</strong> This document was prepared as a starting point and has not been reviewed by a lawyer. Confirm the bracketed details and have counsel check it before launch.</p></div>
 
-        <p>These terms apply to this website and to the free Q4 Revenue Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by <strong>[Legal entity name]</strong>, trading as eCommHarvest (&ldquo;we&rdquo;, &ldquo;us&rdquo;).</p>
+        <p>These terms apply to this website and to the free Q4 Revenue Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by <strong>Love Your Marketing LLC</strong>, an Idaho limited liability company, trading as <strong>eCommHarvest</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;).</p>
 
         <h2>What you are registering for</h2>
         <p>A free online masterclass of approximately 90 minutes, presented live by David Love with special guest Derek Crimin, hosted in partnership with Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE. Registration is free and no payment details are required.</p>
@@ -91,7 +91,7 @@ function HandBuiltTermsPage() {
         <p>We try to keep the site and the event available but cannot promise either will be uninterrupted or error-free. We may change or withdraw any part of the site at any time.</p>
 
         <h2>Limitation of liability</h2>
-        <p>To the fullest extent the law allows, we are not liable for lost profits, lost revenue, lost data, wasted advertising spend, or any indirect or consequential loss arising from the masterclass, the materials, or this site. Where liability cannot be excluded, it is limited to <strong>[e.g. USD 100]</strong>, reflecting that the masterclass is provided free of charge.</p>
+        <p>To the fullest extent the law allows, we are not liable for lost profits, lost revenue, lost data, wasted advertising spend, or any indirect or consequential loss arising from the masterclass, the materials, or this site. Where liability cannot be excluded, it is limited to <strong>USD 100</strong>, reflecting that the masterclass is provided free of charge.</p>
         <p>Nothing here excludes liability for death or personal injury caused by negligence, for fraud, or for anything else that cannot lawfully be excluded.</p>
 
         <h2>Privacy</h2>
@@ -101,10 +101,10 @@ function HandBuiltTermsPage() {
         <p>We may update these terms. The version published here when you register is the one that applies to you.</p>
 
         <h2>Governing law</h2>
-        <p>These terms are governed by the laws of <strong>[state / country]</strong>, and the courts of <strong>[jurisdiction]</strong> have exclusive jurisdiction over any dispute.</p>
+        <p>These terms are governed by the laws of the <strong>State of Idaho, USA</strong>, and the state and federal courts serving <strong>Madison County, Idaho</strong> have exclusive jurisdiction over any dispute.</p>
 
         <h2>Contact</h2>
-        <p><strong>[Legal entity name]</strong><br />[Registered address]<br /><a href="mailto:[hello@yourdomain.com]">[hello@yourdomain.com]</a></p>
+        <p><strong>Love Your Marketing LLC</strong> (trading as eCommHarvest)<br />Rexburg, Idaho, USA<br /><a href="mailto:privacy@ecommharvest.com">privacy@ecommharvest.com</a></p>
         </div>
       </main>
 

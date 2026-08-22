@@ -56,7 +56,7 @@ function HandBuiltPrivacyPage() {
         <div className="callout"><p><strong>Draft for review.</strong> This document was prepared as a starting point and has not been reviewed by a lawyer. Confirm the bracketed details and have counsel check it before launch.</p></div>
 
         <p>This policy explains what we collect when you register for the Q4 Revenue Playbook masterclass, why we collect it, who it is shared with, and how to get it removed. It covers this website and the emails we send about the masterclass.</p>
-        <p>The site is operated by <strong>[Legal entity name]</strong>, <strong>[registered address]</strong>, trading as eCommHarvest. Questions about anything below go to <a href="mailto:[privacy@yourdomain.com]">[privacy@yourdomain.com]</a>.</p>
+        <p>The site is operated by <strong>Love Your Marketing LLC</strong>, an Idaho limited liability company based in Rexburg, Idaho, USA, trading as <strong>eCommHarvest</strong>. Questions about anything below go to <a href="mailto:privacy@ecommharvest.com">privacy@ecommharvest.com</a>.</p>
 
         <h2>What we collect</h2>
         <p>When you register, the form asks for:</p>
@@ -66,7 +66,7 @@ function HandBuiltPrivacyPage() {
         <li><strong>Your marketing consent.</strong> We record that you ticked the box, so we can show you agreed to hear from us.</li>
         </ul>
         <p>Our server also records technical details that arrive with any web request: your IP address, your browser&rsquo;s user-agent string, the page that referred you, and the time you registered. We use these to prevent spam and abuse of the form.</p>
-        <p>If you attend live, the webinar platform will process your attendance and anything you type into chat or Q&amp;A. That platform is <strong>[webinar platform name]</strong> and its own privacy policy applies to that data.</p>
+        <p>If you attend live, the webinar platform will process your attendance and anything you type into chat or Q&amp;A. The platform is named in your confirmation email, and its own privacy policy applies to what happens inside the session.</p>
 
         <h2>Why we use it</h2>
         <ul>
@@ -77,20 +77,16 @@ function HandBuiltPrivacyPage() {
         <p>We do not sell your personal information, and we do not share it with advertising networks for them to build profiles of you.</p>
 
         <h2>Who we share it with</h2>
-        <p>The masterclass is hosted in partnership with <strong>Tiny 3D Temples</strong>, <strong>B.O.M.Socks</strong>, and <strong>Come Follow Me FHE</strong>. <strong>[Confirm which of the following is true before launch and delete the other.]</strong></p>
-        <ul>
-        <li><em>Option A &mdash; not shared:</em> registration details stay with eCommHarvest. The host brands promote the event but do not receive your details.</li>
-        <li><em>Option B &mdash; shared:</em> if you registered through a host brand&rsquo;s promotion, your name and email are also shared with that brand so they can email you. By registering you consent to that sharing, and you can unsubscribe from each brand separately.</li>
-        </ul>
+        <p>The masterclass is hosted in partnership with <strong>Tiny 3D Temples</strong>, <strong>B.O.M.Socks</strong>, and <strong>Come Follow Me FHE</strong>. Those brands promote the event; <strong>your registration details are not shared with them</strong>. They stay with eCommHarvest.</p>
         <p>We also use service providers who process data on our behalf: our email platform, our webinar platform, our hosting and database provider, and our analytics provider. They may only use the data to provide their service to us.</p>
         <p>We will disclose information if the law requires it, or to protect our rights, safety, or property.</p>
 
         <h2>Cookies and tracking</h2>
-        <p><strong>[Update this section to match what you actually install.]</strong> The site itself sets no cookies and runs no third-party scripts other than Google Fonts, which serves the typefaces and receives your IP address as part of that request.</p>
-        <p>If you run advertising for this event, an advertising pixel such as the Meta pixel may be added to measure registrations. When that is live, this section must name each pixel, say what it does, and explain how to opt out &mdash; and, for visitors in the UK, EU, or a US state that requires it, the pixel must not fire until consent is given.</p>
+        <p>This site sets <strong>no advertising or tracking cookies of its own</strong>. It loads Google Fonts, which serves the typefaces and receives your IP address as part of that request, and it counts page views in a way that does not identify you or follow you to other sites.</p>
+        <p>When we are running paid advertising, a <strong>Meta (Facebook) pixel</strong> may be loaded on the masterclass pages to measure how many people register. It reports that a registration happened; it does not receive your name, email or phone number from us. To opt out, use your <a href="https://accountscenter.facebook.com/ad_preferences" target="_blank" rel="noopener">Meta ad preferences</a>, your browser&rsquo;s tracking protection, or an ad blocker. Where consent is required &mdash; the UK, the EU, and US states whose law requires it &mdash; the pixel does not load until it is given.</p>
 
         <h2>How long we keep it</h2>
-        <p>Registration records are kept for <strong>[e.g. 24 months]</strong> after the event, or until you ask us to delete them. If you unsubscribe, we keep a minimal record of your email address so we can honour that choice and avoid contacting you again.</p>
+        <p>Registration records are kept for <strong>24 months</strong> after the event, or until you ask us to delete them. If you unsubscribe, we keep a minimal record of your email address so we can honour that choice and avoid contacting you again.</p>
 
         <h2>Your choices and rights</h2>
         <ul>
@@ -111,7 +107,12 @@ function HandBuiltPrivacyPage() {
         <p>If we change this policy we will update the date at the top. Material changes affecting how we use data you already gave us will be notified by email.</p>
 
         <h2>Contact</h2>
-        <p><strong>[Legal entity name]</strong><br />[Registered address]<br /><a href="mailto:[privacy@yourdomain.com]">[privacy@yourdomain.com]</a></p>
+        <p>
+          <strong>Love Your Marketing LLC</strong> (trading as eCommHarvest)<br />
+          Rexburg, Idaho, USA<br />
+          <a href="mailto:privacy@ecommharvest.com">privacy@ecommharvest.com</a>
+        </p>
+        <p className="updated">Our full postal address is available on request by email.</p>
         </div>
       </main>
 
