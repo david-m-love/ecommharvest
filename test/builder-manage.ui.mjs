@@ -54,36 +54,42 @@ check(Number.isFinite(createdId), 'a page was created', `id ${createdId}`)
 
 // --- the editor on a phone ----------------------------------------------
 
+/**
+ * This used to check that a small screen showed a notice saying to come back at
+ * a computer. It now checks the opposite: that the editor opens and is usable.
+ * The whole phone editing loop lives in test/mobile-editor.ui.mjs — this is the
+ * one check that belongs here, because the page list links straight into it.
+ */
 console.log('\nthe editor on a small screen')
 {
   const small = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: await ctx.storageState() })
   const p = await small.newPage()
   await p.goto(`${BASE}/builder/${createdId}`, { waitUntil: 'domcontentloaded' })
-  await p.waitForTimeout(4000)
-  const notice = await p.evaluate(() => {
-    const el = document.querySelector('.editor-toosmall')
-    if (!el) return null
-    const style = getComputedStyle(el)
-    return { visible: style.display !== 'none', text: el.textContent.slice(0, 60) }
-  })
-  check(notice?.visible === true, 'it says the builder needs a bigger screen', notice?.text?.trim())
+  await p.waitForSelector('.editor-actionbar', { timeout: 90_000 })
+  await p.waitForTimeout(3000)
+  check((await p.locator('.editor-toosmall').count()) === 0, 'the editor opens on a phone')
   check(
-    (await p.locator('.editor-toosmall a[href="/builder"]').count()) > 0,
-    'and offers a way back to the page list',
+    (await p.locator('.editor-topbar a[href="/builder"]').count()) > 0,
+    'with a way back to the page list',
+  )
+  check(
+    (await p.locator('.editor-btn:has-text("Save")').count()) > 0,
+    'and a way to save what you did',
   )
   await p.close()
   await small.close()
 }
-// And not on a laptop.
+// And a laptop still gets Puck's own layout.
 {
   const wide = await browser.newContext({ viewport: { width: 1440, height: 900 }, storageState: await ctx.storageState() })
   const p = await wide.newPage()
   await p.goto(`${BASE}/builder/${createdId}`, { waitUntil: 'domcontentloaded' })
   await p.waitForSelector('text=Components', { timeout: 90_000 })
-  const hidden = await p.evaluate(
-    () => getComputedStyle(document.querySelector('.editor-toosmall')).display === 'none',
-  )
-  check(hidden, 'and the notice is hidden on a laptop')
+  const hidden = await p.evaluate(() => {
+    const bar = document.querySelector('.editor-actionbar')
+    return !bar || getComputedStyle(bar).display === 'none'
+  })
+  check(hidden, 'and the phone bars stay out of the way on a laptop')
   await p.close()
   await wide.close()
 }

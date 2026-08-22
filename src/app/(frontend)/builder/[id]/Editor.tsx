@@ -8,6 +8,13 @@ import React from 'react'
 import { config, starterContent } from '@/blocks'
 import type { SiteMetadata } from '@/lib/site-styles'
 
+import {
+  type EditorBridge,
+  EditorBridgeContext,
+  MobileEditorShell,
+  MobileFieldActions,
+} from './MobileShell'
+
 /**
  * The drag-and-drop canvas.
  *
@@ -92,6 +99,23 @@ export function Editor({
    */
   const [canvasData, setCanvasData] = React.useState<Partial<Data>>(data)
   const [canvasKey, setCanvasKey] = React.useState(0)
+
+  /**
+   * The canvas is mounted in the browser, not rendered on the server first.
+   *
+   * Puck decides how to lay itself out by reading the window width *during
+   * render*, so on a phone the server sends one layout and the browser draws a
+   * different one — React throws the server's copy away and logs a hydration
+   * error. That was invisible while the editor refused to open below 1024px and
+   * would now greet every phone.
+   *
+   * Nothing is lost by skipping it: a drag-and-drop editor is useless without
+   * JavaScript, so the server's copy was never something anyone could use. The
+   * wait is real, though — this is a large amount of code to load on a phone —
+   * so it says so rather than showing an empty screen.
+   */
+  const [mounted, setMounted] = React.useState(false)
+  React.useEffect(() => setMounted(true), [])
 
   const restore = () => {
     if (!recovered) return
@@ -192,36 +216,40 @@ export function Editor({
     }
   }
 
+  /**
+   * What the phone shell needs to know, gathered in one object.
+   *
+   * A context rather than props: the shell is handed to Puck as an override, and
+   * an override whose identity changes remounts the whole editor — so the
+   * component has to stay the same function while these values move.
+   */
+  const bridge: EditorBridge = {
+    title,
+    status: currentStatus,
+    dirty,
+    saving,
+    message,
+    error,
+    canPublish,
+    publicPath,
+    save: (next, publish) => void save(next, publish),
+    leave: leaveEditor,
+  }
+
+  /**
+   * Memoised once, deliberately.
+   *
+   * Puck rebuilds its internals when `overrides` changes identity, and an
+   * inline object is a new identity on every keystroke: an earlier version of
+   * this remounted the header continuously, so nothing in it could be clicked.
+   */
+  const overrides = React.useMemo(
+    () => ({ puck: MobileEditorShell, fields: MobileFieldActions }),
+    [],
+  )
+
   return (
-    <>
-      {/*
-        Below about 1024px Puck renders a canvas with no Components panel and no
-        Publish button — it is a desktop tool. Silence there reads as a broken
-        page, so this says what is happening and offers the two things that *do*
-        work on a phone: looking at the page, and going back.
-
-        CSS-only: a media query cannot be wrong about the viewport, and a
-        JavaScript check would flash the editor first.
-      */}
-      <div className="editor-toosmall">
-        <div>
-          <p className="eyebrow">Page builder</p>
-          <h2>This needs a bigger screen.</h2>
-          <p>
-            Dragging blocks around needs room — the builder opens properly on a laptop or a
-            desktop. On a phone you can still look at the page and come back to the list.
-          </p>
-          <div className="cta-row">
-            <a className="btn" href={publicPath} target="_blank" rel="noopener">
-              View the page
-            </a>
-            <a className="btn btn-ghost" href="/builder">
-              All pages
-            </a>
-          </div>
-        </div>
-      </div>
-
+    <EditorBridgeContext.Provider value={bridge}>
       {recovered ? (
         <div className="consentbar" role="region" aria-label="Unsaved work found">
           <p>
@@ -240,10 +268,22 @@ export function Editor({
         </div>
       ) : null}
 
+    {!mounted ? (
+      <div className="editor-loading">
+        <p className="eyebrow">Page builder</p>
+        <p>Opening {title}…</p>
+      </div>
+    ) : (
     <Puck
       key={canvasKey}
       config={config}
       data={canvasData}
+      /**
+       * Two overrides, both for phones: one wraps the whole editor to add a bar
+       * above and below it, the other puts move and delete buttons above the
+       * fields. Neither changes anything on a laptop.
+       */
+      overrides={overrides}
       /* The same values the live page renders with, so the logo you see on the
          canvas is the logo that ships. */
       metadata={siteMeta}
@@ -295,10 +335,10 @@ export function Editor({
        */
       renderHeaderActions={({ state }) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* `editornav` distinguishes these from the same links inside the
-              small-screen notice, which is hidden on a laptop — two elements
-              with the same href and only one of them clickable is a trap for
-              anything selecting by href, tests included. */}
+          {/* `editornav` distinguishes this from the same link in the phone
+              shell's top bar, which is hidden on a laptop — two elements with
+              the same href and only one of them clickable is a trap for anything
+              selecting by href, tests included. */}
           <a href="/builder" onClick={leaveEditor} className="editornav" style={navLinkStyle}>
             <span aria-hidden="true">&larr;</span> All pages
           </a>
@@ -319,10 +359,12 @@ export function Editor({
               View live <span aria-hidden="true">&#8599;</span>
             </a>
           ) : null}
+          {/* Unsaved work outranks "Saved." — see the note in MobileShell.tsx. */}
           <span style={{ fontSize: 12, color: error ? '#B4241C' : '#4E627A' }}>
             {error ||
-              message ||
-              (dirty ? 'Unsaved changes' : currentStatus === 'published' ? 'Live' : 'Draft')}
+              (dirty
+                ? 'Unsaved changes'
+                : message || (currentStatus === 'published' ? 'Live' : 'Draft'))}
           </span>
           {/*
             The canvas edits layout; the name, URL and search description live on
@@ -357,7 +399,8 @@ export function Editor({
         </div>
       )}
     />
-    </>
+    )}
+    </EditorBridgeContext.Provider>
   )
 }
 

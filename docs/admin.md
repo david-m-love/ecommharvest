@@ -298,6 +298,36 @@ is where people give up.
 Drag a block from the left. Click anything on the canvas to edit its fields on
 the right. **Save draft** whenever; **Publish** when it should be live.
 
+### On a phone
+
+The same editor, laid out for a thumb. There used to be a notice here saying to
+come back at a computer; there is not any more.
+
+| To | Do this |
+| --- | --- |
+| Edit a section | Tap it on the page. Its settings slide up over the page. |
+| Finish editing it | **Done** |
+| Add a section | **+ Add block**, then tap the one you want. It lands at the bottom of the page with its own settings open. |
+| Move a section | Select it, then **↑ Up** / **↓ Down** above its settings — no dragging. |
+| Delete a section | Select it, then **Delete**. It asks first. |
+| Undo | The **↶** arrow, top right. |
+| Save, publish | The buttons along the bottom, always there. |
+| Go back | **← Pages**, top left. It asks first if there is unsaved work. |
+
+Three differences from the laptop, all deliberate:
+
+- **Panels cover the page instead of sitting beside it.** Puck's own layout puts
+  them in columns either side of the canvas, which on a 390px screen leaves the
+  page 204px to live in.
+- **Blocks are added by tapping, not dragging.** You cannot drag out of a panel
+  that is covering the thing you are dragging onto — and tapping is easier
+  anyway.
+- **Renaming a page and changing its URL is not here.** That is `/admin` →
+  **Pages**, which works on a phone too. The bars are for the page's layout.
+
+Landscape works and gives the page more height. Anything wider than 900px gets
+the laptop layout.
+
 ### The blocks
 
 | Block | For |
@@ -449,7 +479,8 @@ stylesheet is loading. Serif text on a white page means it is not.
 npm run dev                                  # in another terminal, migrated and seeded
 npm run test:builder                         # 51 checks, HTTP: permissions and the API
 npm run test:builder:ui                      # 35 checks, real browser: the editor itself
-npm run test:manage                          # 15 checks: duplicate, delete, small screens, recovery
+npm run test:manage                          # 16 checks: duplicate, delete, small screens, recovery
+npm run test:mobile                          # 39 checks: the whole editing loop at 390×844
 npm run test:styles                          # 16 checks: colours reaching both pages
 npm run test:logo                            #  9 checks: one logo, four sizes, capped on phones
 npm run test:nav                             # 15 checks: the menu, desktop and phone
