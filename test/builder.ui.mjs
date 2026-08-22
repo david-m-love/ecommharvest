@@ -166,6 +166,19 @@ check(
   'an edited page says it has unsaved changes',
 )
 
+/**
+ * In the header, where it can be seen. The first version of this put the
+ * controls in a row of their own above the header, and Puck's full-height grid
+ * placed that row at the bottom of the window — present, clickable, and
+ * invisible.
+ */
+const backBox = await backLink.first().boundingBox()
+check(
+  Boolean(backBox && backBox.y < 120),
+  'the way back is at the top of the screen, not the bottom',
+  backBox ? `y=${Math.round(backBox.y)}` : 'not rendered',
+)
+
 let leavePrompt = null
 const onDialog = async (dialog) => {
   leavePrompt = dialog.message()

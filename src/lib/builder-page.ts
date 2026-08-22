@@ -78,3 +78,20 @@ export const builderMetadata = (
     robots: page.noindex || page.isDraft ? { index: false, follow: false } : fallback.robots,
   }
 }
+
+/**
+ * Where a page actually lives.
+ *
+ * Four slugs own a route of their own; everything else is served under /p/.
+ * Defined here because three places need the same answer — the page list, the
+ * editor's "View live" link, and the redirect that stops /p/home serving a
+ * second copy of the home page — and three copies of this map would drift.
+ */
+export const OWN_ROUTES: Record<string, string> = {
+  home: '/',
+  masterclass: '/masterclass',
+  privacy: '/privacy',
+  terms: '/terms',
+}
+
+export const publicPathFor = (slug: string): string => OWN_ROUTES[slug] ?? `/p/${slug}`

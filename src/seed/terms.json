@@ -1,0 +1,155 @@
+{
+  "root": {},
+  "content": [
+    {
+      "type": "Header",
+      "props": {
+        "id": "seed-header-legal",
+        "logoText": "eCommHarvest",
+        "homeUrl": "https://ecommharvest.com/",
+        "rightText": ""
+      }
+    },
+    {
+      "type": "PageHeading",
+      "props": {
+        "id": "seed-pageheading-0",
+        "eyebrow": "Legal",
+        "heading": "Terms & Conditions",
+        "body": "Last updated: 19 August 2026"
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-1",
+        "body": "Draft for review. This document was prepared as a starting point and has not been reviewed by a lawyer. Confirm the bracketed details and have counsel check it before launch.\nThese terms apply to this website and to the free Q4 Revenue Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by [Legal entity name], trading as eCommHarvest (“we”, “us”)."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-2",
+        "heading": "What you are registering for",
+        "body": "A free online masterclass of approximately 90 minutes, presented live by David Love with special guest Derek Crimin, hosted in partnership with Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE. Registration is free and no payment details are required.\nWe will send a replay to registrants after the event. We aim to run the session as scheduled, but we may change the date, time, running order, presenters, or content, or cancel the event. If we cancel, we will tell registrants by email.\nDuring the session we may describe our paid services. You are never obliged to buy anything."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-3",
+        "heading": "No guarantee of results",
+        "body": "This is the most important thing on this page. The masterclass teaches strategy and planning methods. It is not a promise of any particular outcome.\n- Nothing we say is a guarantee, projection, or assurance of revenue, profit, average order value, conversion rate, cost per acquisition, or any other result.\n- Any figures, examples, or case studies are illustrations of what happened in specific circumstances. They are not typical, average, or promised results.\n- Your results depend on factors outside our control, including your products, pricing, margins, market, competition, ad platform behaviour, execution, and effort.\n- You are solely responsible for the decisions you make in your business, including how much you spend on advertising."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-4",
+        "heading": "Not professional advice",
+        "body": "The content is general commercial education. It is not legal, tax, accounting, financial, or investment advice, and it does not create a client relationship. Take professional advice on your own circumstances before acting."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-5",
+        "heading": "Recording",
+        "body": "The session will be recorded, and the recording may be distributed to registrants and reused in our marketing. If you speak, appear on camera, or post in chat or Q&A, that contribution may form part of the recording. If you would rather not appear, keep your camera and microphone off and do not post — you can still attend and watch."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-6",
+        "heading": "Materials and intellectual property",
+        "body": "The masterclass content, slides, templates, worksheets, recordings, and everything on this website belong to us or our licensors. You may use them for your own business, internally. You may not resell them, republish them, share the replay link or materials publicly, or present them as your own work without our written permission.\nTrade marks and logos belonging to Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE remain the property of those brands and are used here with their permission as event hosts."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-7",
+        "heading": "Acceptable use",
+        "body": "Do not register under a false identity, submit someone else’s details without their permission, attempt to disrupt or overload the site or the event, scrape or bulk-download the site, or behave abusively toward presenters or other attendees. We may remove anyone from the event and refuse future registrations."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-8",
+        "heading": "Third-party links and platforms",
+        "body": "The site links to the host brands’ stores, and the event runs on a third-party webinar platform. We do not control those sites and services and are not responsible for their content, their availability, or their handling of your data. Their own terms apply when you use them."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-9",
+        "heading": "Availability",
+        "body": "We try to keep the site and the event available but cannot promise either will be uninterrupted or error-free. We may change or withdraw any part of the site at any time."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-10",
+        "heading": "Limitation of liability",
+        "body": "To the fullest extent the law allows, we are not liable for lost profits, lost revenue, lost data, wasted advertising spend, or any indirect or consequential loss arising from the masterclass, the materials, or this site. Where liability cannot be excluded, it is limited to [e.g. USD 100], reflecting that the masterclass is provided free of charge.\nNothing here excludes liability for death or personal injury caused by negligence, for fraud, or for anything else that cannot lawfully be excluded."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-11",
+        "heading": "Privacy",
+        "body": "How we handle your information is set out in our Privacy Policy, which forms part of these terms."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-12",
+        "heading": "Changes to these terms",
+        "body": "We may update these terms. The version published here when you register is the one that applies to you."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-13",
+        "heading": "Governing law",
+        "body": "These terms are governed by the laws of [state / country], and the courts of [jurisdiction] have exclusive jurisdiction over any dispute."
+      }
+    },
+    {
+      "type": "LegalText",
+      "props": {
+        "id": "seed-legaltext-14",
+        "heading": "Contact",
+        "body": "[Legal entity name][Registered address][hello@yourdomain.com]"
+      }
+    },
+    {
+      "type": "Footer",
+      "props": {
+        "id": "seed-footer-15",
+        "copyright": "© 2026 eCommHarvest",
+        "links": [
+          {
+            "label": "Masterclass",
+            "href": "https://go.ecommharvest.com/masterclass"
+          },
+          {
+            "label": "Privacy Policy",
+            "href": "https://ecommharvest.com/privacy"
+          },
+          {
+            "label": "Terms & Conditions",
+            "href": "https://ecommharvest.com/terms"
+          }
+        ]
+      }
+    }
+  ]
+}

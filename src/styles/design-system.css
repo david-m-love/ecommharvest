@@ -166,6 +166,7 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   body{font-size:16px}
   :root{--r:20px}
   .topbar-in{padding:12px 18px}
+  .legalhead,.legalblock{padding-left:20px;padding-right:20px}
   /* Capped, not scaled: an "extra large" logo chosen on a desktop must not eat
      a phone screen, but a small one should stay small. */
   .brand img{height:min(var(--logo-h,34px),34px)}
@@ -219,14 +220,22 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 
 /* ---- legal / content pages ---- */
 .legal{max-width:760px;margin:0 auto;padding:64px 32px 88px}
-.legal h1{font-size:clamp(30px,4vw,42px);max-width:24ch;margin:0 0 10px}
-.legal .updated{font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 40px}
-.legal h2{font-size:clamp(20px,2.3vw,25px);margin:44px 0 14px}
-.legal h3{font-size:17px;margin:28px 0 8px}
-.legal p,.legal li{font-size:16.5px;line-height:1.65;color:var(--brown)}
-.legal ul{padding-left:22px;margin:0 0 20px}
-.legal li{margin:0 0 9px}
-.legal a{color:var(--gold-deep);text-underline-offset:2px}
+/* The same document typography, whether the page is hand-built (.legal wraps
+   the whole thing) or assembled in the page builder (each block carries
+   .legalhead or .legalblock). Identical output either way, which matters
+   because /privacy falls back to the hand-built version if the builder page is
+   ever missing — the two must not look like different sites. */
+.legalhead,.legalblock{max-width:760px;margin:0 auto;padding:0 32px}
+.legalhead{padding-top:64px}
+.legalblock:last-child{padding-bottom:88px}
+.legal h1,.legalhead h1{font-size:clamp(30px,4vw,42px);max-width:24ch;margin:0 0 10px}
+.legal .updated,.legalhead .updated{font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 40px}
+.legal h2,.legalblock h2{font-size:clamp(20px,2.3vw,25px);margin:44px 0 14px}
+.legal h3,.legalblock h3{font-size:17px;margin:28px 0 8px}
+.legal p,.legal li,.legalblock p,.legalblock li{font-size:16.5px;line-height:1.65;color:var(--brown)}
+.legal ul,.legalblock ul{padding-left:22px;margin:0 0 20px}
+.legal li,.legalblock li{margin:0 0 9px}
+.legal a,.legalblock a{color:var(--gold-deep);text-underline-offset:2px}
 .legal .callout{background:var(--cream);border-radius:var(--r-sm);padding:20px 24px;margin:0 0 34px}
 .legal .callout p{margin:0;font-size:15.5px}
 .backlink{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.07em;

@@ -7,6 +7,7 @@ import { type PageData, config } from '@/blocks'
 import { getCurrentUser } from '@/lib/auth'
 import { can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
+import { OWN_ROUTES } from '@/lib/builder-page'
 import { siteMetadata } from '@/lib/site-styles'
 
 /**
@@ -27,7 +28,7 @@ import { siteMetadata } from '@/lib/site-styles'
  * URL — duplicate content, and two addresses to keep straight. Redirecting means
  * every page has exactly one address.
  */
-const OWN_ROUTE: Record<string, string> = { home: '/', masterclass: '/masterclass' }
+/** Shared with the page list and the editor — see `OWN_ROUTES`. */
 
 const findPage = async (slug: string) => {
   const p = await payload()
@@ -73,7 +74,7 @@ export async function generateMetadata({
 
 export default async function BuiltPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  if (OWN_ROUTE[slug]) permanentRedirect(OWN_ROUTE[slug])
+  if (OWN_ROUTES[slug]) permanentRedirect(OWN_ROUTES[slug])
   const page = await findPage(slug)
   if (!page || !(await visible(page))) notFound()
 

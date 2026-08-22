@@ -160,92 +160,15 @@ const restored = await (async () => {
 })()
 check(restored === 'rgb(201, 145, 50)', 'and it can be changed back', `${restored}`)
 
-// --- upload an image, then pick it in the builder ------------------------
-
-console.log('\nupload a logo, then choose it in the builder')
-
-// A tiny real PNG, written to disk so the admin's file input has something to
-// take. Content does not matter; that it round-trips does.
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKUlEQVR42mNkYPjPwMDAyMDAwMgABYwMUMDIAAWMDFDAyAAFjAxQwMgABQBnAAeQm3rHAAAAAElFTkSuQmCC',
-  'base64',
-)
-const upload = '/tmp/test-logo.png'
-writeFileSync(upload, PNG)
-
-await page.goto(`${BASE}/admin/collections/media/create`, { waitUntil: 'domcontentloaded' })
-await page.waitForTimeout(2000)
-const fileInput = page.locator('input[type=file]').first()
-check((await fileInput.count()) > 0, 'the Media upload form is reachable')
-await fileInput.setInputFiles(upload)
-await page.waitForTimeout(1500)
-const altField = page.locator('#field-alt')
-if (await altField.count()) await altField.fill('Test logo')
-await page.click('#action-save')
-await page.waitForTimeout(5000)
-
-const media = await (
-  await ctx.request.get(`${BASE}/api/media?limit=5&sort=-createdAt`, { headers: { Origin: BASE } })
-).json()
-const uploaded = media.docs?.[0]
-check(Boolean(uploaded?.url), 'the image uploaded and has a URL', uploaded?.url || 'none')
-
-// Now pick it on the home page's Header block, through the picker.
-const homeDoc = await (
-  await ctx.request.get(`${BASE}/api/pages?where[slug][equals]=home`, { headers: { Origin: BASE } })
-).json()
-const homeId = homeDoc.docs?.[0]?.id
-
-await page.goto(`${BASE}/builder/${homeId}`, { waitUntil: 'domcontentloaded' })
-await page.waitForSelector('text=Components', { timeout: 90_000 })
-await page.waitForTimeout(3000)
-
-// Select the Header block by clicking the logo bar on the canvas.
-await page.locator('.topbar').first().click()
-await page.waitForTimeout(1500)
 /**
- * Located by component, not by label text.
+ * Uploading a logo and putting it on the pages is covered by test:logo.
  *
- * Puck's external field labels its button with the placeholder when nothing is
- * chosen and with the selected item's summary afterwards — so matching "Choose
- * an image" passed on a fresh page and failed the second time the test ran,
- * which is a test bug, not a product one.
+ * It used to be tested here by driving the Header block's own image picker.
+ * That picker is gone: having a logo on the block *and* a size in Site Styles
+ * meant the logo was neither global nor local, and no one could predict what
+ * changing either would do. The logo is now one thing in one place, and
+ * test:logo measures it on every page.
  */
-const pickerButton = page.locator('[class*="ExternalInput"] button').first()
-check((await pickerButton.count()) > 0, 'the Header block offers an image picker')
-
-if ((await pickerButton.count()) > 0) {
-  await pickerButton.click()
-  await page.waitForTimeout(2500)
-  const row = page.locator('tbody tr').first()
-  const rows = await page.locator('tbody tr').count()
-  check(rows > 0, 'the picker lists images from the Media library', `${rows} row(s)`)
-  if (rows > 0) {
-    await row.click()
-    await page.waitForTimeout(2000)
-    const onCanvas = await page.locator('.topbar img').count()
-    check(onCanvas > 0, 'the chosen logo appears on the canvas')
-  }
-}
-
-/**
- * Already-published pages show "Update live page" rather than "Publish" — the
- * editor labels the action by what it will do, so the test has to accept both.
- */
-await page
-  .locator('button')
-  .filter({ hasText: /^(Publish|Update live page)$/ })
-  .first()
-  .click()
-await page.waitForTimeout(4500)
-check((await page.locator('text=Published.').count()) > 0, 'the page republishes')
-
-const liveHome = await (await ctx.request.get(`${BASE}/`)).text()
-check(
-  uploaded?.url ? liveHome.includes(uploaded.url) : false,
-  'the logo is on the live home page at /',
-  uploaded?.url,
-)
 
 await browser.close()
 console.log(failed === 0 ? `\nall ${passed} checks passed` : `\n${failed} of ${passed + failed} checks failed`)

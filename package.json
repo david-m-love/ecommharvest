@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "payload generate:importmap && next build",
     "start": "next start",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",

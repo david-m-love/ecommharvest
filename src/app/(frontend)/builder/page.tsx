@@ -2,16 +2,15 @@ import Link from 'next/link'
 import React from 'react'
 
 import { requireCapability } from '@/lib/auth'
+/**
+ * Some pages live at their own URLs rather than under /p/, so the list has to
+ * show where they actually are — otherwise the View button sends you to a
+ * redirect and the path shown is wrong. One shared map, so this cannot drift
+ * from what the editor and the redirects believe.
+ */
+import { publicPathFor as pathFor } from '@/lib/builder-page'
 import { can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
-
-/**
- * The home page and the masterclass page live at their own URLs rather than
- * under /p/, so the list has to show where they actually are — otherwise the
- * View button sends you to a redirect and the path shown is wrong.
- */
-const pathFor = (slug: string) =>
-  slug === 'home' ? '/' : slug === 'masterclass' ? '/masterclass' : `/p/${slug}`
 
 export const metadata = { title: 'Pages' }
 export const dynamic = 'force-dynamic'

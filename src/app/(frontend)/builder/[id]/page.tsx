@@ -5,6 +5,7 @@ import React from 'react'
 import { requireCapability } from '@/lib/auth'
 import { can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
+import { publicPathFor } from '@/lib/builder-page'
 import { siteMetadata } from '@/lib/site-styles'
 
 import { Editor } from './Editor'
@@ -42,6 +43,7 @@ export default async function BuilderPage({ params }: { params: Promise<{ id: st
       canPublish={can(user, 'pages:publish')}
       initialData={(page.content as Data | null) ?? null}
       siteMeta={await siteMetadata()}
+      publicPath={publicPathFor(page.slug)}
     />
   )
 }

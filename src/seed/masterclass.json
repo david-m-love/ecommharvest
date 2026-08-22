@@ -184,6 +184,9 @@
         "id": "seed-speakers-9",
         "eyebrow": "Who you’re learning from",
         "heading": "Live with David Love and special guest Derek Crimin.",
+        "ctaLabel": "Save my seat",
+        "ctaHref": "https://go.ecommharvest.com/register",
+        "ctaMicro": "Hosted by Tiny 3D Temples, B.O.M.Socks & Come Follow Me FHE",
         "people": [
           {
             "label": "Presenter",

@@ -1,12 +1,38 @@
+import { Render } from '@measured/puck/rsc'
 import type { Metadata } from 'next'
+import React from 'react'
 
-export const metadata: Metadata = {
+import { config } from '@/blocks'
+import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
+import { siteMetadata } from '@/lib/site-styles'
+
+const FALLBACK: Metadata = {
   title: 'Terms & Conditions',
   description: 'Terms and conditions for the eCommHarvest Q4 Revenue Playbook masterclass.',
   alternates: { canonical: '/terms' },
 }
 
-export default function TermsPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  return builderMetadata(await loadBuilderPage('terms'), FALLBACK)
+}
+
+/**
+ * Editable in the page builder, with the original hand-built version below as a
+ * fallback.
+ *
+ * A legal document that needs a developer and a deploy to fix a clause is a
+ * document that stays wrong. The fallback stays because this page has to render
+ * even if the builder page is missing — mid-deploy, before the migration, or if
+ * someone deletes it — and a privacy policy that 404s is worse than one that is
+ * a version behind.
+ */
+export default async function TermsRoute() {
+  const page = await loadBuilderPage('terms')
+  if (page) return <Render config={config} data={page.data} metadata={await siteMetadata()} />
+  return <HandBuiltTermsPage />
+}
+
+function HandBuiltTermsPage() {
   return (
     <>
       <header className="topbar">

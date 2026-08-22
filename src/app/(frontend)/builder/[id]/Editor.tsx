@@ -23,6 +23,7 @@ export function Editor({
   canPublish,
   initialData,
   siteMeta,
+  publicPath,
 }: {
   pageId: number
   title: string
@@ -32,6 +33,14 @@ export function Editor({
   initialData: Data | null
   /** Global values the blocks need — currently the site logo. */
   siteMeta: SiteMetadata
+  /**
+   * Where this page is on the public site.
+   *
+   * Passed in rather than derived from the slug, because `/masterclass` and
+   * `/privacy` own their routes while everything else lives under `/p/`. The
+   * editor guessing would eventually guess wrong and send you to a redirect.
+   */
+  publicPath: string
 }) {
   const router = useRouter()
   const [saving, setSaving] = React.useState(false)
@@ -113,7 +122,7 @@ export function Editor({
          canvas is the logo that ships. */
       metadata={siteMeta}
       headerTitle={title}
-      headerPath={`/p/${slug}`}
+      headerPath={publicPath}
       /**
        * Render in the same document rather than Puck's default iframe.
        *
@@ -136,35 +145,35 @@ export function Editor({
         setDirty(JSON.stringify(next) !== savedRef.current)
       }}
       /**
-       * A way out.
+       * Navigation lives in the header's action row, beside the publish
+       * controls.
        *
-       * Puck's header has no back control, so without this the editor is a
-       * one-way door: the only exits are the browser's back button and typing a
-       * URL. `overrides.header` hands back the default header as children, so
-       * this adds a row above it rather than reimplementing it — the publish
-       * controls, viewport buttons and undo history all keep working.
+       * The first attempt put a row of its own above the header via
+       * `overrides.header`. It rendered — at y=876, the bottom of the window,
+       * because Puck's shell is a full-height grid and an extra child becomes
+       * its last row. A back button nobody can find is the bug it was meant to
+       * fix, so these belong in the header that already exists.
        */
-      overrides={{
-        header: ({ children }) => (
-          <>
-            <div style={backBarStyle}>
-              <a href="/builder" onClick={leaveEditor} style={backLinkStyle}>
-                <span aria-hidden="true">&larr;</span> All pages
-              </a>
-              {dirty ? (
-                <span style={{ font: '500 12px/1 "Plus Jakarta Sans", system-ui', color: '#8B6423' }}>
-                  Unsaved changes
-                </span>
-              ) : null}
-            </div>
-            {children}
-          </>
-        ),
-      }}
       renderHeaderActions={({ state }) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <a href="/builder" onClick={leaveEditor} style={navLinkStyle}>
+            <span aria-hidden="true">&larr;</span> All pages
+          </a>
+          {/*
+            Opens in a new tab, deliberately: checking the live page is something
+            you do *while* editing, and navigating away from the canvas would
+            mean finding your place again. A draft has no public page yet, so the
+            link only appears once there is one.
+          */}
+          {currentStatus === 'published' ? (
+            <a href={publicPath} target="_blank" rel="noopener" style={navLinkStyle}>
+              View live <span aria-hidden="true">&#8599;</span>
+            </a>
+          ) : null}
           <span style={{ fontSize: 12, color: error ? '#B4241C' : '#4E627A' }}>
-            {error || message || (currentStatus === 'published' ? 'Live' : 'Draft')}
+            {error ||
+              message ||
+              (dirty ? 'Unsaved changes' : currentStatus === 'published' ? 'Live' : 'Draft')}
           </span>
           {/*
             The canvas edits layout; the name, URL and search description live on
@@ -202,23 +211,18 @@ export function Editor({
   )
 }
 
-const backBarStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: 12,
-  padding: '10px 16px',
-  background: '#FBF8F3',
-  borderBottom: '1px solid #DCE5EC',
-}
 
-const backLinkStyle: React.CSSProperties = {
+const navLinkStyle: React.CSSProperties = {
   font: '600 13px/1 "Plus Jakarta Sans", system-ui, sans-serif',
   color: '#16324F',
   textDecoration: 'none',
   display: 'inline-flex',
   alignItems: 'center',
-  gap: 8,
+  gap: 6,
+  // The header is a tight flex row: without this, "All pages" wraps onto two
+  // lines and the arrow on "View live" lands on a line of its own.
+  whiteSpace: 'nowrap',
+  flex: 'none',
 }
 
 const buttonStyle = (primary: boolean): React.CSSProperties => ({

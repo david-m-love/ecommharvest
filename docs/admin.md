@@ -124,6 +124,24 @@ request, so permissions are never cached in a token.
 Do **not** give a teammate `admin` unless you mean "can do absolutely anything,
 including deleting people and changing my permissions".
 
+## The logo, and why there is only one
+
+The logo is **one image in one place**: Site Styles. Its size is set there too,
+by name — Small, Medium, Large, Extra large — and both apply to every page that
+has a Header block. There is no per-page logo and no per-page size.
+
+That is a correction, not a limitation. The Header block used to carry its own
+logo picker while the *size* came from Site Styles, which made the logo neither
+global nor local: changing the size appeared to do nothing on pages that had
+picked their own image, dragging a header onto a new page produced a different
+logo again, and no one could say what either control would do. One logo, one
+size, four sizes to choose from.
+
+Sizes are names rather than a number for the same reason there are no padding
+controls: 26/34/46/60px all look deliberate, and a box that accepts 200 wrecks a
+sticky header. Tall logos are capped on phones so a desktop choice cannot eat a
+small screen.
+
 ## Site Styles — the logo and the colours
 
 `/admin` → **Site** → **Site Styles**. One screen, and it applies to every page.

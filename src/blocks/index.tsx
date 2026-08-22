@@ -58,6 +58,48 @@ const Cta = ({ label, href, large }: { label?: string; href?: string; large?: bo
   )
 }
 
+/**
+ * Document body: paragraphs, and lists where a line starts with a dash.
+ *
+ * Legal text alternates between the two — "the form asks for:", then the list,
+ * then two more paragraphs — and order carries meaning. An earlier version kept
+ * lists in a separate field, which meant every list rendered *after* every
+ * paragraph in its section: all the words present, the sense rearranged. One
+ * field in document order is both more faithful and less to explain.
+ */
+const DocumentBody = ({ text }: { text?: string }) => {
+  const lines = (text || '').split('\n')
+  const parts: { list: boolean; items: string[] }[] = []
+
+  for (const raw of lines) {
+    const line = raw.trim()
+    if (!line) continue
+    const isBullet = /^[-•*]\s+/.test(line)
+    const content = isBullet ? line.replace(/^[-•*]\s+/, '') : line
+    const last = parts[parts.length - 1]
+    // Consecutive bullets are one list; consecutive plain lines are separate
+    // paragraphs, because the blank line between them has already been dropped.
+    if (last && last.list && isBullet) last.items.push(content)
+    else parts.push({ list: isBullet, items: [content] })
+  }
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.list ? (
+          <ul key={i}>
+            {part.items.map((item, j) => (
+              <li key={j}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          part.items.map((item, j) => <p key={`${i}-${j}`}>{item}</p>)
+        ),
+      )}
+    </>
+  )
+}
+
 const linkField = {
   type: 'text' as const,
   label: 'Button link',
@@ -68,7 +110,6 @@ const linkField = {
 
 export type Blocks = {
   Header: {
-    logo?: PickedImage
     logoText?: string
     homeUrl?: string
     rightText?: string
@@ -107,6 +148,9 @@ export type Blocks = {
   Speakers: {
     eyebrow?: string
     heading?: string
+    ctaLabel?: string
+    ctaHref?: string
+    ctaMicro?: string
     people?: {
       label?: string
       name?: string
@@ -124,6 +168,8 @@ export type Blocks = {
     ctaHref?: string
     note?: string
   }
+  PageHeading: { eyebrow?: string; heading?: string; body?: string }
+  LegalText: { heading?: string; body?: string }
   Prose: { eyebrow?: string; heading?: string; body?: string; background?: 'white' | 'wash' }
   Footer: { copyright?: string; links?: { label: string; href: string }[]; note?: string }
 }
@@ -141,12 +187,12 @@ export const config: Config<Blocks> = {
   categories: {
     'Top of page': {
       title: 'Top of page',
-      components: ['Header', 'Hero', 'HostedBy'],
+      components: ['Header', 'Hero', 'PageHeading', 'HostedBy'],
       defaultExpanded: true,
     },
     Body: {
       title: 'Body sections',
-      components: ['DarkCard', 'BulletList', 'FormulaBar', 'CardRow', 'Speakers', 'Prose'],
+      components: ['DarkCard', 'BulletList', 'FormulaBar', 'CardRow', 'Speakers', 'Prose', 'LegalText'],
       defaultExpanded: true,
     },
     'Bottom of page': { title: 'Bottom of page', components: ['CtaCard', 'Footer'] },
@@ -154,12 +200,21 @@ export const config: Config<Blocks> = {
   components: {
     Header: {
       label: 'Header (logo bar)',
+      /**
+       * No logo picker here, on purpose.
+       *
+       * There used to be one, and it made the logo neither global nor local: a
+       * page could carry its own image while the *size* came from Site Styles,
+       * so changing the size appeared to do nothing on some pages and
+       * everything on others, and adding this block to a new page produced a
+       * different logo again. Impossible to reason about, and the confusion was
+       * entirely self-inflicted.
+       *
+       * The logo is now one thing in one place — Site Styles — for every page.
+       * This block chooses where it sits and what goes beside it.
+       */
       fields: {
-        logo: imageField(
-          'Logo (optional)',
-          'Leave empty to use the site logo from Site Styles — that is the one place to change it for every page. Pick one here only if this page needs a different logo.',
-        ),
-        logoText: { type: 'text', label: 'Name (used if no logo is chosen)' },
+        logoText: { type: 'text', label: 'Name (shown if no logo is uploaded)' },
         homeUrl: { type: 'text', label: 'Logo links to' },
         rightText: { type: 'text', label: 'Small text on the right' },
       },
@@ -169,10 +224,9 @@ export const config: Config<Blocks> = {
         rightText: 'Thursday, September 3 · 11:00 AM MT · free',
       },
       /**
-       * The logo resolves in one order: this block's own choice, then the site
-       * logo from Site Styles, then the name as text.
+       * The site logo, or the name as text if none is uploaded.
        *
-       * The site logo arrives as Puck metadata rather than being read here,
+       * The logo arrives as Puck metadata rather than being read here,
        * because a block's render is a plain synchronous component — it cannot
        * query the database. Whoever renders the page passes it in, which also
        * keeps the builder canvas showing the same logo the live page will.
@@ -180,10 +234,10 @@ export const config: Config<Blocks> = {
        * Height is not a prop: it comes from the --logo-h variable that Site
        * Styles emits, so changing the size changes every page at once.
        */
-      render: ({ logo, logoText, homeUrl, rightText, puck }) => {
+      render: ({ logoText, homeUrl, rightText, puck }) => {
         const site = puck?.metadata as { siteLogoUrl?: string; siteLogoText?: string } | undefined
-        const url = logo?.url || site?.siteLogoUrl
-        const alt = logo?.alt || logoText || site?.siteLogoText || ''
+        const url = site?.siteLogoUrl
+        const alt = logoText || site?.siteLogoText || ''
         return (
         <header className="topbar">
           <div className="topbar-in">
@@ -192,7 +246,16 @@ export const config: Config<Blocks> = {
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={url} alt={alt} />
               ) : (
-                <strong style={{ fontSize: 18, letterSpacing: '-0.02em' }}>{logoText}</strong>
+                <strong
+                  style={{
+                    // Tied to the same --logo-h Site Styles sets, so "Logo size"
+                    // means one thing whether the logo is a picture or a name.
+                    fontSize: 'calc(var(--logo-h, 34px) * 0.55)',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  {logoText}
+                </strong>
               )}
             </a>
             {rightText ? (
@@ -504,6 +567,9 @@ export const config: Config<Blocks> = {
       fields: {
         eyebrow: { type: 'text', label: 'Eyebrow' },
         heading: { type: 'textarea', label: 'Heading' },
+        ctaLabel: { type: 'text', label: 'Button text' },
+        ctaHref: linkField,
+        ctaMicro: { type: 'text', label: 'Small text beside the button' },
         people: {
           type: 'array',
           label: 'People',
@@ -527,7 +593,7 @@ export const config: Config<Blocks> = {
           { label: 'Special guest', name: 'Derek Crimin', title: 'Owner, B.O.M.Socks', monogram: 'DC', body: 'Derek owns and operates B.O.M.Socks, so he walks into Q4 as an operator rather than a theorist — same inventory calls, same ad costs, same deadline you’re working against.' },
         ],
       },
-      render: ({ eyebrow, heading, people }) => (
+      render: ({ eyebrow, heading, people, ctaLabel, ctaHref, ctaMicro }) => (
         <div className="slot wash">
           <div className="slot-in">
             {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
@@ -556,6 +622,14 @@ export const config: Config<Blocks> = {
                 </div>
               ))}
             </div>
+            {/* The original page carried a CTA here, between the speakers and
+                the final card. It was the one thing the extraction dropped. */}
+            {ctaLabel && ctaHref ? (
+              <div className="cta-row cta-row-2">
+                <Cta label={ctaLabel} href={ctaHref} />
+                {ctaMicro ? <span className="cta-micro">{ctaMicro}</span> : null}
+              </div>
+            ) : null}
           </div>
         </div>
       ),
@@ -588,6 +662,65 @@ export const config: Config<Blocks> = {
             <Cta label={ctaLabel} href={ctaHref} large />
             {note ? <p className="formnote">{note}</p> : null}
           </div>
+        </div>
+      ),
+    },
+
+    /**
+     * The top of an interior page: privacy, terms, anything that is a document
+     * rather than a pitch.
+     *
+     * Separate from Hero because a hero is a sales unit — badge, deck, CTA — and
+     * separate from Prose because Prose renders an h2. A legal page needs one h1
+     * and a "last updated" line, and nothing else at the top.
+     */
+    PageHeading: {
+      label: 'Page title',
+      fields: {
+        eyebrow: { type: 'text', label: 'Small label above' },
+        heading: { type: 'textarea', label: 'Page title (the h1)' },
+        body: { type: 'textarea', label: 'Line underneath — e.g. last updated' },
+      },
+      defaultProps: {
+        eyebrow: 'eCommHarvest',
+        heading: 'Page title',
+        body: 'Last updated 22 August 2026',
+      },
+      render: ({ eyebrow, heading, body }) => (
+        <div className="legalhead">
+          {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+          {heading ? <h1>{heading}</h1> : null}
+          {body ? <p className="updated">{body}</p> : null}
+        </div>
+      ),
+    },
+
+    /**
+     * One numbered section of a document — a privacy clause, a term.
+     *
+     * Distinct from Prose because the typography is different work: Prose sets
+     * paragraphs as `.lede`, which is the large muted voice of a landing page
+     * and unreadable for ten sections of legal text. This renders body copy at
+     * document size, and takes an optional list, so one block holds one whole
+     * clause rather than scattering a section across three.
+     */
+    LegalText: {
+      label: 'Document section',
+      fields: {
+        heading: { type: 'textarea', label: 'Section heading' },
+        body: {
+          type: 'textarea',
+          label: 'Text — new line for a new paragraph, start a line with "- " for a bullet',
+        },
+      },
+      defaultProps: {
+        heading: 'Section heading',
+        body: 'What this section says.\n- A bullet, if the clause needs a list\n- Another one',
+      },
+      render: ({ heading, body }) => (
+        <div className="legalblock">
+          {heading ? <h2>{heading}</h2> : null}
+          <DocumentBody text={body} />
         </div>
       ),
     },
