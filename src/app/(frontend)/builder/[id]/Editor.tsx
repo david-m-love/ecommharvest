@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 
 import { config, starterContent } from '@/blocks'
+import type { SiteMetadata } from '@/lib/site-styles'
 
 /**
  * The drag-and-drop canvas.
@@ -21,6 +22,7 @@ export function Editor({
   status,
   canPublish,
   initialData,
+  siteMeta,
 }: {
   pageId: number
   title: string
@@ -28,6 +30,8 @@ export function Editor({
   status: 'draft' | 'published'
   canPublish: boolean
   initialData: Data | null
+  /** Global values the blocks need — currently the site logo. */
+  siteMeta: SiteMetadata
 }) {
   const router = useRouter()
   const [saving, setSaving] = React.useState(false)
@@ -73,6 +77,9 @@ export function Editor({
     <Puck
       config={config}
       data={data}
+      /* The same values the live page renders with, so the logo you see on the
+         canvas is the logo that ships. */
+      metadata={siteMeta}
       headerTitle={title}
       headerPath={`/p/${slug}`}
       /**

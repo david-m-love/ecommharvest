@@ -28,6 +28,7 @@
     "migrate:status": "payload migrate:status",
     "vercel-build": "payload generate:importmap && payload migrate && next build",
     "test:styles": "node test/styles.ui.mjs",
+    "test:logo": "node test/logo.ui.mjs",
     "test:prerender": "node test/prerender.mjs",
     "test:importmap": "node test/importmap.mjs",
     "test:admin": "node test/admin-boots.ui.mjs",

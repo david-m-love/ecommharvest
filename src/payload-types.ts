@@ -854,6 +854,10 @@ export interface SiteStyle {
    */
   logoText?: string | null;
   /**
+   * How tall the logo is in the top-left. Applies to every page. Tall logos are capped on phones so the header cannot swallow the screen.
+   */
+  logoSize: 'small' | 'medium' | 'large' | 'xlarge';
+  /**
    * Buttons, the × in the formula bar, highlights.
    */
   gold: string;
@@ -891,6 +895,7 @@ export interface SiteStyle {
 export interface SiteStylesSelect<T extends boolean = true> {
   logo?: T;
   logoText?: T;
+  logoSize?: T;
   gold?: T;
   goldDeep?: T;
   navy?: T;

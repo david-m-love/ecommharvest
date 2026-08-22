@@ -4,6 +4,7 @@ import React from 'react'
 
 import { config } from '@/blocks'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
+import { siteMetadata } from '@/lib/site-styles'
 import { readGhlBlock } from '@/lib/ghl-block'
 
 const FALLBACK: Metadata = {
@@ -31,6 +32,6 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function MasterclassPage() {
   const page = await loadBuilderPage('masterclass')
-  if (page) return <Render config={config} data={page.data} />
+  if (page) return <Render config={config} data={page.data} metadata={await siteMetadata()} />
   return <div dangerouslySetInnerHTML={{ __html: await readGhlBlock('LANDING-PAGE.html') }} />
 }

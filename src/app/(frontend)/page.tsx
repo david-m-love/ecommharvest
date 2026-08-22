@@ -4,6 +4,7 @@ import React from 'react'
 
 import { config } from '@/blocks'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
+import { siteMetadata } from '@/lib/site-styles'
 import { readGhlBlock } from '@/lib/ghl-block'
 
 const FALLBACK: Metadata = {
@@ -29,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function HomePage() {
   const page = await loadBuilderPage('home')
-  if (page) return <Render config={config} data={page.data} />
+  if (page) return <Render config={config} data={page.data} metadata={await siteMetadata()} />
 
   const [body, cta] = await Promise.all([
     readGhlBlock('home-1-WITH-CSS.html'),

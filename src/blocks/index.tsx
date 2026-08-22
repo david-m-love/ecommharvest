@@ -155,7 +155,10 @@ export const config: Config<Blocks> = {
     Header: {
       label: 'Header (logo bar)',
       fields: {
-        logo: imageField('Logo', 'Upload logos under Media in the admin, then pick one here.'),
+        logo: imageField(
+          'Logo (optional)',
+          'Leave empty to use the site logo from Site Styles — that is the one place to change it for every page. Pick one here only if this page needs a different logo.',
+        ),
         logoText: { type: 'text', label: 'Name (used if no logo is chosen)' },
         homeUrl: { type: 'text', label: 'Logo links to' },
         rightText: { type: 'text', label: 'Small text on the right' },
@@ -165,13 +168,29 @@ export const config: Config<Blocks> = {
         homeUrl: 'https://ecommharvest.com/',
         rightText: 'Thursday, September 3 · 11:00 AM MT · free',
       },
-      render: ({ logo, logoText, homeUrl, rightText }) => (
+      /**
+       * The logo resolves in one order: this block's own choice, then the site
+       * logo from Site Styles, then the name as text.
+       *
+       * The site logo arrives as Puck metadata rather than being read here,
+       * because a block's render is a plain synchronous component — it cannot
+       * query the database. Whoever renders the page passes it in, which also
+       * keeps the builder canvas showing the same logo the live page will.
+       *
+       * Height is not a prop: it comes from the --logo-h variable that Site
+       * Styles emits, so changing the size changes every page at once.
+       */
+      render: ({ logo, logoText, homeUrl, rightText, puck }) => {
+        const site = puck?.metadata as { siteLogoUrl?: string; siteLogoText?: string } | undefined
+        const url = logo?.url || site?.siteLogoUrl
+        const alt = logo?.alt || logoText || site?.siteLogoText || ''
+        return (
         <header className="topbar">
           <div className="topbar-in">
             <a className="brand" href={homeUrl || '/'} aria-label={logoText || 'Home'}>
-              {logo?.url ? (
+              {url ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={logo.url} alt={logo.alt || logoText || ''} />
+                <img src={url} alt={alt} />
               ) : (
                 <strong style={{ fontSize: 18, letterSpacing: '-0.02em' }}>{logoText}</strong>
               )}
@@ -183,7 +202,8 @@ export const config: Config<Blocks> = {
             ) : null}
           </div>
         </header>
-      ),
+        )
+      },
     },
 
     Hero: {

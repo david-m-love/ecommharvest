@@ -37,6 +37,21 @@ const VARIABLES: Record<string, string[]> = {
 
 const HEX = /^#[0-9a-fA-F]{6}$/
 
+/**
+ * Logo heights in pixels, keyed by the names offered in Site Styles.
+ *
+ * Here rather than in the CSS because the value has to survive being read from
+ * the database: an unrecognised name falls back to medium instead of emitting a
+ * variable that resolves to nothing, which would collapse the logo to its
+ * natural size — usually enormous.
+ */
+const LOGO_HEIGHTS: Record<string, number> = {
+  small: 26,
+  medium: 34,
+  large: 46,
+  xlarge: 60,
+}
+
 export const getSiteStyles = async (): Promise<SiteStyles> => {
   const fallback: SiteStyles = { logoUrl: null, logoText: 'eCommHarvest', css: null }
 
@@ -55,6 +70,9 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
       for (const variable of variables) declarations.push(`${variable}:${value.trim()}`)
     }
 
+    const height = LOGO_HEIGHTS[String(styles.logoSize)] ?? LOGO_HEIGHTS.medium
+    declarations.push(`--logo-h:${height}px`)
+
     const logo = styles.logo
     return {
       logoUrl: typeof logo === 'object' && logo && 'url' in logo ? (logo.url as string) : null,
@@ -65,4 +83,20 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
     // A page that renders in the default palette beats a page that 500s.
     return fallback
   }
+}
+
+/**
+ * The shape blocks receive as Puck metadata.
+ *
+ * A block's render is a plain synchronous component, so it cannot read the
+ * database. Anything global a block needs has to be handed to it by whoever
+ * renders the page — currently the site logo, which the Header block uses when
+ * no per-page logo is chosen. The colours do not travel this way: they are
+ * already CSS variables, and CSS reaches every block for free.
+ */
+export type SiteMetadata = { siteLogoUrl: string | null; siteLogoText: string }
+
+export const siteMetadata = async (): Promise<SiteMetadata> => {
+  const { logoUrl, logoText } = await getSiteStyles()
+  return { siteLogoUrl: logoUrl, siteLogoText: logoText }
 }

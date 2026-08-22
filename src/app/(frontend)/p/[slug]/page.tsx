@@ -7,6 +7,7 @@ import { type PageData, config } from '@/blocks'
 import { getCurrentUser } from '@/lib/auth'
 import { can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
+import { siteMetadata } from '@/lib/site-styles'
 
 /**
  * A page built in the builder, served publicly.
@@ -102,7 +103,7 @@ export default async function BuiltPage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
       ) : null}
-      <Render config={config} data={data} />
+      <Render config={config} data={data} metadata={await siteMetadata()} />
     </>
   )
 }

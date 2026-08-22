@@ -70,6 +70,31 @@ export const SiteStyles: GlobalConfig = {
       },
     },
     {
+      /**
+       * Sizes by name rather than a free number, for the same reason there are no
+       * padding controls: four heights that all look deliberate beat a box that
+       * accepts 200 and quietly wrecks a sticky header on a phone. Squarespace
+       * gives a slider; it also gives you a site to break. This is the safe
+       * version of the same control, and it is global, so both pages stay
+       * consistent instead of drifting apart.
+       */
+      name: 'logoSize',
+      label: 'Logo size',
+      type: 'select',
+      required: true,
+      defaultValue: 'medium',
+      options: [
+        { label: 'Small', value: 'small' },
+        { label: 'Medium', value: 'medium' },
+        { label: 'Large', value: 'large' },
+        { label: 'Extra large', value: 'xlarge' },
+      ],
+      admin: {
+        description:
+          'How tall the logo is in the top-left. Applies to every page. Tall logos are capped on phones so the header cannot swallow the screen.',
+      },
+    },
+    {
       type: 'collapsible',
       label: 'Brand colours',
       admin: { initCollapsed: false },
