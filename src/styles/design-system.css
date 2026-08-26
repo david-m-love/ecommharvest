@@ -255,19 +255,42 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .hostbar{background:var(--wash2);border-bottom:1px solid var(--line)}
 .hostbar-in{max-width:var(--maxw);margin:0 auto;padding:34px 32px;text-align:center}
 .host-label{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 20px}
-.hosts{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 44px}
+.hosts{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:22px 52px}
 .host{display:flex;align-items:center;gap:12px;text-decoration:none;transition:opacity .15s ease}
 .host:hover{opacity:.72}
-.host img{height:42px;width:auto;display:block}
+.host-name{font-size:14.5px;font-weight:700;color:var(--navy);letter-spacing:-.018em;white-space:nowrap}
+
+/* A partner's own logo, at their own proportions.
+ *
+ * This used to squeeze every logo into a 44px navy circle beside the brand name
+ * set in our typeface. Almost every brand's logo is a lockup — symbol *and*
+ * wordmark, in their own colour — so that arrangement cropped the thing they
+ * care most about, recoloured what was left, and then repeated the name they had
+ * just been denied the chance to show.
+ *
+ * A box, not a size. Both caps apply and `object-fit: contain` fits the logo
+ * inside them, so a long wordmark is limited by the width and a square symbol by
+ * the height. Different shapes then carry roughly the same optical weight in the
+ * row, which is what makes a set of mismatched logos read as deliberate — and it
+ * needs nothing from the person adding them.
+ */
+.hostlogo{flex:none;display:flex;align-items:center;justify-content:center;
+  height:var(--host-h,46px);max-width:var(--host-w,210px)}
+.hostlogo img{max-height:100%;max-width:100%;width:auto;height:auto;object-fit:contain;display:block}
+/* For the one logo that still reads too light or too heavy beside the others. */
+.hostlogo-small{--host-h:34px;--host-w:150px}
+.hostlogo-large{--host-h:62px;--host-w:270px}
+/* A card, for a logo that cannot sit on the bar as it is: a white or reversed
+   logo would be invisible, and a logo with its own white background shows a hard
+   edge against the cream. */
+.hostlogo-card{padding:10px 16px;border-radius:var(--r-sm);background:var(--white);border:1px solid var(--line)}
+.hostlogo-dark{padding:10px 16px;border-radius:var(--r-sm);background:var(--navy);border:1px solid var(--navy)}
+
+/* No logo yet: initials, which is better than an empty gap and honest about
+   being a placeholder. */
 .host-mark{flex:none;width:44px;height:44px;border-radius:50%;background:var(--cream);border:1px solid #E6DBC6;
   display:flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--gold-deep)}
-.host-name{font-size:14.5px;font-weight:700;color:var(--navy);letter-spacing:-.018em;white-space:nowrap}
-/* A logo plate. The B.O.M.Socks file supplied is the WHITE variant, which would
-   be invisible on this near-white bar, so it sits on a navy disc. Swap to the
-   dark/colour logo and this can revert to the plain cream chip. */
-.host-mark-plate{background:var(--navy);border-color:var(--navy);padding:8px;overflow:hidden}
-.host-mark-plate img{height:auto;width:100%;max-height:26px;object-fit:contain;display:block}
 
 /* ---- when / logistics line ---- */
 .when{font-family:var(--mono);font-size:13px;letter-spacing:.01em;color:var(--brown);background:var(--cream);
@@ -333,7 +356,14 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   .cols-1,.cols-2,.cols-3,.cols-4{grid-template-columns:1fr;gap:14px;margin-top:26px}
   .card{padding:26px 22px}
   .hostbar-in{padding:26px 20px}
-  .hosts{gap:16px 26px}
+  .hosts{gap:20px 30px}
+  /* Logos shrink on a phone rather than wrapping to one per line, which would
+     turn a partner bar into a scroll. The caps stay proportional to each other,
+     so the row keeps the balance it has on a laptop. */
+  .hostlogo{--host-h:36px;--host-w:150px}
+  .hostlogo-small{--host-h:28px;--host-w:112px}
+  .hostlogo-large{--host-h:46px;--host-w:190px}
+  .hostlogo-card,.hostlogo-dark{padding:8px 12px}
   .speakers{grid-template-columns:1fr;gap:14px}
   .speaker{padding:26px 22px}
   .fbar{padding:28px 22px;border-radius:20px}

@@ -347,7 +347,7 @@ the laptop layout.
 | Block | For |
 | --- | --- |
 | Hero | Badge, headline, sub-headline, lead paragraph, date line, button |
-| Hosted-by bar | Partner brands — initials, or a logo URL |
+| Hosted-by bar | Partner brands, each with their own logo (see below) |
 | Dark feature card | The navy "faith first" style card |
 | Bullet list | The "what you'll learn" list, with an optional button |
 | Formula bar | `Ads × Offer × Repeat = the CAC you can afford` |
@@ -364,6 +364,34 @@ items are in a list. That is the constraint that keeps a page builder from
 producing something that looks nothing like the rest of the site.
 
 Every block arrives carrying real copy rather than empty boxes.
+
+### Partner logos in the hosted-by bar
+
+Ask a partner for their logo and you get their lockup: the symbol **and** the
+wordmark, in their colour. That is what they want shown, so that is what the bar
+shows — whatever shape it comes in.
+
+Per brand:
+
+| Field | What it does |
+| --- | --- |
+| **Logo** | Upload theirs. Any shape — a long wordmark, a square symbol, a stacked lockup. |
+| **Behind the logo** | *Nothing* (default), *White card* if the file has its own white background, *Dark card* if the logo itself is white. |
+| **Logo size** | *Default*, or nudge one *Smaller* / *Larger* when it reads too heavy or too light beside the others. |
+| **Brand name** | *Let the logo say it* (default when there is a logo — their wordmark is already in it), or *Print it beside the logo*. |
+| **Initials** | Only used until a logo is added. |
+| **Link** | Optional. Opens in a new tab. |
+
+**You do not have to make the logos match.** Each one gets a box — a height cap
+and a width cap — and fits inside it, so a 5:1 wordmark is limited by the width
+and a square symbol by the height. That is what stops one long logo dominating
+the row, and it is why a set of mismatched files still reads as deliberate with
+no work from you. Proportions are never squashed. On a phone the whole set scales
+down together and keeps the same balance.
+
+What to send a partner asking for: **PNG or SVG, transparent background, at least
+600px wide.** If all they have is a white version, upload it and choose *Dark
+card*.
 
 ### Linking out to GoHighLevel
 
@@ -519,6 +547,7 @@ npm run test:styles                          # 16 checks: colours reaching both 
 npm run test:logo                            #  9 checks: one logo, four sizes, capped on phones
 npm run test:nav                             # 15 checks: the menu, desktop and phone
 npm run test:images                          # 23 checks: upload, resizing, the delete guard
+npm run test:hosts                           # 21 checks: partner logos of three shapes
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
 npm test                                     # 15 checks, no server needed

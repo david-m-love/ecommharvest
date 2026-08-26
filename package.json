@@ -34,6 +34,7 @@
     "test:manage": "node test/builder-manage.ui.mjs",
     "test:images": "node test/image-upload.ui.mjs",
     "test:mobile": "node test/mobile-editor.ui.mjs",
+    "test:hosts": "node test/hosts.ui.mjs",
     "test:prerender": "node test/prerender.mjs",
     "test:schema": "node test/schema.mjs",
     "test:importmap": "node test/importmap.mjs",

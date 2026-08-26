@@ -140,7 +140,20 @@ export type Blocks = {
   }
   HostedBy: {
     label?: string
-    hosts?: { name: string; monogram?: string; logo?: PickedImage; href?: string }[]
+    hosts?: {
+      name: string
+      monogram?: string
+      logo?: PickedImage
+      /** What the logo needs behind it to be visible. */
+      logoBackground?: 'none' | 'white' | 'dark'
+      logoSize?: 'small' | 'medium' | 'large'
+      /**
+       * Whether to print the brand name beside the logo. Undefined means "decide
+       * from the logo" — a lockup already says the name, initials do not.
+       */
+      showName?: boolean
+      href?: string
+    }[]
   }
   DarkCard: { eyebrow?: string; heading?: string; body?: string; kicker?: string }
   BulletList: {
@@ -378,8 +391,46 @@ export const config: Config<Blocks> = {
           defaultItemProps: { name: 'Brand name', monogram: 'ABC', logo: null, href: '' },
           arrayFields: {
             name: { type: 'text', label: 'Name' },
-            monogram: { type: 'text', label: 'Initials (shown when there is no logo)' },
-            logo: imageField('Logo'),
+            logo: imageField(
+              'Logo',
+              'Their own logo, as they supply it — symbol and wordmark together is normal and fine. Any shape works.',
+            ),
+            /**
+             * Three options rather than a colour picker.
+             *
+             * The only question that actually comes up is "can this logo be seen
+             * on a near-white bar", and it has three answers: yes, it needs a
+             * white card because the file has its own white background, or it
+             * needs a dark card because the logo is white. A colour picker would
+             * invite a fourth brand colour onto the page.
+             */
+            logoBackground: {
+              type: 'radio',
+              label: 'Behind the logo',
+              options: [
+                { label: 'Nothing', value: 'none' },
+                { label: 'White card', value: 'white' },
+                { label: 'Dark card', value: 'dark' },
+              ],
+            },
+            logoSize: {
+              type: 'radio',
+              label: 'Logo size',
+              options: [
+                { label: 'Smaller', value: 'small' },
+                { label: 'Default', value: 'medium' },
+                { label: 'Larger', value: 'large' },
+              ],
+            },
+            showName: {
+              type: 'radio',
+              label: 'Brand name',
+              options: [
+                { label: 'Let the logo say it', value: false },
+                { label: 'Print it beside the logo', value: true },
+              ],
+            },
+            monogram: { type: 'text', label: 'Initials (used only until a logo is added)' },
             href: { type: 'text', label: 'Link (optional)' },
           },
         },
@@ -398,20 +449,59 @@ export const config: Config<Blocks> = {
             {label ? <p className="host-label">{label}</p> : null}
             <div className="hosts">
               {(hosts || []).map((host, i) => {
+                const hasLogo = Boolean(host.logo?.url)
+                /**
+                 * A logo with a wordmark in it has already said the name, and
+                 * printing it again in our typeface beside their own is the
+                 * mistake this block used to make by default. Initials have not
+                 * said it, so those still get the name.
+                 */
+                const showName = host.showName ?? !hasLogo
                 const inner = (
                   <>
-                    <span className={`host-mark${host.logo?.url ? ' host-mark-plate' : ''}`}>
-                      {host.logo?.url ? (
-                        <BlockImage image={host.logo} fallbackAlt={host.name} sizes="88px" />
-                      ) : (
-                        host.monogram
-                      )}
-                    </span>
-                    <span className="host-name">{host.name}</span>
+                    {hasLogo ? (
+                      <span
+                        className={[
+                          'hostlogo',
+                          host.logoSize && host.logoSize !== 'medium'
+                            ? `hostlogo-${host.logoSize}`
+                            : '',
+                          host.logoBackground === 'white'
+                            ? 'hostlogo-card'
+                            : host.logoBackground === 'dark'
+                              ? 'hostlogo-dark'
+                              : '',
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                      >
+                        <BlockImage
+                          image={host.logo}
+                          fallbackAlt={host.name}
+                          sizes="(max-width: 760px) 190px, 270px"
+                        />
+                      </span>
+                    ) : host.monogram ? (
+                      <span className="host-mark">{host.monogram}</span>
+                    ) : null}
+                    {showName ? <span className="host-name">{host.name}</span> : null}
                   </>
                 )
                 return host.href ? (
-                  <a key={i} className="host" href={toHref(host.href)} target="_blank" rel="noopener">
+                  <a
+                    key={i}
+                    className="host"
+                    href={toHref(host.href)}
+                    target="_blank"
+                    rel="noopener"
+                    /**
+                     * Named explicitly when the name is not on screen. The logo's
+                     * alt text usually carries it, but alt is editable and a link
+                     * whose only label is "logo" is a link nobody using a screen
+                     * reader can follow on purpose.
+                     */
+                    {...(showName ? {} : { 'aria-label': host.name })}
+                  >
                     {inner}
                   </a>
                 ) : (
