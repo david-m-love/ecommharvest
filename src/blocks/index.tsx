@@ -3,8 +3,9 @@ import React from 'react'
 
 import { BlockImage } from './BlockImage'
 import { isExternalHref, toHref } from '@/lib/href'
+import type { RecentPost } from '@/lib/site-styles'
 
-import { SiteNav } from './SiteNav'
+import { SiteHeaderBar } from './SiteHeaderBar'
 import { type PickedImage, imageField } from './image-field'
 
 /**
@@ -198,6 +199,7 @@ export type Blocks = {
   PageHeading: { eyebrow?: string; heading?: string; body?: string }
   LegalText: { heading?: string; body?: string }
   Prose: { eyebrow?: string; heading?: string; body?: string; background?: 'white' | 'wash' }
+  PostList: { eyebrow?: string; heading?: string; body?: string; count?: number; ctaLabel?: string }
   Footer: { copyright?: string; links?: { label: string; href: string }[]; note?: string }
 }
 
@@ -222,7 +224,7 @@ export const config: Config<Blocks> = {
       components: ['DarkCard', 'BulletList', 'FormulaBar', 'CardRow', 'Speakers', 'Prose', 'LegalText'],
       defaultExpanded: true,
     },
-    'Bottom of page': { title: 'Bottom of page', components: ['CtaCard', 'Footer'] },
+    'Bottom of page': { title: 'Bottom of page', components: ['PostList', 'CtaCard', 'Footer'] },
   },
   components: {
     Header: {
@@ -289,48 +291,26 @@ export const config: Config<Blocks> = {
             }
           | undefined
         const url = site?.siteLogoUrl
-        const alt = logoText || site?.siteLogoText || ''
         // `!== false` so a page saved before this field existed still shows the
         // menu rather than silently losing it.
         const links = showMenu !== false ? (site?.siteNavLinks ?? []) : []
+        /**
+         * The markup lives in `SiteHeaderBar` because the blog's routes need the
+         * same bar and have no block to put it in. One component, so a visitor
+         * arriving on an article never sees a different header from one arriving
+         * on the home page.
+         */
         return (
-        <header className="topbar">
-          {/*
-            `has-nav` tells the CSS whether to leave room for a menu button on a
-            phone. Without it, a header with no menu would still reserve the
-            space and the centred logo would sit visibly off-centre.
-          */}
-          <div className={links.length ? 'topbar-in has-nav' : 'topbar-in'}>
-            <a className="brand" href={toHref(homeUrl) || '/'} aria-label={logoText || 'Home'}>
-              {url ? (
-                <BlockImage
-                  image={{ url, alt, width: site?.siteLogoWidth, height: site?.siteLogoHeight }}
-                  fallbackAlt={alt}
-                  sizes="(max-width: 760px) 200px, 320px"
-                  // The one image in the first screenful on every page.
-                  priority
-                />
-              ) : (
-                <strong
-                  style={{
-                    // Tied to the same --logo-h Site Styles sets, so "Logo size"
-                    // means one thing whether the logo is a picture or a name.
-                    fontSize: 'calc(var(--logo-h, 41px) * 0.55)',
-                    letterSpacing: '-0.02em',
-                  }}
-                >
-                  {logoText}
-                </strong>
-              )}
-            </a>
-            {rightText ? (
-              <div className="topbar-right">
-                <span className="stamp">{rightText}</span>
-              </div>
-            ) : null}
-            <SiteNav links={links} />
-          </div>
-        </header>
+          <SiteHeaderBar
+            logoUrl={url}
+            /* The per-page name if there is one, otherwise the site's. */
+            logoText={logoText || site?.siteLogoText}
+            logoWidth={site?.siteLogoWidth}
+            logoHeight={site?.siteLogoHeight}
+            links={links}
+            homeUrl={homeUrl}
+            rightText={rightText}
+          />
         )
       },
     },
@@ -900,6 +880,90 @@ export const config: Config<Blocks> = {
           </div>
         </div>
       ),
+    },
+
+    PostList: {
+      label: 'Latest from the blog',
+      fields: {
+        eyebrow: { type: 'text', label: 'Small label' },
+        heading: { type: 'text', label: 'Heading' },
+        body: { type: 'textarea', label: 'Line underneath' },
+        count: {
+          type: 'radio',
+          label: 'How many',
+          options: [
+            { label: 'Two', value: 2 },
+            { label: 'Three', value: 3 },
+            { label: 'Four', value: 4 },
+          ],
+        },
+        ctaLabel: { type: 'text', label: 'Link to the blog (blank for none)' },
+      },
+      defaultProps: {
+        eyebrow: 'From the blog',
+        heading: 'Read while you plan.',
+        body: 'Short, practical pieces on the things that decide a quarter.',
+        count: 3,
+        ctaLabel: 'All posts',
+      },
+      /**
+       * The posts arrive as Puck metadata, exactly like the site logo.
+       *
+       * A block's render is synchronous and cannot query the database, so
+       * whoever renders the page fetches them — see `siteMetadata()`. The block
+       * shows nothing at all when there are no posts, rather than a heading over
+       * an empty space: a section promising writing and delivering none is worse
+       * than no section. (An empty fragment, not null — Puck's renders must
+       * return an element.)
+       */
+      render: ({ eyebrow, heading, body, count, ctaLabel, puck }) => {
+        const meta = puck?.metadata as { recentPosts?: RecentPost[] } | undefined
+        const posts = (meta?.recentPosts || []).slice(0, count || 3)
+        if (posts.length === 0) return <></>
+        return (
+          <section className="slot wash">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              {body ? <p className="lede">{body}</p> : null}
+              <div className="postcards">
+                {posts.map((post, i) => (
+                  <article key={i} className="postcard">
+                    <a className="postcard-link" href={post.href}>
+                      {post.coverUrl ? (
+                        <span className="postcard-cover">
+                          <BlockImage
+                            image={{
+                              url: post.coverUrl,
+                              alt: post.title,
+                              width: post.coverWidth,
+                              height: post.coverHeight,
+                            }}
+                            sizes="(max-width: 760px) 100vw, 380px"
+                          />
+                        </span>
+                      ) : null}
+                      <span className="postcard-body">
+                        <h3 className="postcard-title">{post.title}</h3>
+                        {post.excerpt ? (
+                          <span className="postcard-excerpt">{post.excerpt}</span>
+                        ) : null}
+                      </span>
+                    </a>
+                  </article>
+                ))}
+              </div>
+              {ctaLabel ? (
+                <p style={{ marginTop: 26 }}>
+                  <a className="backlink" href="/blog">
+                    {ctaLabel} &rarr;
+                  </a>
+                </p>
+              ) : null}
+            </div>
+          </section>
+        )
+      },
     },
 
     Footer: {

@@ -137,6 +137,36 @@ export const SiteStyles: GlobalConfig = {
       ],
     },
     {
+      /**
+       * What the blog calls itself.
+       *
+       * The URL is /blog and stays /blog — it is what readers and search engines
+       * expect, and it is the most linkable path there is. What it is *called*
+       * on the page is a branding decision, so it lives here rather than in the
+       * code.
+       */
+      type: 'collapsible',
+      label: 'The blog',
+      admin: { initCollapsed: true, description: 'The words at the top of /blog. The address stays /blog either way.' },
+      fields: [
+        {
+          name: 'blogHeading',
+          label: 'Heading',
+          type: 'text',
+          admin: {
+            description: 'The line at the top of the blog. Leave blank for the default.',
+          },
+        },
+        {
+          name: 'blogIntro',
+          label: 'Line underneath',
+          type: 'textarea',
+          maxLength: 300,
+          admin: { description: 'One or two sentences on what someone will find there.' },
+        },
+      ],
+    },
+    {
       type: 'collapsible',
       label: 'Advertising and measurement',
       admin: { initCollapsed: true },

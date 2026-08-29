@@ -14,6 +14,7 @@ import { Lessons } from './collections/Lessons'
 import { Media } from './collections/Media'
 import { Modules } from './collections/Modules'
 import { Pages } from './collections/Pages'
+import { Posts } from './collections/Posts'
 import { Progress } from './collections/Progress'
 import { Registrations } from './collections/Registrations'
 import { Roles } from './collections/Roles'
@@ -76,6 +77,7 @@ export default buildConfig({
   },
   collections: [
     Pages,
+    Posts,
     Courses,
     Modules,
     Lessons,

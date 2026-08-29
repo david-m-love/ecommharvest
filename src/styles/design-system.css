@@ -424,6 +424,49 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   text-transform:uppercase;color:var(--gold-deep);text-decoration:none;margin:0 0 32px}
 .backlink:hover{text-decoration:underline}
 
+/* ---- the blog ---- */
+/* Cards on the index. Auto-fit rather than a fixed column count, so one post
+   does not sit alone in a three-column grid and five do not need a breakpoint
+   written for them. */
+.postcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:26px;margin-top:8px}
+.postcard{background:var(--white);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;
+  transition:transform .15s ease,box-shadow .15s ease}
+.postcard:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(22,50,79,.09)}
+.postcard-link{display:flex;flex-direction:column;height:100%;text-decoration:none;color:inherit}
+/* A fixed 16:9 window, so a row of cards lines up whatever shape the covers
+   are. The image fills it and is cropped from the centre — a cover is
+   decoration, and a consistent grid is worth more than showing all of one. */
+.postcard-cover{display:block;aspect-ratio:16/9;background:var(--wash2);overflow:hidden}
+.postcard-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.postcard-body{display:flex;flex-direction:column;gap:8px;padding:22px 24px 26px}
+.postcard-title{font-size:20px;line-height:1.28;letter-spacing:-.02em;margin:0;color:var(--navy)}
+.postcard-excerpt{font-size:15px;line-height:1.6;color:var(--muted)}
+.postcard:hover .postcard-title{color:var(--gold-deep)}
+
+/* One article. The same measure and the same type as the legal pages — a site
+   should have one way of setting a page of prose, not one per section. */
+.article{max-width:760px;margin:0 auto;padding:8px 32px 0}
+.article h1{font-size:clamp(30px,4vw,44px);max-width:24ch;margin:0 0 12px}
+.article-meta{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin:0 0 26px}
+.articlecover{margin:0 0 34px}
+.articlecover img{width:100%;height:auto;border-radius:var(--r-sm);display:block}
+.articlebody p,.articlebody li{font-size:17px;line-height:1.7;color:var(--brown)}
+.articlebody h2{font-size:clamp(21px,2.4vw,27px);margin:44px 0 14px}
+.articlebody h3{font-size:18px;margin:30px 0 8px}
+.articlebody p{margin:0 0 20px}
+.articlebody ul,.articlebody ol{padding-left:22px;margin:0 0 22px}
+.articlebody li{margin:0 0 9px}
+.articlebody a{color:var(--gold-deep);text-underline-offset:2px}
+.articlebody strong{color:var(--navy)}
+.articlebody blockquote{margin:0 0 24px;padding:4px 0 4px 20px;border-left:3px solid var(--gold);
+  color:var(--navy);font-size:18px;line-height:1.6}
+.articlebody blockquote p{margin:0;color:inherit;font-size:inherit}
+.articlebody code{font-family:var(--mono);font-size:.92em;background:var(--cream);padding:2px 6px;border-radius:6px}
+.articlebody hr{border:none;border-top:1px solid var(--line);margin:36px 0}
+.articleimage{margin:0 0 26px}
+.articleimage img{width:100%;height:auto;border-radius:var(--r-sm);display:block}
+.articleimage figcaption{font-size:13px;color:var(--muted);margin-top:8px}
+
 /* ---- thank you ---- */
 .thanks{max-width:var(--maxw);margin:0 auto;padding:80px 32px 96px;text-align:center}
 .tick{width:64px;height:64px;border-radius:50%;background:var(--cream);color:var(--gold-deep);
@@ -437,6 +480,9 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 
 @media(max-width:760px){
   .legal{padding:44px 20px 64px}
+  .article{padding:4px 20px 0}
+  .articlebody p,.articlebody li{font-size:16.5px}
+  .postcards{grid-template-columns:1fr;gap:18px}
   .thanks{padding:56px 20px 72px}
   .addcal .btn{width:100%}
 }

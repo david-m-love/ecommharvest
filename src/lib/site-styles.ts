@@ -24,6 +24,9 @@ export type SiteStyles = {
   logoHeight: number | null
   logoText: string
   navLinks: NavLink[]
+  /** What the blog calls itself. Null means "use the built-in wording". */
+  blogHeading: string | null
+  blogIntro: string | null
   /** Empty until advertising is actually running: no ID, no script. */
   metaPixelId: string | null
   css: string | null
@@ -61,7 +64,7 @@ const LOGO_HEIGHTS: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], metaPixelId: null, css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, css: null }
 
   try {
     const p = await payload()
@@ -103,6 +106,8 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
       logoHeight: typeof logo === 'object' && logo && typeof logo.height === 'number' ? logo.height : null,
       logoText: typeof styles.logoText === 'string' && styles.logoText ? styles.logoText : 'eCommHarvest',
       navLinks,
+      blogHeading: typeof styles.blogHeading === 'string' && styles.blogHeading.trim() ? styles.blogHeading.trim() : null,
+      blogIntro: typeof styles.blogIntro === 'string' && styles.blogIntro.trim() ? styles.blogIntro.trim() : null,
       // Re-checked here as well as in the admin: this value goes into a script
       // tag, so anything that is not plainly a run of digits is dropped.
       metaPixelId:
@@ -132,11 +137,67 @@ export type SiteMetadata = {
   siteLogoWidth: number | null
   siteLogoHeight: number | null
   siteNavLinks: NavLink[]
+  /**
+   * The newest few blog posts, for the "Latest from the blog" block.
+   *
+   * Fetched here rather than in the block for the same reason as the logo: a
+   * block renders synchronously and cannot query anything. Four is the most any
+   * layout of that block shows.
+   */
+  recentPosts: RecentPost[]
+}
+
+export type RecentPost = {
+  title: string
+  href: string
+  excerpt?: string
+  date?: string
+  coverUrl?: string
+  coverWidth?: number
+  coverHeight?: number
+}
+
+/**
+ * The newest posts, in the shape a block can render.
+ *
+ * Soft failure, like everything else here: a page that mentions the blog must
+ * not stop rendering because the blog could not be read.
+ */
+const recentPosts = async (): Promise<RecentPost[]> => {
+  try {
+    const p = await payload()
+    const { docs } = await p.find({
+      collection: 'posts',
+      where: { status: { equals: 'published' } },
+      sort: '-publishedAt',
+      depth: 1,
+      limit: 4,
+      overrideAccess: true,
+    })
+    return docs.map((post) => {
+      const cover = post.cover && typeof post.cover === 'object' ? post.cover : null
+      return {
+        title: post.title,
+        href: `/blog/${post.slug}`,
+        excerpt: post.excerpt || undefined,
+        date: post.publishedAt || post.createdAt || undefined,
+        coverUrl: (cover?.url as string) || undefined,
+        coverWidth: (cover?.width as number) || undefined,
+        coverHeight: (cover?.height as number) || undefined,
+      }
+    })
+  } catch {
+    return []
+  }
 }
 
 export const siteMetadata = async (): Promise<SiteMetadata> => {
-  const { logoUrl, logoText, logoWidth, logoHeight, navLinks } = await getSiteStyles()
+  const [{ logoUrl, logoText, logoWidth, logoHeight, navLinks }, posts] = await Promise.all([
+    getSiteStyles(),
+    recentPosts(),
+  ])
   return {
+    recentPosts: posts,
     siteLogoUrl: logoUrl,
     siteLogoText: logoText,
     siteLogoWidth: logoWidth,

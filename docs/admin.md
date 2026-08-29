@@ -13,6 +13,8 @@ Login, people, permissions, and a drag-and-drop page builder.
 | `/builder` | The page list, and **New page** | `pages:write` |
 | `/builder/[id]` | The drag-and-drop canvas | `pages:write` |
 | `/p/[slug]` | A page you built, live | public once published |
+| `/admin/collections/posts` | Blog posts | `posts:write` |
+| `/blog`, `/blog/[slug]` | The blog, live | public once published |
 
 `/admin` is Payload's panel and `/builder` is the canvas. They are separate
 routes because the canvas needs the whole window — squeezed beside the admin
@@ -107,6 +109,8 @@ site.
 | `registrations:read` | See and export masterclass registrants |
 | `courses:manage` | Create and edit courses, modules, lessons |
 | `media:manage` | Upload and manage media |
+| `posts:write` | Write and edit blog posts |
+| `posts:publish` | Make blog posts live |
 
 Two starter roles are seeded: **Page editor** (build but not publish) and
 **Publisher** (build and publish). They are the two shapes almost every small
@@ -302,6 +306,74 @@ without one a file uploads fine, shows a working thumbnail, and disappears on th
 next deploy — leaving broken images on every page that used it. Rather than let
 that happen silently, uploads are **refused** with the fix in the message:
 Storage → Create Database → Blob, connect it, redeploy.
+
+## The blog
+
+`/admin` → **Site** → **Posts** → **Create new**. Articles live at **`/blog`**.
+
+### Why /blog, and not /news or /insights
+
+The address is what readers and search engines expect, and it is the most
+linkable path there is — people search "ecommerce blog", nobody searches
+"ecommerce insights". "News" would be wrong for evergreen writing: a piece about
+Q4 offers is as useful next August as it is today, and filing it under news dates
+it on arrival.
+
+What it is **called** is a separate question, and yours: Site Styles → **The
+blog** sets the heading and the line under it. Call it Field Notes, The Playbook,
+anything. The address stays `/blog`.
+
+### Why posts are not built in the page builder
+
+The builder is for *pages*, where the arrangement of sections is the work. An
+article is the opposite — one column of prose where the writing is the work and
+the layout should never vary. So a post is written in a normal editor, and every
+article on the site comes out laid out identically. Nobody has to think about
+design to publish one.
+
+### The fields
+
+| Field | What it is for |
+| --- | --- |
+| **Title** | The headline. Also what Google and a shared link show. |
+| **Excerpt** | One or two sentences. It is on the index card, in search results, in the shared-link preview and in the feed — the only thing most people ever read. Worth writing properly. |
+| **Cover** | Top of the post, the index card, and the picture when the link is shared. Landscape. |
+| **Body** | Headings, **bold**, links, lists, quotes and images. All of it comes out in the site's own styling. |
+| **Date** | Sorts the blog and shows on the post. Fills itself in when you publish, and can be set forward or back. |
+| **Author** | Optional byline. |
+| **Status** | Draft until you publish. A draft 404s for the public and shows you a "draft preview" banner. |
+
+### Who can write, and who can publish
+
+Two permissions, separate on purpose: `posts:write` and `posts:publish`. A
+freelance writer can be given the first without the second, and without going
+anywhere near the page that takes registrations. Assign them in a Role exactly
+like the page permissions.
+
+### What comes with it
+
+- **`/blog/rss.xml`** — a feed. It is how another tool finds new posts: an email
+  platform turning one into a campaign, a partner listing your articles. Nothing
+  else provides it, and it cannot be added retroactively to posts nobody
+  subscribed to. Summaries only, so scraper sites cannot republish the article
+  whole and outrank you.
+- **The sitemap** lists every published post automatically.
+- **Structured data** on each post, which is what lets a search result show a
+  date and a byline rather than just a title.
+- **A "Latest from the blog" block** for the builder, under *Bottom of page*.
+  Drop it on the home page and it shows the newest two, three or four. It shows
+  nothing at all when there are no posts, rather than a heading over an empty
+  space.
+
+### Two things to do once
+
+1. **Put it in the menu.** Site Styles → **Menu links** → add `/blog`. Nothing
+   links to it until you do.
+2. **Read the post that is already there.** The blog starts with one article,
+   saved as a **draft** — a real piece on planning a quarter, with every
+   formatting feature in it as a worked example. It is not published: nothing
+   goes out under your name because a deploy ran. Edit it, publish it, or delete
+   it.
 
 ## The page builder
 
@@ -548,6 +620,7 @@ npm run test:logo                            #  9 checks: one logo, four sizes, 
 npm run test:nav                             # 15 checks: the menu, desktop and phone
 npm run test:images                          # 23 checks: upload, resizing, the delete guard
 npm run test:hosts                           # 21 checks: partner logos of three shapes
+npm run test:blog                            # 46 checks: writing, reading, the feed, the renderer
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
 npm test                                     # 15 checks, no server needed

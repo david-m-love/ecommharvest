@@ -25,6 +25,13 @@ export const CAPABILITIES = {
   'pages:read': 'View pages in the builder',
   'pages:write': 'Create and edit pages',
   'pages:publish': 'Publish and unpublish pages',
+  /**
+   * Writing posts is a separate permission from building pages on purpose. A
+   * freelance writer should be able to draft and publish the blog without also
+   * being able to edit the page that takes registrations.
+   */
+  'posts:write': 'Write and edit blog posts',
+  'posts:publish': 'Publish and unpublish blog posts',
   'users:manage': 'Invite people, edit them, and assign roles',
   'registrations:read': 'View and export masterclass registrants',
   'courses:manage': 'Create and edit courses, modules and lessons',

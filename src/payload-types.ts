@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
+    posts: Post;
     courses: Course;
     modules: Module;
     lessons: Lesson;
@@ -86,6 +87,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
     courses: CoursesSelect<false> | CoursesSelect<true>;
     modules: ModulesSelect<false> | ModulesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
@@ -242,6 +244,8 @@ export interface Role {
     | 'pages:read'
     | 'pages:write'
     | 'pages:publish'
+    | 'posts:write'
+    | 'posts:publish'
     | 'users:manage'
     | 'registrations:read'
     | 'courses:manage'
@@ -251,29 +255,33 @@ export interface Role {
   createdAt: string;
 }
 /**
+ * Articles at /blog. Written here; the layout is the same for every one.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "courses".
+ * via the `definition` "posts".
  */
-export interface Course {
+export interface Post {
   id: number;
+  /**
+   * The headline. It is also what Google and a shared link show.
+   */
   title: string;
   /**
    * Used in the URL. Auto-filled from the title; safe to edit before publishing.
    */
   slug: string;
   /**
-   * One line under the title in the member area.
-   */
-  subtitle?: string | null;
-  /**
-   * Used on cards and previews.
+   * One or two sentences. Shown on the blog index, in search results, in the preview when the link is shared, and in the feed. Worth writing properly — it is the only thing most people read.
    */
   excerpt?: string | null;
-  coverImage?: (number | null) | Media;
   /**
-   * Full description shown on the course overview.
+   * Shown at the top of the post, on the index card, and as the picture when the link is shared. Landscape works best.
    */
-  description?: {
+  cover?: (number | null) | Media;
+  /**
+   * The article. Headings, bold, links, lists, quotes and images all work and all come out in the site’s own styling.
+   */
+  body?: {
     root: {
       type: string;
       children: {
@@ -288,9 +296,25 @@ export interface Course {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Sorts the blog and shows on the post. Set it forward to date a piece ahead.
+   */
+  publishedAt?: string | null;
+  /**
+   * Optional byline. Leave blank for none.
+   */
+  author?: string | null;
+  /**
+   * Drafts are visible only to your team.
+   */
+  status?: ('draft' | 'published') | null;
+  /**
+   * Keep this post out of Google. Leave on while you are still proofing.
+   */
+  noindex?: boolean | null;
+  updatedBy?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * Logos and images. Upload here, then pick them in the page builder.
@@ -333,6 +357,48 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses".
+ */
+export interface Course {
+  id: number;
+  title: string;
+  /**
+   * Used in the URL. Auto-filled from the title; safe to edit before publishing.
+   */
+  slug: string;
+  /**
+   * One line under the title in the member area.
+   */
+  subtitle?: string | null;
+  /**
+   * Used on cards and previews.
+   */
+  excerpt?: string | null;
+  coverImage?: (number | null) | Media;
+  /**
+   * Full description shown on the course overview.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -516,6 +582,10 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null)
+    | ({
         relationTo: 'courses';
         value: number | Course;
       } | null)
@@ -608,6 +678,24 @@ export interface PagesSelect<T extends boolean = true> {
   status?: T;
   description?: T;
   content?: T;
+  noindex?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  cover?: T;
+  body?: T;
+  publishedAt?: T;
+  author?: T;
+  status?: T;
   noindex?: T;
   updatedBy?: T;
   updatedAt?: T;
@@ -883,6 +971,14 @@ export interface SiteStyle {
       }[]
     | null;
   /**
+   * The line at the top of the blog. Leave blank for the default.
+   */
+  blogHeading?: string | null;
+  /**
+   * One or two sentences on what someone will find there.
+   */
+  blogIntro?: string | null;
+  /**
    * From Meta Events Manager. Just the number. Leave empty and no tracking script is loaded at all. In the UK, EU and Switzerland it will not load until a visitor accepts, and anywhere it is switched off for people whose browser sends a Do Not Track / Global Privacy Control signal.
    */
   metaPixelId?: string | null;
@@ -933,6 +1029,8 @@ export interface SiteStylesSelect<T extends boolean = true> {
         emphasis?: T;
         id?: T;
       };
+  blogHeading?: T;
+  blogIntro?: T;
   metaPixelId?: T;
   gold?: T;
   goldDeep?: T;
