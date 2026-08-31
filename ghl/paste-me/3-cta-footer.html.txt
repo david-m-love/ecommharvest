@@ -5,7 +5,7 @@
 <div class="ech-scope">
 <div class="ech-final-in" id="register">
     <div class="ech-finalcard">
-      <p class="ech-eyebrow">Thursday, September 3 &middot; 11:00 AM MT &middot; free &middot; 90 minutes</p>
+      <p class="ech-eyebrow">Thursday, September 10 &middot; 11:00 AM MT &middot; free &middot; 90 minutes</p>
       <h2>Your Q4 Revenue Playbook, Built in 90 Minutes.</h2>
       <p class="ech-final-lead">Two fields and you&rsquo;re in. We&rsquo;ll send the join link straight away, a reminder before we start, and the replay afterwards either way.</p>
       <a href="https://go.ecommharvest.com/register" class="ech-btn ech-btn-lg">Save my seat</a>

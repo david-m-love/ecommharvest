@@ -266,7 +266,7 @@ export const config: Config<Blocks> = {
       defaultProps: {
         logoText: 'eCommHarvest',
         homeUrl: 'https://ecommharvest.com/',
-        rightText: 'Thursday, September 3 · 11:00 AM MT · free',
+        rightText: 'Thursday, September 10 · 11:00 AM MT · free',
         showMenu: true,
       },
       /**
@@ -332,7 +332,7 @@ export const config: Config<Blocks> = {
         heading: 'Your Q4 Revenue Playbook, Built in 90 Minutes.',
         deck: '…without headaches or sacrificing family time.',
         body: 'Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, and what needs to be ready before the holiday rush.',
-        when: 'Thursday, September 3 · 11:00 AM MT',
+        when: 'Thursday, September 10 · 11:00 AM MT',
         ctaLabel: 'Save my seat',
         ctaHref: '/register',
         ctaMicro: 'Free · 90 minutes · replay available',
@@ -557,7 +557,7 @@ export const config: Config<Blocks> = {
         ],
         ctaLabel: 'Save my seat',
         ctaHref: '/register',
-        ctaMicro: 'Thursday, September 3 · 11:00 AM MT',
+        ctaMicro: 'Thursday, September 10 · 11:00 AM MT',
       },
       render: ({ eyebrow, leadIn, bullets, ctaLabel, ctaHref, ctaMicro }) => (
         <div className="slot wash">
@@ -771,7 +771,7 @@ export const config: Config<Blocks> = {
         note: { type: 'text', label: 'Small print under the button' },
       },
       defaultProps: {
-        eyebrow: 'Thursday, September 3 · 11:00 AM MT · free · 90 minutes',
+        eyebrow: 'Thursday, September 10 · 11:00 AM MT · free · 90 minutes',
         heading: 'Your Q4 Revenue Playbook, Built in 90 Minutes.',
         body: 'Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.',
         ctaLabel: 'Save my seat',

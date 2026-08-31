@@ -7,7 +7,7 @@
         "id": "seed-header-0",
         "logoText": "eCommHarvest",
         "homeUrl": "https://ecommharvest.com/",
-        "rightText": "Thursday, September 3 · 11:00 AM MT · free"
+        "rightText": "Thursday, September 10 · 11:00 AM MT · free"
       }
     },
     {
@@ -20,7 +20,7 @@
         "body": "eCommHarvest is where the strategy behind your most important quarter gets built — the promotional calendar, the offers, the flows, and the paid social that makes all three cheaper.",
         "ctaLabel": "Start with the free masterclass",
         "ctaHref": "https://go.ecommharvest.com/masterclass",
-        "ctaMicro": "Thursday, September 3 · 11:00 AM MT · free"
+        "ctaMicro": "Thursday, September 10 · 11:00 AM MT · free"
       }
     },
     {
@@ -98,7 +98,7 @@
       "type": "CtaCard",
       "props": {
         "id": "seed-ctacard-6",
-        "eyebrow": "Free · 90 minutes · Thursday, September 3",
+        "eyebrow": "Free · 90 minutes · Thursday, September 10",
         "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
         "ctaLabel": "Save my seat",
         "ctaHref": "https://go.ecommharvest.com/masterclass"

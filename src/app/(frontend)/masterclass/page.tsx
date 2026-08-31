@@ -4,13 +4,14 @@ import React from 'react'
 
 import { config } from '@/blocks'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
+import { EVENT_END_ISO, EVENT_START_ISO } from '@/lib/event'
 import { siteMetadata } from '@/lib/site-styles'
 import { readGhlBlock } from '@/lib/ghl-block'
 
 const FALLBACK: Metadata = {
   title: 'Your Q4 Revenue Playbook, Built in 90 Minutes',
   description:
-    'Thursday, September 3 at 11:00 AM MT. A free 90-minute masterclass for LDS e-commerce founders. Build your Q4 promotional calendar, offers, email and SMS plan in one sitting — without headaches or sacrificing family time.',
+    'Thursday, September 10 at 11:00 AM MT. A free 90-minute masterclass for LDS e-commerce founders. Build your Q4 promotional calendar, offers, email and SMS plan in one sitting — without headaches or sacrificing family time.',
   alternates: { canonical: '/masterclass' },
 }
 
@@ -38,10 +39,11 @@ export async function generateMetadata(): Promise<Metadata> {
  * free and online. Registration points at the GoHighLevel funnel, because that
  * is where a seat is actually taken.
  *
- * Hard-coded rather than read from the page's own copy: parsing "Thursday,
- * September 3 · 11:00 AM MT" out of edited body text would break the first time
- * someone reworded it, and quietly claim the wrong date to Google. When the
- * event moves, this moves with it.
+ * The times come from `src/lib/event.ts` rather than from the page's own copy:
+ * parsing "Thursday, September 10 · 11:00 AM MT" out of body text somebody can
+ * reword in the builder would break the first time they did, and quietly claim
+ * the wrong date to Google. One constant, and everything that has to agree
+ * does.
  */
 const EVENT_SCHEMA = {
   '@context': 'https://schema.org',
@@ -49,8 +51,8 @@ const EVENT_SCHEMA = {
   name: 'Your Q4 Revenue Playbook, Built in 90 Minutes',
   description:
     'A free 90-minute masterclass for LDS e-commerce founders. Build your Q4 promotional calendar, offers, and email and SMS plan in one sitting.',
-  startDate: '2026-09-03T11:00:00-06:00',
-  endDate: '2026-09-03T12:30:00-06:00',
+  startDate: EVENT_START_ISO,
+  endDate: EVENT_END_ISO,
   eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
   eventStatus: 'https://schema.org/EventScheduled',
   location: {

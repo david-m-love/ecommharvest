@@ -359,7 +359,7 @@ const topbar = `<header class="${PREFIX}topbar">
       <img src="${logo}" alt="eCommHarvest" width="197" height="34">
     </a>
     <div class="${PREFIX}topbar-right">
-      <span class="${PREFIX}stamp">Thursday, September 3 &middot; 11:00 AM MT &middot; free</span>
+      <span class="${PREFIX}stamp">Thursday, September 10 &middot; 11:00 AM MT &middot; free</span>
     </div>
   </div>
 </header>`

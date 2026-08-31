@@ -14,7 +14,7 @@
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "payload": "payload",
-    "test": "tsx test/registration.test.ts && tsx test/href.test.ts && node --experimental-strip-types test/video.test.js",
+    "test": "tsx test/registration.test.ts && tsx test/href.test.ts && tsx test/event.test.ts && node --experimental-strip-types test/video.test.js",
     "db:start": "bash scripts/local-db.sh start",
     "db:stop": "bash scripts/local-db.sh stop",
     "seed": "payload run scripts/seed.ts",

@@ -6,7 +6,7 @@ import { readGhlBlock } from '@/lib/ghl-block'
 export const metadata: Metadata = {
   title: 'You’re registered',
   description:
-    'Your seat is saved for the Q4 Revenue Playbook masterclass on Thursday, September 3 at 11:00 AM MT.',
+    'Your seat is saved for the Q4 Revenue Playbook masterclass on Thursday, September 10 at 11:00 AM MT.',
   robots: { index: false, follow: false },
 }
 

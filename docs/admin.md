@@ -307,6 +307,48 @@ next deploy — leaving broken images on every page that used it. Rather than le
 that happen silently, uploads are **refused** with the fix in the message:
 Storage → Create Database → Blob, connect it, redeploy.
 
+## Moving the masterclass date
+
+The date lives in three kinds of place, and only one of them is code.
+
+**1. Edit `src/lib/event.ts`.** The times, the wording, and the day name are all
+there. Everything machine-readable derives from it: the calendar file at
+`/masterclass.ics`, the Event structured data Google reads, and the defaults on
+new blocks.
+
+**2. Run `npm run ghl:build`.** The GoHighLevel blocks are built from
+`ghl/src/*.html`, and those are pasted by hand — nothing can reach into GHL from
+here. Re-paste the two that carry the date: the registration page's block above
+the form, and the thank-you page.
+
+**3. Write a migration for the live pages.** `/` and `/masterclass` are
+page-builder pages, so their words are in the database and changing the code does
+not change what is on the site.
+`src/migrations/20260830_010000_masterclass_date.ts` is the worked example: a
+targeted find-and-replace on the stored JSON, which leaves any other editing
+alone and is a no-op if the date was already changed by hand in the builder.
+
+Then `npm test` — `test/event.test.ts` fails and names the file if anything
+still says the old date. It also checks the UTC times match the local ones, and
+that the day name matches the date.
+
+### MT, not MST or MDT
+
+Write **MT**. The mountain states are on MDT (UTC−6) from March to November and
+MST (UTC−7) the rest of the year, so "MST" on a September date is an hour wrong,
+and "MDT" reads as jargon and invites the question it was meant to settle. MT is
+right all year. The bracket — *(1:00 PM ET / 10:00 AM PT)* — is what actually
+stops half the audience doing arithmetic.
+
+### Two things that keep their old date on purpose
+
+- **The calendar entry's UID.** It identifies the invitation already sitting in
+  someone's calendar. Keeping it, and raising `EVENT_SEQUENCE`, is what makes a
+  moved time *correct* that entry instead of adding a second one beside it.
+- **The registration tag** (`q4-masterclass-2026-09-03`). It is how the audience
+  is segmented; renaming it would split people who signed up before the move from
+  those who signed up after, for one event.
+
 ## The blog
 
 `/admin` → **Site** → **Posts** → **Create new**. Articles live at **`/blog`**.
@@ -623,7 +665,7 @@ npm run test:hosts                           # 21 checks: partner logos of three
 npm run test:blog                            # 46 checks: writing, reading, the feed, the renderer
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
-npm test                                     # 15 checks, no server needed
+npm test                                     # 20 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request

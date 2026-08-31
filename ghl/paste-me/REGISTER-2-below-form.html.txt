@@ -26,7 +26,7 @@
           <span class="ech-host-name">Tiny 3D Temples</span>
         </a>
         <a class="ech-host" href="https://bomsocks.com/" target="_blank" rel="noopener">
-          <span class="ech-host-mark ech-host-mark-plate"><img src="https://bomsocks.com/cdn/shop/files/BOMSocks_White_Logo.png" alt="B.O.M.Socks"></span>
+          <span class="ech-host-mark host-mark-plate"><img src="https://bomsocks.com/cdn/shop/files/BOMSocks_White_Logo.png" alt="B.O.M.Socks"></span>
           <span class="ech-host-name">B.O.M.Socks</span>
         </a>
         <a class="ech-host" href="https://www.comefollowmefhe.com/" target="_blank" rel="noopener">

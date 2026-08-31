@@ -32,7 +32,7 @@
       </ul>
       <div class="ech-cta-row ech-cta-row-2">
         <a href="https://go.ecommharvest.com/register" class="ech-btn">Save my seat</a>
-        <span class="ech-cta-micro">Thursday, September 3 &middot; 11:00 AM MT &middot; replay available</span>
+        <span class="ech-cta-micro">Thursday, September 10 &middot; 11:00 AM MT &middot; replay available</span>
       </div>
     </div>
   </div>

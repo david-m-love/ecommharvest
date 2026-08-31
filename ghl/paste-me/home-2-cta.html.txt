@@ -5,7 +5,7 @@
 <div class="ech-scope">
 <div class="ech-final-in">
     <div class="ech-finalcard">
-      <p class="ech-eyebrow">Free &middot; 90 minutes &middot; Thursday, September 3</p>
+      <p class="ech-eyebrow">Free &middot; 90 minutes &middot; Thursday, September 10</p>
       <h2>Your Q4 Revenue Playbook, Built in 90 Minutes.</h2>
       <a href="https://go.ecommharvest.com/masterclass" class="ech-btn ech-btn-lg">Save my seat</a>
     </div>

@@ -7,7 +7,7 @@
         "id": "seed-header-0",
         "logoText": "eCommHarvest",
         "homeUrl": "https://ecommharvest.com/",
-        "rightText": "Thursday, September 3 · 11:00 AM MT · free"
+        "rightText": "Thursday, September 10 · 11:00 AM MT · free"
       }
     },
     {
@@ -18,7 +18,7 @@
         "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
         "deck": "…without headaches or sacrificing family time.",
         "body": "Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, how you’ll structure the offers, and what email, SMS, creative, and conversion systems need to be ready before the holiday rush.",
-        "when": "Thursday, September 3 · 11:00 AM MT (1:00 PM ET / 10:00 AM PT)",
+        "when": "Thursday, September 10 · 11:00 AM MT (1:00 PM ET / 10:00 AM PT)",
         "ctaLabel": "Save my seat",
         "ctaHref": "https://go.ecommharvest.com/register",
         "ctaMicro": "Free · 90 minutes · replay available"
@@ -100,7 +100,7 @@
         ],
         "ctaLabel": "Save my seat",
         "ctaHref": "https://go.ecommharvest.com/register",
-        "ctaMicro": "Thursday, September 3 · 11:00 AM MT · replay available"
+        "ctaMicro": "Thursday, September 10 · 11:00 AM MT · replay available"
       }
     },
     {
@@ -209,7 +209,7 @@
       "type": "CtaCard",
       "props": {
         "id": "seed-ctacard-10",
-        "eyebrow": "Thursday, September 3 · 11:00 AM MT · free · 90 minutes",
+        "eyebrow": "Thursday, September 10 · 11:00 AM MT · free · 90 minutes",
         "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
         "body": "Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.",
         "ctaLabel": "Save my seat",

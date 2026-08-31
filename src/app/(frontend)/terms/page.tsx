@@ -42,7 +42,7 @@ function HandBuiltTermsPage() {
             <img src="/logo.png" alt="eCommHarvest" width={197} height={34} />
           </a>
           <div className="topbar-right">
-            <span className="stamp">Thursday, September 3 &middot; 11:00 AM MT &middot; free</span>
+            <span className="stamp">Thursday, September 10 &middot; 11:00 AM MT &middot; free</span>
           </div>
         </div>
       </header>
