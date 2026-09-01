@@ -309,9 +309,32 @@ Storage → Create Database → Blob, connect it, redeploy.
 
 ## The funnel
 
-Registration and the thank-you page are **on this site** now, at `/register` and
-`/masterclass/thanks`. They were GoHighLevel pages on `go.ecommharvest.com`, with
-our HTML pasted above and below GHL's form.
+Registration and the thank-you page are **on this site** now. They were
+GoHighLevel pages on `go.ecommharvest.com`, with our HTML pasted above and below
+GHL's form.
+
+```
+/masterclass              the pitch          — what you advertise
+/masterclass/register     the form
+/masterclass/thanks       the confirmation   — noindex
+```
+
+### Why nested, and not /register
+
+A funnel belongs to a **campaign**. Flat, `/register` can only ever be one thing:
+the day there is a second event, it has to be taken away from one of them.
+Nested, `/workshop/register` sits beside `/masterclass/register` without an
+argument, and the whole funnel is one prefix — which is also how you filter it in
+analytics and read it in a report.
+
+Hyphens separate words *inside* a segment (`thank-you`, never `thankyou` or
+`thank_you`); slashes separate *things*. `thanks` is one word, so it needs
+neither — and renaming it would mean changing the redirect set in GoHighLevel for
+no gain.
+
+`/register` still works, as a permanent redirect. It was live before the move and
+it is exactly the kind of short URL that ends up pasted into a message; a 404 on
+a registration link costs a registration.
 
 **We own the page, GHL owns the form.** Everything a visitor reads is a
 page-builder page — editable in the builder, on a phone, with no paste step. The
@@ -702,7 +725,7 @@ npm run test:nav                             # 15 checks: the menu, desktop and 
 npm run test:images                          # 23 checks: upload, resizing, the delete guard
 npm run test:hosts                           # 21 checks: partner logos of three shapes
 npm run test:blog                            # 46 checks: writing, reading, the feed, the renderer
-npm run test:funnel                          # 22 checks: the embedded form, both funnel pages
+npm run test:funnel                          # 24 checks: the embedded form, both funnel pages
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
 npm test                                     # 20 checks, no server needed

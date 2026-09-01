@@ -129,6 +129,12 @@ const nextConfig = {
       { source: '/terms.html', destination: '/terms', permanent: true },
       { source: '/thanks.html', destination: '/masterclass/thanks', permanent: true },
       { source: '/thanks', destination: '/masterclass/thanks', permanent: true },
+      /**
+       * Registration moved under the masterclass, where a campaign's funnel
+       * belongs. This is the short form somebody may already have sent to
+       * someone, so it keeps working.
+       */
+      { source: '/register', destination: '/masterclass/register', permanent: true },
       ...privateRoots,
       ...privateAreas,
     ]

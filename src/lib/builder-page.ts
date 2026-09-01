@@ -121,9 +121,11 @@ export const OWN_ROUTES: Record<string, string> = {
   masterclass: '/masterclass',
   privacy: '/privacy',
   terms: '/terms',
-  register: '/register',
-  // The slug cannot contain a slash, so the funnel's thank-you page is stored
-  // flat and mapped to the nested URL people are sent to after the form.
+  /**
+   * The funnel, nested under the campaign it belongs to. A slug cannot contain a
+   * slash, so both are stored flat and mapped to the nested URL here.
+   */
+  'masterclass-register': '/masterclass/register',
   'masterclass-thanks': '/masterclass/thanks',
 }
 

@@ -74,5 +74,18 @@ export const MASTERCLASS_FORM_ID = '4KbBmtflATgx2fMZiNYU'
  * one domain, and there is no hop to a second site in the middle of a funnel —
  * which is where people leave.
  */
-export const REGISTER_PATH = '/register'
+export const REGISTER_PATH = '/masterclass/register'
 export const THANKS_PATH = '/masterclass/thanks'
+
+/**
+ * Nested under the masterclass, not flat at `/register`.
+ *
+ * A funnel belongs to a campaign. `/register` can only ever be one thing, so the
+ * day there is a second event it has to be taken from one of them; under the
+ * masterclass, `/workshop/register` can exist beside it without an argument. It
+ * also means the whole funnel is one prefix in analytics.
+ *
+ * `/register` keeps working — it is exactly the kind of short URL that ends up
+ * in a message — as a permanent redirect set in `next.config.mjs`.
+ */
+export const OLD_FLAT_REGISTER_PATH = '/register'

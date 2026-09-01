@@ -13,18 +13,18 @@ const FALLBACK: Metadata = {
   title: 'Save my seat',
   description:
     'Save your seat for the Q4 Revenue Playbook masterclass. Ninety minutes, live, replay included.',
-  alternates: { canonical: '/register' },
+  alternates: { canonical: '/masterclass/register' },
   // The masterclass page is the one that should rank; a thin registration page
   // competing with it in search helps nobody.
   robots: { index: false, follow: true },
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return builderMetadata(await loadBuilderPage('register'), FALLBACK)
+  return builderMetadata(await loadBuilderPage('masterclass-register'), FALLBACK)
 }
 
 /**
- * Registration, on this site.
+ * Registration, on this site, under the masterclass it belongs to.
  *
  * It used to be a GoHighLevel page on go.ecommharvest.com, with our HTML pasted
  * above and below their form. Now the page is a page-builder page like any
@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * site, so it does not get to depend on a database row.
  */
 export default async function RegisterPage() {
-  const page = await loadBuilderPage('register')
+  const page = await loadBuilderPage('masterclass-register')
   if (page) {
     return <Render config={config} data={page.data} metadata={await siteMetadata()} />
   }

@@ -52,8 +52,8 @@ await ctx.route('**/api.shoqwave.com/**', (route) =>
 // --- the registration page ----------------------------------------------
 
 console.log('the registration page')
-let res = await page.goto(`${BASE}/register`, { waitUntil: 'domcontentloaded' })
-check(res?.status() === 200, '/register answers', `${res?.status()}`)
+let res = await page.goto(`${BASE}/masterclass/register`, { waitUntil: 'domcontentloaded' })
+check(res?.status() === 200, '/masterclass/register answers', `${res?.status()}`)
 await page.waitForTimeout(1200)
 
 const embed = await page.evaluate(() => {
@@ -151,7 +151,9 @@ for (const path of ['/', '/masterclass']) {
    * GoHighLevel copy, which is a second version of a page that also exists here
    * and is no longer the one being edited.
    */
-  const inbound = hrefs.filter((href) => href === '/register' || href === '/masterclass')
+  const inbound = hrefs.filter(
+    (href) => href === '/masterclass/register' || href === '/masterclass',
+  )
   check(offsite.length === 0, `${path} sends nobody to the old funnel`, offsite.join(', ') || 'none')
   check(inbound.length > 0, `${path} leads into our own funnel`, `${inbound.length} link(s)`)
 }
@@ -165,16 +167,31 @@ const ld = await page.evaluate(() => {
   return tag ? JSON.parse(tag) : null
 })
 check(
-  typeof ld?.location?.url === 'string' && ld.location.url.includes('/register'),
+  typeof ld?.location?.url === 'string' && ld.location.url.includes('/masterclass/register'),
   'the Event data points at our registration page',
   `${ld?.location?.url}`,
+)
+
+/**
+ * The short form still works.
+ *
+ * `/register` was live before the funnel moved under the masterclass, and it is
+ * exactly the kind of URL somebody pastes into a message. A permanent redirect
+ * costs nothing and a 404 on a registration link costs a registration.
+ */
+const short = await page.goto(`${BASE}/register`, { waitUntil: 'domcontentloaded' })
+check(short?.status() === 200, '/register still answers', `${short?.status()}`)
+check(
+  new URL(page.url()).pathname === '/masterclass/register',
+  'and lands on the nested page',
+  new URL(page.url()).pathname,
 )
 
 // --- on a phone ----------------------------------------------------------
 
 console.log('\non a phone')
 await page.setViewportSize({ width: 414, height: 900 })
-await page.goto(`${BASE}/register`, { waitUntil: 'domcontentloaded' })
+await page.goto(`${BASE}/masterclass/register`, { waitUntil: 'domcontentloaded' })
 await page.waitForTimeout(1000)
 const mobile = await page.evaluate(() => {
   const frame = document.querySelector('iframe.formembed')

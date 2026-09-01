@@ -345,7 +345,7 @@ export const config: Config<Blocks> = {
         body: 'Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, and what needs to be ready before the holiday rush.',
         when: 'Thursday, September 10 · 11:00 AM MT',
         ctaLabel: 'Save my seat',
-        ctaHref: '/register',
+        ctaHref: '/masterclass/register',
         ctaMicro: 'Free · 90 minutes · replay available',
       },
       render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro }) => (
@@ -567,7 +567,7 @@ export const config: Config<Blocks> = {
           { lead: 'Your email + SMS roadmap', text: '— the campaigns and automated flows that support the quarter' },
         ],
         ctaLabel: 'Save my seat',
-        ctaHref: '/register',
+        ctaHref: '/masterclass/register',
         ctaMicro: 'Thursday, September 10 · 11:00 AM MT',
       },
       render: ({ eyebrow, leadIn, bullets, ctaLabel, ctaHref, ctaMicro }) => (
@@ -786,7 +786,7 @@ export const config: Config<Blocks> = {
         heading: 'Your Q4 Revenue Playbook, Built in 90 Minutes.',
         body: 'Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.',
         ctaLabel: 'Save my seat',
-        ctaHref: '/register',
+        ctaHref: '/masterclass/register',
         note: 'Free · no card required · replay sent to every registrant',
       },
       render: ({ eyebrow, heading, body, ctaLabel, ctaHref, note }) => (
