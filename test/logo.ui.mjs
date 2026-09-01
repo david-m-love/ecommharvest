@@ -24,6 +24,7 @@
 
 import { writeFileSync } from 'node:fs'
 import { chromium } from 'playwright'
+import sharp from 'sharp'
 
 const BASE = process.env.TEST_BASE_URL || 'http://localhost:3000'
 const ADMIN = process.env.SEED_ADMIN_EMAIL || 'david@lovemarketing.digital'
@@ -58,10 +59,23 @@ const auth = { Authorization: `JWT ${token}` }
 
 // --- a logo in the library ----------------------------------------------
 
-const PNG = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKUlEQVR42mNkYPjPwMDAyMDAwMgABYwMUMDIAAWMDFDAyAAFjAxQwMgABQBnAAeQm3rHAAAAAElFTkSuQmCC',
-  'base64',
-)
+/**
+ * A wide lockup, at the real logo's proportions.
+ *
+ * It used to be an 8×8 square, which is the one shape that cannot catch any of
+ * the bugs here. Almost every brand's logo is a symbol beside a wordmark —
+ * roughly six times wider than tall — and width, not height, is what runs out
+ * first on a phone. Every mobile failure this suite now covers was invisible to
+ * a square.
+ */
+const LOGO_W = 696
+const LOGO_H = 120
+const LOGO_RATIO = LOGO_W / LOGO_H
+const PNG = await sharp({
+  create: { width: LOGO_W, height: LOGO_H, channels: 4, background: { r: 22, g: 50, b: 79, alpha: 1 } },
+})
+  .png()
+  .toBuffer()
 const file = '/tmp/test-site-logo.png'
 writeFileSync(file, PNG)
 
@@ -96,7 +110,13 @@ const logoOn = async (ctx, path) => {
   await p.waitForTimeout(500)
   const found = await p.evaluate(() => {
     const img = document.querySelector('.brand img')
-    return img ? { height: Math.round(img.getBoundingClientRect().height), src: img.getAttribute('src') } : null
+    if (!img) return null
+    const box = img.getBoundingClientRect()
+    return {
+      height: Math.round(box.height),
+      width: Math.round(box.width),
+      src: img.getAttribute('src'),
+    }
   })
   await p.close()
   return found
@@ -126,12 +146,99 @@ await setSize('small')
 const small = await logoOn(desktop, '/')
 check(small?.height === 31, 'small renders at 31px', `${small?.height}px`)
 
-// --- phones cap it -------------------------------------------------------
+// --- on a phone ----------------------------------------------------------
 
-await setSize('xlarge')
+/**
+ * The four sizes have to mean four things on a phone too.
+ *
+ * They used to be capped at a flat 41px, which made Medium, Large and Extra
+ * large render identically on every phone: the setting silently did nothing
+ * above Medium, and the answer to "make the logo bigger" was that there was no
+ * way to. Each size is smaller than on a desktop — an extra-large logo must not
+ * eat a phone screen — but they are distinct, and they scale in order.
+ */
 const phone = await browser.newContext({ viewport: { width: 390, height: 844 } })
-const onPhone = await logoOn(phone, '/')
-check(onPhone?.height === 41, 'an extra-large logo is capped on a phone', `${onPhone?.height}px`)
+
+/**
+ * Measured on a page with **no menu**, because that is where the sizes have room
+ * to differ.
+ *
+ * With a menu button on a 390px screen, a lockup six times wider than it is tall
+ * runs out of width at about 44px — so Large and Extra large are the same size
+ * there, and correctly so. Asserting the ordering on such a page would be
+ * asserting that physics is wrong; the pages with a menu are checked below for
+ * what actually matters there, which is that nothing collides.
+ */
+const heights = {}
+for (const size of ['small', 'medium', 'large', 'xlarge']) {
+  await setSize(size)
+  heights[size] = await logoOn(phone, '/masterclass/register')
+}
+
+check(
+  heights.small.height < heights.medium.height,
+  'small is smaller than medium on a phone',
+  `${heights.small.height}px vs ${heights.medium.height}px`,
+)
+check(
+  heights.medium.height < heights.large.height,
+  'and medium smaller than large — the setting is not ignored',
+  `${heights.medium.height}px vs ${heights.large.height}px`,
+)
+check(
+  heights.xlarge.height <= 72 && heights.xlarge.height > heights.medium.height,
+  'extra large is bigger still, without eating the screen',
+  `${heights.xlarge.height}px`,
+)
+
+/**
+ * Proportions, at every size.
+ *
+ * The obvious way to stop a wide logo overflowing — a set height with a
+ * max-width — clamps the width while the height stands still, and the logo comes
+ * out squashed. It measured 4.9:1 for a 5.8:1 file, which is the kind of wrong
+ * nobody can name but everybody can see.
+ */
+for (const [size, box] of Object.entries(heights)) {
+  const ratio = box.width / box.height
+  check(
+    Math.abs(ratio - LOGO_RATIO) / LOGO_RATIO < 0.06,
+    `${size} keeps the logo's proportions`,
+    `${ratio.toFixed(2)} vs ${LOGO_RATIO.toFixed(2)}`,
+  )
+}
+
+/** And none of them may run into the menu button or off the screen. */
+for (const [size] of Object.entries(heights)) {
+  await setSize(size)
+  const page = await phone.newPage()
+  await page.goto(`${BASE}/`, { waitUntil: 'load' })
+  await page
+    .waitForFunction(
+      () => {
+        const img = document.querySelector('.brand img')
+        return img && img.complete && img.naturalWidth > 0
+      },
+      { timeout: 30_000 },
+    )
+    .catch(() => {})
+  const clash = await page.evaluate(() => {
+    const img = document.querySelector('.brand img')
+    const toggle = document.querySelector('.navtoggle')
+    const i = img.getBoundingClientRect()
+    const visible = toggle && getComputedStyle(toggle).display !== 'none'
+    const t = visible ? toggle.getBoundingClientRect() : null
+    return {
+      overflow: document.documentElement.scrollWidth > window.innerWidth + 1,
+      overlaps: t ? i.left < t.right : false,
+      offscreen: i.left < 0 || i.right > window.innerWidth,
+    }
+  })
+  check(!clash.overflow, `${size} does not push the page sideways`)
+  check(!clash.overlaps, `${size} does not run into the menu button`)
+  check(!clash.offscreen, `${size} stays on the screen`)
+  await page.close()
+}
 await phone.close()
 
 // Leave it where a person would want it.

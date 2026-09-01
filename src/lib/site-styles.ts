@@ -63,6 +63,28 @@ const LOGO_HEIGHTS: Record<string, number> = {
   xlarge: 72,
 }
 
+/**
+ * The same four choices, on a phone.
+ *
+ * Not the desktop numbers, and not one flat cap either. Scaled down, because a
+ * 72px logo on a 390px screen is a banner; kept distinct, because the setting
+ * has to mean something — it used to be capped at 41px, which made Medium,
+ * Large and Extra large identical on every phone and left "make the logo
+ * bigger" with no answer.
+ *
+ * Where a logo is wide enough that these heights would not fit across the
+ * screen, the stylesheet's `max-width` reduces the height to keep the
+ * proportions. So each value is "this tall, unless that would not fit" — which
+ * is why the numbers can be generous without any risk of a logo running into
+ * the menu button.
+ */
+const LOGO_HEIGHTS_MOBILE: Record<string, number> = {
+  small: 34,
+  medium: 44,
+  large: 54,
+  xlarge: 64,
+}
+
 export const getSiteStyles = async (): Promise<SiteStyles> => {
   const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, css: null }
 
@@ -81,8 +103,27 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
       for (const variable of variables) declarations.push(`${variable}:${value.trim()}`)
     }
 
-    const height = LOGO_HEIGHTS[String(styles.logoSize)] ?? LOGO_HEIGHTS.medium
+    const size = String(styles.logoSize)
+    const height = LOGO_HEIGHTS[size] ?? LOGO_HEIGHTS.medium
     declarations.push(`--logo-h:${height}px`)
+    declarations.push(`--logo-h-mobile:${LOGO_HEIGHTS_MOBILE[size] ?? LOGO_HEIGHTS_MOBILE.medium}px`)
+
+    /**
+     * The logo's shape, as a number, so the stylesheet can work out how tall it
+     * may be in the width available. Without it, "too wide to fit" can only be
+     * handled by letterboxing — which grows the header without growing the
+     * logo. Four is a middling lockup, used only until a logo is uploaded.
+     */
+    const logoRecord = styles.logo
+    const ratio =
+      typeof logoRecord === 'object' &&
+      logoRecord &&
+      typeof logoRecord.width === 'number' &&
+      typeof logoRecord.height === 'number' &&
+      logoRecord.height > 0
+        ? logoRecord.width / logoRecord.height
+        : 4
+    declarations.push(`--logo-ar:${ratio.toFixed(3)}`)
 
     const logo = styles.logo
     /**

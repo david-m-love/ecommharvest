@@ -328,14 +328,65 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
      different positions, and the second one looks like a mistake. The outer
      columns match whether or not a button is in the left one, which is what
      `has-nav` is for: no menu, no reserved space, still centred. */
-  .topbar-in{padding:12px 14px;display:grid;grid-template-columns:1fr auto 1fr;gap:8px}
-  .topbar-in .brand{grid-column:2;grid-row:1;justify-content:center}
+  /* The outer columns reserve room for the menu button on both sides, so the
+     logo is centred in the *bar* and can never grow into the button. `min-width:0`
+     on the middle column is what lets the image shrink rather than overflow. */
+  /* `minmax(0,1fr)`, not `1fr`. A bare `1fr` track keeps a minimum of its own
+     content and claims a share of the space even when empty, which left the
+     middle column 200px on a 390px screen — so every logo size collapsed to the
+     same height and the setting appeared to do nothing again. With a zero
+     minimum the empty columns give way and the logo gets the width it needs. */
+  .topbar-in{padding:12px 14px;display:grid;
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px}
+  /* Room for the menu button on both sides — but only when there is one, so a
+     landing page with no menu gives the whole width to the logo. */
+  .topbar-in.has-nav{grid-template-columns:minmax(44px,1fr) auto minmax(44px,1fr)}
+  /* A real width for the logo to be a percentage of.
+     
+     `max-width:100%` on the image needs a containing block with a definite
+     width; inside an auto-sized grid track there is none, so the percentage was
+     ignored, the track collapsed to 200px and every size came out at 34px.
+     Viewport units are definite, which breaks the circularity. The subtraction
+     is the bar's own padding, plus room for the menu button when there is one. */
+  .topbar-in .brand{grid-column:2;grid-row:1;justify-content:center;min-width:0;
+    max-width:var(--logo-space)}
+  /* The width the logo actually has: the bar, less its padding and the two grid
+     gaps — and less room for the menu button on both sides when there is one, so
+     that the logo stays centred in the bar rather than in what is left beside
+     the button. */
+  .topbar-in{--logo-space:calc(100vw - 44px)}
+  .topbar-in.has-nav{--logo-space:calc(100vw - 132px)}
   .topbar-in.has-nav .navtoggle{grid-column:1;grid-row:1;justify-self:start;display:block}
   .topnav{display:none}
   .legalhead,.legalblock{padding-left:20px;padding-right:20px}
-  /* Capped at Medium, not scaled: an "extra large" logo chosen on a desktop
-     must not eat a phone screen, but a small one should stay small. */
-  .brand img{height:min(var(--logo-h,41px),41px)}
+
+  /* The logo on a phone: the size that was chosen, scaled down, then bounded by
+     the width available.
+     
+     This used to be `min(var(--logo-h), 41px)` — a flat cap, which meant Medium,
+     Large and Extra large all rendered at exactly 41px. The setting silently did
+     nothing above Medium, so the answer to "make the logo bigger" was that there
+     was no way to.
+     
+     Both bounds are needed because a logo's shape decides which one binds. A
+     wide lockup — symbol plus wordmark, five or six times wider than it is tall —
+     hits the width of the screen long before it looks tall; a compact square mark
+     hits the height first.
+     
+     The height is explicit and the width follows it. Leaving both automatic and
+     bounding them with max-* reads better but does not survive a real phone: an
+     image with a srcset has no fixed intrinsic size, and at 3x pixel density the
+     browser derives one from the source file — so a 696px-wide logo laid itself
+     out at 232px however large a size had been chosen.
+     
+     When the chosen height would make the logo wider than the space, the height
+     comes down to fit — `min()` against the width available divided by the
+     logo's own shape, which Site Styles publishes as `--logo-ar`. Clamping the
+     width instead would either squash the picture or letterbox it, and
+     letterboxing grows the header by the space it wastes: an "extra large" that
+     makes the bar taller without making the logo bigger. */
+  .brand img{height:min(var(--logo-h-mobile,44px),calc(var(--logo-space,300px) / var(--logo-ar,4)));
+    width:auto;max-width:100%}
   /* The panel is positioned, so opening the menu cannot reflow the page behind
      it. `.topbar` is sticky, which makes it the containing block. */
   .navpanel{position:absolute;top:100%;left:0;right:0;background:var(--white);

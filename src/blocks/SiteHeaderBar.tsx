@@ -50,7 +50,15 @@ export function SiteHeaderBar({
             <BlockImage
               image={{ url: logoUrl, alt, width: logoWidth ?? undefined, height: logoHeight ?? undefined }}
               fallbackAlt={alt}
-              sizes="(max-width: 760px) 200px, 320px"
+              /**
+               * The widest the logo can ever be drawn, not the width it usually
+               * is — because for an image with a srcset and automatic
+               * dimensions, `sizes` *is* the width the browser lays it out at.
+               * A tidy-looking "200px" here silently pinned every logo on every
+               * phone to exactly 200px wide, whatever size had been chosen, and
+               * made the size setting look broken.
+               */
+              sizes="(max-width: 760px) 100vw, 320px"
               // The one image in the first screenful on every page.
               priority
             />

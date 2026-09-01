@@ -244,6 +244,36 @@ small screen.
 Change the accent here and every button, chip and eyebrow on every page follows,
 with no deploy and nothing per-section to touch.
 
+### The logo on a phone
+
+Four sizes, and they mean four different things on a phone as well as on a
+laptop. They used to be capped at a flat 41px, which made Medium, Large and
+Extra large render identically on every phone — the setting silently did nothing
+above Medium.
+
+Roughly, for a typical wide logo on a 390px screen:
+
+| Setting | Phone | Laptop |
+| --- | --- | --- |
+| Small | 34px | 31px |
+| Medium | 44px | 41px |
+| Large | 54px | 55px |
+| Extra large | up to 60px | 72px |
+
+**"Up to"** because width, not height, is what runs out first. Most logos are a
+symbol beside a wordmark — five or six times wider than tall — so on a phone the
+height comes down to whatever keeps the whole logo on the screen. Two
+consequences worth knowing:
+
+- **With a menu, Large and Extra large look the same.** The menu button needs
+  room on both sides for the logo to stay centred in the bar, and a wide logo
+  fills what is left at about 44px. There is no way to have a big wide logo *and*
+  a menu button on a 390px screen; the page keeps working either way.
+- **A bigger setting needs a bigger file.** A logo shown 255px wide on a modern
+  phone is drawn at three times that — around 765px — so a 700px file is at its
+  limit around Medium. For Large or Extra large, upload one about 1400px wide, or
+  an SVG, or it will look soft.
+
 ### Why there are no per-section colour controls
 
 This is the Squarespace split, on purpose: **global** things (logo, colours) live
@@ -720,7 +750,7 @@ npm run test:builder:ui                      # 35 checks, real browser: the edit
 npm run test:manage                          # 16 checks: duplicate, delete, small screens, recovery
 npm run test:mobile                          # 39 checks: the whole editing loop at 390×844
 npm run test:styles                          # 16 checks: colours reaching both pages
-npm run test:logo                            #  9 checks: one logo, four sizes, capped on phones
+npm run test:logo                            # 27 checks: one logo, four sizes, phones included
 npm run test:nav                             # 15 checks: the menu, desktop and phone
 npm run test:images                          # 23 checks: upload, resizing, the delete guard
 npm run test:hosts                           # 21 checks: partner logos of three shapes
