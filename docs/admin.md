@@ -307,6 +307,45 @@ next deploy — leaving broken images on every page that used it. Rather than le
 that happen silently, uploads are **refused** with the fix in the message:
 Storage → Create Database → Blob, connect it, redeploy.
 
+## The funnel
+
+Registration and the thank-you page are **on this site** now, at `/register` and
+`/masterclass/thanks`. They were GoHighLevel pages on `go.ecommharvest.com`, with
+our HTML pasted above and below GHL's form.
+
+**We own the page, GHL owns the form.** Everything a visitor reads is a
+page-builder page — editable in the builder, on a phone, with no paste step. The
+form itself is a **Registration form** block: an embedded GHL form, so the
+contact record, the workflows and the email and SMS all still live in GHL, which
+is the reason it is there at all. Rebuilding the form here would mean a second
+place for leads to land and a second consent record to reconcile.
+
+What that buys: one domain for the whole funnel, so analytics is one funnel
+rather than two sites — and no hop to a differently-branded site in the middle of
+registering, which is where people leave.
+
+### Two settings in GoHighLevel
+
+Neither can be set from here.
+
+1. **Where the form redirects.** The form's *On submit* must point at
+   `https://ecommharvest.com/masterclass/thanks`. Until it does, people submit
+   and land back on GHL's own thank-you step.
+2. **The form's name.** It is currently "Masterclass Registration 9/3/2026" — an
+   internal label with a date that has moved. It is worth renaming, though the
+   block overrides what a screen reader announces so no visitor sees it.
+
+### Changing the form
+
+The **Registration form** block takes a form ID — the last part of the embed code
+GHL gives you, `.../widget/form/<this>`. Paste a new one into the block to swap
+forms on one page without a deploy; `MASTERCLASS_FORM_ID` in `src/lib/event.ts`
+is the default new blocks start with.
+
+The block reserves space before the form loads (*Space to reserve*). GHL's script
+sets the real height once the form reports it; the reservation is what stops the
+page looking broken on a slow connection.
+
 ## Moving the masterclass date
 
 The date lives in three kinds of place, and only one of them is code.
@@ -663,6 +702,7 @@ npm run test:nav                             # 15 checks: the menu, desktop and 
 npm run test:images                          # 23 checks: upload, resizing, the delete guard
 npm run test:hosts                           # 21 checks: partner logos of three shapes
 npm run test:blog                            # 46 checks: writing, reading, the feed, the renderer
+npm run test:funnel                          # 22 checks: the embedded form, both funnel pages
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
 npm test                                     # 20 checks, no server needed

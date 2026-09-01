@@ -2,9 +2,11 @@ import type { Config, Data } from '@measured/puck'
 import React from 'react'
 
 import { BlockImage } from './BlockImage'
+import { MASTERCLASS_FORM_ID } from '@/lib/event'
 import { isExternalHref, toHref } from '@/lib/href'
 import type { RecentPost } from '@/lib/site-styles'
 
+import { FormEmbed } from './FormEmbed'
 import { SiteHeaderBar } from './SiteHeaderBar'
 import { type PickedImage, imageField } from './image-field'
 
@@ -199,6 +201,15 @@ export type Blocks = {
   PageHeading: { eyebrow?: string; heading?: string; body?: string }
   LegalText: { heading?: string; body?: string }
   Prose: { eyebrow?: string; heading?: string; body?: string; background?: 'white' | 'wash' }
+  FormEmbed: {
+    formId?: string
+    title?: string
+    eyebrow?: string
+    heading?: string
+    body?: string
+    minHeight?: number
+    background?: 'white' | 'wash'
+  }
   PostList: { eyebrow?: string; heading?: string; body?: string; count?: number; ctaLabel?: string }
   Footer: { copyright?: string; links?: { label: string; href: string }[]; note?: string }
 }
@@ -221,7 +232,7 @@ export const config: Config<Blocks> = {
     },
     Body: {
       title: 'Body sections',
-      components: ['DarkCard', 'BulletList', 'FormulaBar', 'CardRow', 'Speakers', 'Prose', 'LegalText'],
+      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'Speakers', 'Prose', 'LegalText'],
       defaultExpanded: true,
     },
     'Bottom of page': { title: 'Bottom of page', components: ['PostList', 'CtaCard', 'Footer'] },
@@ -879,6 +890,56 @@ export const config: Config<Blocks> = {
             <Paragraphs text={body} className="lede" />
           </div>
         </div>
+      ),
+    },
+
+    FormEmbed: {
+      label: 'Registration form',
+      fields: {
+        eyebrow: { type: 'text', label: 'Small label above' },
+        heading: { type: 'text', label: 'Heading above the form' },
+        body: { type: 'textarea', label: 'Line under the heading' },
+        formId: {
+          type: 'text',
+          label: 'Form ID from GoHighLevel',
+        },
+        title: { type: 'text', label: 'Name for screen readers' },
+        minHeight: {
+          type: 'radio',
+          label: 'Space to reserve',
+          options: [
+            { label: 'Short form', value: 480 },
+            { label: 'Normal', value: 620 },
+            { label: 'Long form', value: 820 },
+          ],
+        },
+        background: {
+          type: 'radio',
+          label: 'Background',
+          options: [
+            { label: 'White', value: 'white' },
+            { label: 'Cream', value: 'wash' },
+          ],
+        },
+      },
+      defaultProps: {
+        eyebrow: 'Free · 90 minutes · replay included',
+        heading: 'Save your seat.',
+        body: 'Two fields and you are in. The join link arrives by email straight away.',
+        formId: MASTERCLASS_FORM_ID,
+        title: 'Masterclass registration',
+        minHeight: 620,
+        background: 'wash',
+      },
+      render: ({ eyebrow, heading, body, formId, title, minHeight, background }) => (
+        <section className={background === 'white' ? 'slot' : 'slot wash'}>
+          <div className="slot-in formwrap">
+            {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+            {heading ? <h2>{heading}</h2> : null}
+            {body ? <p className="lede">{body}</p> : null}
+            <FormEmbed formId={formId || ''} title={title} minHeight={minHeight} />
+          </div>
+        </section>
       ),
     },
 

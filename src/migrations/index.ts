@@ -9,7 +9,8 @@ import * as migration_20260822_063000_cookie_section from './20260822_063000_coo
 import * as migration_20260822_180146_meta_pixel_id from './20260822_180146_meta_pixel_id';
 import * as migration_20260829_233857_add_blog from './20260829_233857_add_blog';
 import * as migration_20260829_234831_blog_heading from './20260829_234831_blog_heading'
-import * as migration_20260830_010000_masterclass_date from './20260830_010000_masterclass_date';
+import * as migration_20260830_010000_masterclass_date from './20260830_010000_masterclass_date'
+import * as migration_20260901_120000_funnel_on_our_site from './20260901_120000_funnel_on_our_site';
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20260830_010000_masterclass_date.up,
     down: migration_20260830_010000_masterclass_date.down,
     name: '20260830_010000_masterclass_date',
+  },
+  {
+    up: migration_20260901_120000_funnel_on_our_site.up,
+    down: migration_20260901_120000_funnel_on_our_site.down,
+    name: '20260901_120000_funnel_on_our_site',
   },
 ];

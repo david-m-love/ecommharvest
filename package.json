@@ -36,6 +36,7 @@
     "test:mobile": "node test/mobile-editor.ui.mjs",
     "test:hosts": "node test/hosts.ui.mjs",
     "test:blog": "node test/blog.ui.mjs",
+    "test:funnel": "node test/funnel.ui.mjs",
     "test:prerender": "node test/prerender.mjs",
     "test:schema": "node test/schema.mjs",
     "test:importmap": "node test/importmap.mjs",

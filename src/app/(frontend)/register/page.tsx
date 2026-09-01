@@ -1,66 +1,79 @@
+import { Render } from '@measured/puck/rsc'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import React from 'react'
 
-export const metadata: Metadata = {
+import { config } from '@/blocks'
+import { FormEmbed } from '@/blocks/FormEmbed'
+import { SiteFooterBar, SiteHeaderBar } from '@/blocks/SiteHeaderBar'
+import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
+import { EVENT_ELSEWHERE, EVENT_WHEN, MASTERCLASS_FORM_ID } from '@/lib/event'
+import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
+
+const FALLBACK: Metadata = {
   title: 'Save my seat',
-  robots: { index: false, follow: false },
+  description:
+    'Save your seat for the Q4 Revenue Playbook masterclass. Ninety minutes, live, replay included.',
+  alternates: { canonical: '/register' },
+  // The masterclass page is the one that should rank; a thin registration page
+  // competing with it in search helps nobody.
+  robots: { index: false, follow: true },
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  return builderMetadata(await loadBuilderPage('register'), FALLBACK)
 }
 
 /**
- * Funnel step 2 is GoHighLevel's native form, on go.ecommharvest.com. Nothing is
- * built here on purpose — a second registration form would be a second place for
- * leads to land and a second consent record to keep straight.
+ * Registration, on this site.
  *
- * Nothing links here any more: the landing page's CTAs point at the absolute GHL
- * URL, so they reach the real form from either host. This page survives only as
- * a signpost for anyone who types the path or follows an old link, and it says
- * where the form actually is.
+ * It used to be a GoHighLevel page on go.ecommharvest.com, with our HTML pasted
+ * above and below their form. Now the page is a page-builder page like any
+ * other and only the **form** is GoHighLevel's, embedded in a block. The contact
+ * record, the workflows and the email and SMS are still theirs — that is what
+ * GHL is for — but the words, the brand and the layout are edited here, and the
+ * whole funnel is on one domain.
+ *
+ * The fallback below is the same page written in code, for the window between
+ * this deploying and its migration running — and for the day somebody deletes
+ * the record. A registration page that 404s is the most expensive 404 on the
+ * site, so it does not get to depend on a database row.
  */
-export default function RegisterPlaceholder() {
+export default async function RegisterPage() {
+  const page = await loadBuilderPage('register')
+  if (page) {
+    return <Render config={config} data={page.data} metadata={await siteMetadata()} />
+  }
+
+  const styles = await getSiteStyles()
   return (
-    <main className="slot hero">
-      <div className="slot-in">
-        <p className="eyebrow">
-          <Link href="/masterclass" className="plainlink">
-            ← Back to the masterclass page
-          </Link>
-        </p>
-        <h1>Registration lives on the funnel.</h1>
-        <p className="lede">
-          Funnel step 2 is a GoHighLevel page, so the form, the contact record and the email and SMS
-          all stay in one place.
-        </p>
-        <p className="cta-row">
-          <a className="btn" href="https://go.ecommharvest.com/register">
-            Go to registration
-          </a>
-        </p>
-        <p className="lede" style={{ marginTop: 34 }}>What that page needs:</p>
-        <ul className="bullets">
-          <li>
-            <span className="b-t">
-              <strong>First name, email, and phone</strong> — phone is required for SMS
-            </span>
-          </li>
-          <li>
-            <span className="b-t">
-              <strong>Two separate consent checkboxes</strong> — email consent is not consent to
-              text someone
-            </span>
-          </li>
-          <li>
-            <span className="b-t">
-              <strong>Store URL</strong>, optional
-            </span>
-          </li>
-          <li>
-            <span className="b-t">
-              Submit reads <strong>Save my seat</strong> and redirects to the thank-you step
-            </span>
-          </li>
-        </ul>
-      </div>
-    </main>
+    <>
+      <SiteHeaderBar
+        logoUrl={styles.logoUrl}
+        logoText={styles.logoText}
+        logoWidth={styles.logoWidth}
+        logoHeight={styles.logoHeight}
+        rightText={`${EVENT_WHEN} · free`}
+      />
+      <main>
+        <section className="slot">
+          <div className="slot-in">
+            <p className="eyebrow">
+              {EVENT_WHEN} {EVENT_ELSEWHERE}
+            </p>
+            <h1>Save your seat.</h1>
+            <p className="lede">
+              Ninety minutes, live, and you leave with your Q4 mapped out. The replay comes to
+              everyone who registers, so book it even if the time is awkward.
+            </p>
+          </div>
+        </section>
+        <section className="slot wash">
+          <div className="slot-in formwrap">
+            <FormEmbed formId={MASTERCLASS_FORM_ID} title="Masterclass registration" />
+          </div>
+        </section>
+      </main>
+      <SiteFooterBar />
+    </>
   )
 }

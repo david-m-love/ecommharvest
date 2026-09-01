@@ -49,3 +49,30 @@ export const EVENT_WHEN = `${EVENT_DAY} · ${EVENT_TIME}`
 export const EVENT_ELSEWHERE = '(1:00 PM ET / 10:00 AM PT)'
 
 export const EVENT_TITLE = 'Your Q4 Revenue Playbook, Built in 90 Minutes'
+
+/**
+ * The GoHighLevel form that takes registrations.
+ *
+ * The page is ours and the form is theirs: everything a visitor reads is edited
+ * in the builder and styled by our design system, while the contact record, the
+ * workflows and the email and SMS stay in GHL. Rebuilding the form here would
+ * mean a second place for leads to land and a second consent record to
+ * reconcile.
+ *
+ * The id is the last part of the embed code GHL gives you
+ * (`.../widget/form/<this>`). Changing the form in GHL means pasting a new id
+ * here, or into the block on the page — the block wins, so a page can use a
+ * different form without a deploy.
+ */
+export const MASTERCLASS_FORM_ID = '4KbBmtflATgx2fMZiNYU'
+
+/**
+ * Where "Save my seat" goes: a page on this site, not the funnel.
+ *
+ * It used to be an absolute GoHighLevel URL. Keeping the visitor here means the
+ * brand, the speakers and the reassurance are ours to edit, the analytics are on
+ * one domain, and there is no hop to a second site in the middle of a funnel —
+ * which is where people leave.
+ */
+export const REGISTER_PATH = '/register'
+export const THANKS_PATH = '/masterclass/thanks'

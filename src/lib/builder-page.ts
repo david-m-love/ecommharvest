@@ -121,6 +121,10 @@ export const OWN_ROUTES: Record<string, string> = {
   masterclass: '/masterclass',
   privacy: '/privacy',
   terms: '/terms',
+  register: '/register',
+  // The slug cannot contain a slash, so the funnel's thank-you page is stored
+  // flat and mapped to the nested URL people are sent to after the form.
+  'masterclass-thanks': '/masterclass/thanks',
 }
 
 export const publicPathFor = (slug: string): string => OWN_ROUTES[slug] ?? `/p/${slug}`

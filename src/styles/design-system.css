@@ -424,6 +424,18 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   text-transform:uppercase;color:var(--gold-deep);text-decoration:none;margin:0 0 32px}
 .backlink:hover{text-decoration:underline}
 
+/* ---- an embedded form ---- */
+/* The page is ours, the form is GoHighLevel's, and the seam between them should
+   not show. A narrower measure than a full section: a form is read one field at
+   a time and a 920px-wide input looks like a search bar. */
+.formwrap{max-width:680px}
+.formembed{display:block;width:100%;border:none;border-radius:var(--r-sm);background:transparent}
+/* The height is set in pixels by GHL's script once the form reports its size.
+   Until then the min-height reserves the space, so a slow connection shows a
+   gap rather than a collapsed frame that reads as a broken page. */
+.formembed-empty{margin:0;padding:22px;border:1px dashed var(--line);border-radius:var(--r-sm);
+  color:var(--muted);text-align:center;background:var(--white)}
+
 /* ---- the blog ---- */
 /* Cards on the index. Auto-fit rather than a fixed column count, so one post
    does not sit alone in a three-column grid and five do not need a breakpoint

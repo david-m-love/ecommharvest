@@ -4,8 +4,9 @@ import React from 'react'
 
 import { config } from '@/blocks'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_END_ISO, EVENT_START_ISO } from '@/lib/event'
+import { EVENT_END_ISO, EVENT_START_ISO, REGISTER_PATH } from '@/lib/event'
 import { siteMetadata } from '@/lib/site-styles'
+import { absolute } from '@/lib/site-url'
 import { readGhlBlock } from '@/lib/ghl-block'
 
 const FALLBACK: Metadata = {
@@ -57,7 +58,10 @@ const EVENT_SCHEMA = {
   eventStatus: 'https://schema.org/EventScheduled',
   location: {
     '@type': 'VirtualLocation',
-    url: 'https://go.ecommharvest.com/masterclass',
+    // Where a person goes to take part. That is our own registration page now —
+    // it used to be the GoHighLevel funnel, which is no longer where the funnel
+    // is.
+    url: absolute(REGISTER_PATH),
   },
   organizer: {
     '@type': 'Organization',
@@ -74,7 +78,7 @@ const EVENT_SCHEMA = {
     price: '0',
     priceCurrency: 'USD',
     availability: 'https://schema.org/InStock',
-    url: 'https://go.ecommharvest.com/register',
+    url: absolute(REGISTER_PATH),
     validFrom: '2026-08-01T00:00:00-06:00',
   },
 }

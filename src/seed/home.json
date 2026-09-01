@@ -19,7 +19,7 @@
         "deck": "Three arms. One number that matters.",
         "body": "eCommHarvest is where the strategy behind your most important quarter gets built — the promotional calendar, the offers, the flows, and the paid social that makes all three cheaper.",
         "ctaLabel": "Start with the free masterclass",
-        "ctaHref": "https://go.ecommharvest.com/masterclass",
+        "ctaHref": "/masterclass",
         "ctaMicro": "Thursday, September 10 · 11:00 AM MT · free"
       }
     },
@@ -101,7 +101,7 @@
         "eyebrow": "Free · 90 minutes · Thursday, September 10",
         "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
         "ctaLabel": "Save my seat",
-        "ctaHref": "https://go.ecommharvest.com/masterclass"
+        "ctaHref": "/register"
       }
     },
     {
@@ -112,7 +112,7 @@
         "links": [
           {
             "label": "Masterclass",
-            "href": "https://go.ecommharvest.com/masterclass"
+            "href": "/masterclass"
           },
           {
             "label": "Privacy Policy",
