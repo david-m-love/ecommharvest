@@ -110,6 +110,24 @@ export const REGISTER_PATH = '/masterclass/register'
 export const THANKS_PATH = '/masterclass/thanks'
 
 /**
+ * The address the "Save my seat" buttons actually point at.
+ *
+ * A full URL naming a host, rather than the path above, because the two are no
+ * longer the same answer. `REGISTER_PATH` is where the page *lives* — it is what
+ * the canonical tag, the `/register` redirect and the sitemap are built from, and
+ * it stays a path so each hostname describes itself. `REGISTER_URL` is where a
+ * visitor is *sent*, and that is pinned to one host on purpose: a path would send
+ * whoever is reading `app.ecommharvest.com/masterclass` to the app copy and
+ * whoever is reading `ecommharvest.com/masterclass` to the public one, and the
+ * funnel would be two funnels in the numbers.
+ *
+ * Both hostnames serve this deployment, so this is a choice about which one the
+ * campaign counts under, not about what works. `src/lib/href.ts` knows both are
+ * ours, which is what stops a full address opening in a new tab.
+ */
+export const REGISTER_URL = 'https://app.ecommharvest.com/masterclass/register'
+
+/**
  * Nested under the masterclass, not flat at `/register`.
  *
  * A funnel belongs to a campaign. `/register` can only ever be one thing, so the

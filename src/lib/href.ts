@@ -67,14 +67,48 @@ export const toHref = (raw: string | undefined | null): string | undefined => {
 }
 
 /**
+ * The hostnames this app answers on.
+ *
+ * Both serve the same deployment, so a link written as a full address to either
+ * one is still a link to *this site* — it just says so the long way. Someone
+ * pasting the whole URL out of the address bar is doing the normal thing, and it
+ * must not turn a button into a new tab.
+ *
+ * `go.ecommharvest.com` is deliberately absent: that is GoHighLevel, a different
+ * platform, and leaving the site for it is exactly what it looks like.
+ */
+const OWN_HOSTS = new Set([
+  'ecommharvest.com',
+  'www.ecommharvest.com',
+  'app.ecommharvest.com',
+  'localhost',
+])
+
+/**
  * Whether a link leaves this site, judged after normalising it.
  *
  * Used to decide `target="_blank"`. Judged on the finished href, because
  * `go.ecommharvest.com/register` is external and only looks internal before it
  * has been read properly.
+ *
+ * A full address to one of our own hosts is **not** external. Opening one in a
+ * new tab is worse than merely untidy on a funnel: the visitor registers in a
+ * second window, the first is left behind on the page they were reading, and the
+ * back button no longer walks the journey they actually took.
  */
 export const isExternalHref = (raw: string | undefined | null): boolean => {
   const href = toHref(raw)
   if (!href) return false
-  return /^(https?:)?\/\//i.test(href) || /^(mailto|tel|sms):/i.test(href)
+  if (/^(mailto|tel|sms):/i.test(href)) return true
+  if (!/^(https?:)?\/\//i.test(href)) return false
+
+  try {
+    // A protocol-relative URL has no scheme for the parser, so lend it one.
+    const { hostname } = new URL(href.startsWith('//') ? `https:${href}` : href)
+    return !OWN_HOSTS.has(hostname.toLowerCase())
+  } catch {
+    // Unparseable but clearly absolute: treat it as leaving, which is the safe
+    // assumption for a link nobody here can vouch for.
+    return true
+  }
 }

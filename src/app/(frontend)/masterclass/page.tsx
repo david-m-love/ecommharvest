@@ -4,9 +4,8 @@ import React from 'react'
 
 import { config } from '@/blocks'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_END_ISO, EVENT_START_ISO, REGISTER_PATH } from '@/lib/event'
+import { EVENT_END_ISO, EVENT_START_ISO, REGISTER_URL } from '@/lib/event'
 import { siteMetadata } from '@/lib/site-styles'
-import { absolute } from '@/lib/site-url'
 import { readGhlBlock } from '@/lib/ghl-block'
 
 const FALLBACK: Metadata = {
@@ -58,10 +57,14 @@ const EVENT_SCHEMA = {
   eventStatus: 'https://schema.org/EventScheduled',
   location: {
     '@type': 'VirtualLocation',
-    // Where a person goes to take part. That is our own registration page now —
-    // it used to be the GoHighLevel funnel, which is no longer where the funnel
-    // is.
-    url: absolute(REGISTER_PATH),
+    /**
+     * Where a person goes to take part — the same address the buttons use, not
+     * one derived from whichever host happens to be rendering. Google shows this
+     * as the place to register, so a page whose buttons go one way and whose
+     * structured data goes another is advertising two registration pages for one
+     * event.
+     */
+    url: REGISTER_URL,
   },
   organizer: {
     '@type': 'Organization',
@@ -78,7 +81,7 @@ const EVENT_SCHEMA = {
     price: '0',
     priceCurrency: 'USD',
     availability: 'https://schema.org/InStock',
-    url: absolute(REGISTER_PATH),
+    url: REGISTER_URL,
     validFrom: '2026-08-01T00:00:00-06:00',
   },
 }

@@ -150,9 +150,14 @@ for (const path of ['/', '/masterclass']) {
    * been sold on is worse. What must never happen is a link to the old
    * GoHighLevel copy, which is a second version of a page that also exists here
    * and is no longer the one being edited.
+   *
+   * Registration is matched by its ending rather than its exact value: on
+   * `/masterclass` the buttons carry the full `app.ecommharvest.com` address so
+   * the campaign counts under one host, while the home page still uses the path.
+   * Both are the same page, and this is a check that people can get in.
    */
   const inbound = hrefs.filter(
-    (href) => href === '/masterclass/register' || href === '/masterclass',
+    (href) => href.endsWith('/masterclass/register') || href === '/masterclass',
   )
   check(offsite.length === 0, `${path} sends nobody to the old funnel`, offsite.join(', ') || 'none')
   check(inbound.length > 0, `${path} leads into our own funnel`, `${inbound.length} link(s)`)
@@ -171,6 +176,45 @@ check(
   'the Event data points at our registration page',
   `${ld?.location?.url}`,
 )
+
+/**
+ * The structured data and the buttons have to name the *same* address.
+ *
+ * Google shows `location.url` as the place to register. If the buttons go to one
+ * host and the search result sends people to another, the campaign is split
+ * between two pages that are really one — and only one of them will have been
+ * checked before the day.
+ */
+const ctaHrefs = await page.evaluate(() =>
+  Array.from(document.querySelectorAll('a.btn'))
+    .map((a) => a.getAttribute('href') || '')
+    .filter((href) => href.includes('/masterclass/register')),
+)
+check(ctaHrefs.length >= 3, 'the masterclass page has its register buttons', `${ctaHrefs.length}`)
+check(
+  new Set(ctaHrefs).size === 1,
+  'they all point at one address',
+  Array.from(new Set(ctaHrefs)).join(' | '),
+)
+check(
+  ctaHrefs[0] === ld?.location?.url,
+  'and the Event data names that same address',
+  `${ctaHrefs[0]} vs ${ld?.location?.url}`,
+)
+
+/**
+ * Registration must not open in a new tab.
+ *
+ * The buttons carry a full address now, and a full address is what usually
+ * trips the external-link rule — leaving the visitor filling the form in a
+ * second window with the page they were reading abandoned in the first.
+ */
+const opensNewTab = await page.evaluate(() =>
+  Array.from(document.querySelectorAll('a.btn'))
+    .filter((a) => (a.getAttribute('href') || '').includes('/masterclass/register'))
+    .some((a) => a.getAttribute('target') === '_blank'),
+)
+check(!opensNewTab, 'and none of them opens a new tab')
 
 /**
  * The short form still works.

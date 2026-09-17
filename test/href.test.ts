@@ -92,4 +92,29 @@ test('leaving the site is judged after normalising, not before', () => {
   assert.equal(isExternalHref(''), false)
 })
 
+test('our own hostnames are not “leaving the site”', () => {
+  /**
+   * Pasting the whole URL out of the address bar is the normal way to give
+   * someone a link, and both of these are this same deployment. Counted as
+   * external they would open in a new tab — which on a registration button
+   * means the visitor fills the form in a second window while the page they
+   * were reading sits abandoned in the first.
+   */
+  assert.equal(isExternalHref('https://app.ecommharvest.com/masterclass/register'), false)
+  assert.equal(isExternalHref('https://ecommharvest.com/masterclass'), false)
+  assert.equal(isExternalHref('www.ecommharvest.com'), false)
+  assert.equal(isExternalHref('app.ecommharvest.com/masterclass/register'), false)
+  // Case and a port do not make it somebody else's site.
+  assert.equal(isExternalHref('https://APP.ECOMMHARVEST.COM/x'), false)
+
+  /**
+   * GoHighLevel is deliberately still external. It is a different platform with
+   * a different look, and a new tab there is exactly what it appears to be.
+   */
+  assert.equal(isExternalHref('https://go.ecommharvest.com/register'), true)
+  // A lookalike host is not ours.
+  assert.equal(isExternalHref('https://ecommharvest.com.evil.test/x'), true)
+  assert.equal(isExternalHref('https://notecommharvest.com/x'), true)
+})
+
 console.log(`\n${passed} passed`)

@@ -2,7 +2,7 @@ import type { Config, Data } from '@measured/puck'
 import React from 'react'
 
 import { BlockImage } from './BlockImage'
-import { MASTERCLASS_FORM_ID } from '@/lib/event'
+import { MASTERCLASS_FORM_ID, REGISTER_URL } from '@/lib/event'
 import { isExternalHref, toHref } from '@/lib/href'
 import type { RecentPost } from '@/lib/site-styles'
 
@@ -345,7 +345,7 @@ export const config: Config<Blocks> = {
         body: 'Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, and what needs to be ready before the holiday rush.',
         when: 'Thursday, September 24 · 11:00 AM MT',
         ctaLabel: 'Save my seat',
-        ctaHref: '/masterclass/register',
+        ctaHref: REGISTER_URL,
         ctaMicro: 'Free · 60 minutes, plus live Q&A · replay available',
       },
       render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro }) => (
@@ -567,7 +567,7 @@ export const config: Config<Blocks> = {
           { lead: 'Your email + SMS roadmap', text: '— the campaigns and automated flows that support the quarter' },
         ],
         ctaLabel: 'Save my seat',
-        ctaHref: '/masterclass/register',
+        ctaHref: REGISTER_URL,
         ctaMicro: 'Thursday, September 24 · 11:00 AM MT',
       },
       render: ({ eyebrow, leadIn, bullets, ctaLabel, ctaHref, ctaMicro }) => (
@@ -786,7 +786,7 @@ export const config: Config<Blocks> = {
         heading: 'Your Q4 Revenue Playbook, Built in 60 Minutes.',
         body: 'Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.',
         ctaLabel: 'Save my seat',
-        ctaHref: '/masterclass/register',
+        ctaHref: REGISTER_URL,
         note: 'Free · no card required · replay sent to every registrant',
       },
       render: ({ eyebrow, heading, body, ctaLabel, ctaHref, note }) => (
