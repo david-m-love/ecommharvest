@@ -960,7 +960,7 @@ export interface SiteStyle {
          */
         label: string;
         /**
-         * A path on this site like /masterclass, or an address anywhere like go.ecommharvest.com/register. The https:// is filled in for you.
+         * A path on this site like /masterclass, or a full address like https://ecommharvest.com/masterclass/register. The https:// is filled in for you.
          */
         href: string;
         /**

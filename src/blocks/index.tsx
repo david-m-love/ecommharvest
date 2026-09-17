@@ -111,15 +111,22 @@ const DocumentBody = ({ text }: { text?: string }) => {
 /**
  * Where a button goes.
  *
- * A full web address or a path on this site — `go.ecommharvest.com/register` and
- * `/register` both work, and `https://` is filled in when it is missing. See
+ * A full web address or a path on this site — `example.com/page` and
+ * `/masterclass` both work, and `https://` is filled in when it is missing. See
  * `src/lib/href.ts` for why that matters: without it, an address typed without
  * `https://` is glued onto the end of the current one.
+ *
+ * The placeholder used to read `go.ecommharvest.com/register`, and that was not
+ * a harmless example. A greyed-out suggestion is what people type, so the field
+ * was quietly recruiting links to a funnel that had already moved off that host —
+ * and because they were typed without `https://`, the cleanup that repointed the
+ * old links matched none of them. The placeholder now shows the address people
+ * should actually be sending registrations to.
  */
 const linkField = {
   type: 'text' as const,
   label: 'Button link',
-  placeholder: 'go.ecommharvest.com/register',
+  placeholder: REGISTER_URL,
 }
 
 // --- the blocks ---------------------------------------------------------
