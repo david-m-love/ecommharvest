@@ -56,7 +56,7 @@ export const Pages: CollectionConfig = {
        *
        * Separate from `title` because the two want different things: the list
        * wants "Masterclass", and Google and Facebook want "Your Q4 Revenue
-       * Playbook, Built in 90 Minutes". They were the same field, so every share
+       * Playbook, Built in 60 Minutes". They were the same field, so every share
        * card read "Masterclass" — technically correct and worth nothing in an ad.
        */
       name: 'seoTitle',

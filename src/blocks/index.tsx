@@ -277,7 +277,7 @@ export const config: Config<Blocks> = {
       defaultProps: {
         logoText: 'eCommHarvest',
         homeUrl: 'https://ecommharvest.com/',
-        rightText: 'Thursday, September 10 · 11:00 AM MT · free',
+        rightText: 'Thursday, September 24 · 11:00 AM MT · free',
         showMenu: true,
       },
       /**
@@ -340,13 +340,13 @@ export const config: Config<Blocks> = {
       },
       defaultProps: {
         eyebrow: 'Free masterclass for LDS e-commerce founders',
-        heading: 'Your Q4 Revenue Playbook, Built in 90 Minutes.',
+        heading: 'Your Q4 Revenue Playbook, Built in 60 Minutes.',
         deck: '…without headaches or sacrificing family time.',
         body: 'Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, and what needs to be ready before the holiday rush.',
-        when: 'Thursday, September 10 · 11:00 AM MT',
+        when: 'Thursday, September 24 · 11:00 AM MT',
         ctaLabel: 'Save my seat',
         ctaHref: '/masterclass/register',
-        ctaMicro: 'Free · 90 minutes · replay available',
+        ctaMicro: 'Free · 60 minutes, plus live Q&A · replay available',
       },
       render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro }) => (
         <div className="slot hero">
@@ -516,10 +516,10 @@ export const config: Config<Blocks> = {
         kicker: { type: 'text', label: 'Closing line, emphasised' },
       },
       defaultProps: {
-        eyebrow: 'Faith first, then strategy',
-        heading: 'What if your Q4 wasn’t just built on strategy, but founded on faith first?',
-        body: 'Q4 is the quarter that quietly eats December. The late-night inventory panic. The Sunday spent putting out fires.\n\nIt isn’t. The scramble comes from deciding in November what should have been decided in September.',
-        kicker: 'Faith first. Family second. Then a Q4 that funds both.',
+        eyebrow: 'Improving the inputs',
+        heading: 'We spend all our attention on the output. What about the person who has to produce it?',
+        body: 'Luke says that Jesus “increased in wisdom and stature, and in favour with God and man.” Growth that was intellectual, physical, spiritual and relational — all of it before the ministry began.\n\nThere is a parallel in that for founders. Those things aren’t separate from entrepreneurship. They are what equips us for it.',
+        kicker: 'Strengthen the inputs, and you are equipped for what the journey asks of you.',
       },
       render: ({ eyebrow, heading, body, kicker }) => (
         <div className="slot">
@@ -568,7 +568,7 @@ export const config: Config<Blocks> = {
         ],
         ctaLabel: 'Save my seat',
         ctaHref: '/masterclass/register',
-        ctaMicro: 'Thursday, September 10 · 11:00 AM MT',
+        ctaMicro: 'Thursday, September 24 · 11:00 AM MT',
       },
       render: ({ eyebrow, leadIn, bullets, ctaLabel, ctaHref, ctaMicro }) => (
         <div className="slot wash">
@@ -782,8 +782,8 @@ export const config: Config<Blocks> = {
         note: { type: 'text', label: 'Small print under the button' },
       },
       defaultProps: {
-        eyebrow: 'Thursday, September 10 · 11:00 AM MT · free · 90 minutes',
-        heading: 'Your Q4 Revenue Playbook, Built in 90 Minutes.',
+        eyebrow: 'Thursday, September 24 · 11:00 AM MT · free · 60 minutes, plus live Q&A',
+        heading: 'Your Q4 Revenue Playbook, Built in 60 Minutes.',
         body: 'Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.',
         ctaLabel: 'Save my seat',
         ctaHref: '/masterclass/register',
@@ -923,7 +923,7 @@ export const config: Config<Blocks> = {
         },
       },
       defaultProps: {
-        eyebrow: 'Free · 90 minutes · replay included',
+        eyebrow: 'Free · 60 minutes, plus live Q&A · replay included',
         heading: 'Save your seat.',
         body: 'Two fields and you are in. The join link arrives by email straight away.',
         formId: MASTERCLASS_FORM_ID,

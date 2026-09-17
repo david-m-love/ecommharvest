@@ -12,7 +12,7 @@ import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
 const FALLBACK: Metadata = {
   title: 'Save my seat',
   description:
-    'Save your seat for the Q4 Revenue Playbook masterclass. Ninety minutes, live, replay included.',
+    'Save your seat for the Q4 Revenue Playbook masterclass. Sixty minutes live, plus Q&A, replay included.',
   alternates: { canonical: '/masterclass/register' },
   // The masterclass page is the one that should rank; a thin registration page
   // competing with it in search helps nobody.
@@ -62,8 +62,9 @@ export default async function RegisterPage() {
             </p>
             <h1>Save your seat.</h1>
             <p className="lede">
-              Ninety minutes, live, and you leave with your Q4 mapped out. The replay comes to
-              everyone who registers, so book it even if the time is awkward.
+              One hour, live, and you leave with your Q4 mapped out — then stay on for Q&amp;A with
+              David and Derek. The replay comes to everyone who registers, so book it even if the
+              time is awkward.
             </p>
           </div>
         </section>

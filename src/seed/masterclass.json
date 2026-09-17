@@ -7,7 +7,7 @@
         "id": "seed-header-0",
         "logoText": "eCommHarvest",
         "homeUrl": "https://ecommharvest.com/",
-        "rightText": "Thursday, September 10 · 11:00 AM MT · free"
+        "rightText": "Thursday, September 24 · 11:00 AM MT · free"
       }
     },
     {
@@ -15,13 +15,13 @@
       "props": {
         "id": "seed-hero-1",
         "eyebrow": "Free masterclass for LDS e-commerce founders",
-        "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
+        "heading": "Your Q4 Revenue Playbook, Built in 60 Minutes.",
         "deck": "…without headaches or sacrificing family time.",
         "body": "Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, how you’ll structure the offers, and what email, SMS, creative, and conversion systems need to be ready before the holiday rush.",
-        "when": "Thursday, September 10 · 11:00 AM MT (1:00 PM ET / 10:00 AM PT)",
+        "when": "Thursday, September 24 · 11:00 AM MT (1:00 PM ET / 10:00 AM PT)",
         "ctaLabel": "Save my seat",
         "ctaHref": "/masterclass/register",
-        "ctaMicro": "Free · 90 minutes · replay available"
+        "ctaMicro": "Free · 60 minutes, plus live Q&A · replay available"
       }
     },
     {
@@ -52,10 +52,10 @@
       "type": "DarkCard",
       "props": {
         "id": "seed-darkcard-3",
-        "eyebrow": "Faith first, then strategy",
-        "heading": "What if your Q4 wasn’t just built on strategy, but founded on faith first?",
-        "body": "Q4 is the quarter that quietly eats December. The late-night inventory panic. The Sunday spent putting out fires. The school concert you half-watched from the parking lot while answering support tickets. Most founders accept that as the price of a good holiday season.\n\nIt isn’t. The scramble comes from deciding in November what should have been decided in September. When your promotional calendar, your offers, and your automated flows are planned early and built once, Q4 runs on systems instead of adrenaline — and your Sabbath, your ministering, and your family stay where they belong.",
-        "kicker": "Faith first. Family second. Then a Q4 that funds both."
+        "eyebrow": "Improving the inputs",
+        "heading": "We spend all our attention on the output. What about the person who has to produce it?",
+        "body": "Luke says that Jesus “increased in wisdom and stature, and in favour with God and man.” We don’t know everything He was doing through those years of preparation, but the pattern is plain enough: growth that was intellectual, physical, spiritual and relational — all of it before the ministry began.\n\nThere is a parallel in that for founders. We spend nearly all of our attention on the output — revenue, growth, leadership, strategy, decisions, execution — and very little on developing the person who has to produce it. Are we still growing in wisdom? Are we taking care of our physical health and our energy? Are we staying spiritually grounded and connected to God? Are we strengthening the relationships and the people around us?\n\nThose things aren’t separate from entrepreneurship. They are part of what equips us for it. Building a company is a roller coaster, and you hear a great deal about the wins, the exits and the breakthroughs — far less about the fear, the losses, the difficult decisions, the uncertainty, and the seasons where things simply don’t work. Those seasons come.\n\nSo part of preparing to be a founder, and part of lasting as one, is asking: what am I doing now to become the kind of person who can carry what this journey is going to require of me? When your spiritual life, your physical health, your mental and emotional wellbeing, your wisdom and your relationships are being strengthened on purpose, you are far better equipped to persevere in faith, stay clearheaded under pressure, make the hard decisions, and keep moving forward when it gets difficult.",
+        "kicker": "That is where David and Derek open the masterclass — before a single tactic."
       }
     },
     {
@@ -96,11 +96,15 @@
           {
             "lead": "Your build-by date",
             "text": "— what has to be finished before Thanksgiving so December runs on automation instead of your evenings"
+          },
+          {
+            "lead": "Then your questions, answered live",
+            "text": "— stay on after the hour for Q&A with David and Derek. Ask anything about Q4: your offer, your calendar, your ad account, the inventory call you’re putting off"
           }
         ],
         "ctaLabel": "Save my seat",
         "ctaHref": "/masterclass/register",
-        "ctaMicro": "Thursday, September 10 · 11:00 AM MT · replay available"
+        "ctaMicro": "Thursday, September 24 · 11:00 AM MT · replay available"
       }
     },
     {
@@ -183,7 +187,7 @@
       "props": {
         "id": "seed-speakers-9",
         "eyebrow": "Who you’re learning from",
-        "heading": "Live with David Love and special guest Derek Crimin.",
+        "heading": "Live with David Love and special guest Derek Crimin. Both stay for the Q&A.",
         "ctaLabel": "Save my seat",
         "ctaHref": "/masterclass/register",
         "ctaMicro": "Hosted by Tiny 3D Temples, B.O.M.Socks & Come Follow Me FHE",
@@ -209,9 +213,9 @@
       "type": "CtaCard",
       "props": {
         "id": "seed-ctacard-10",
-        "eyebrow": "Thursday, September 10 · 11:00 AM MT · free · 90 minutes",
-        "heading": "Your Q4 Revenue Playbook, Built in 90 Minutes.",
-        "body": "Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.",
+        "eyebrow": "Thursday, September 24 · 11:00 AM MT · free · 60 minutes, plus live Q&A",
+        "heading": "Your Q4 Revenue Playbook, Built in 60 Minutes.",
+        "body": "One hour to build the quarter, then live Q&A with David and Derek for as long as the questions keep coming. Two fields and you’re in — we’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.",
         "ctaLabel": "Save my seat",
         "ctaHref": "/masterclass/register",
         "note": "Free · no card required · replay sent to every registrant"

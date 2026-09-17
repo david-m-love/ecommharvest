@@ -1,5 +1,7 @@
 import {
   EVENT_ELSEWHERE,
+  EVENT_LENGTH_LINE,
+  EVENT_QA,
   EVENT_WHEN,
   MASTERCLASS_FORM_ID,
   REGISTER_PATH,
@@ -63,9 +65,9 @@ export const REGISTER_PAGE = {
       type: 'Hero',
       props: {
         id: 'reg-heading-1',
-        eyebrow: 'Free · 90 minutes · replay included',
+        eyebrow: `Free · ${EVENT_LENGTH_LINE} · replay included`,
         heading: 'Save your seat.',
-        deck: 'Ninety minutes, live, and you leave with your Q4 mapped out.',
+        deck: 'One hour, live, and you leave with your Q4 mapped out — then stay on for the Q&A.',
         body: 'The replay goes to everyone who registers, so book it even if the time is awkward.',
         when: `${EVENT_WHEN} ${EVENT_ELSEWHERE}`,
         ctaLabel: '',
@@ -102,7 +104,26 @@ export const REGISTER_PAGE = {
           { lead: 'Your offer strategy', text: 'what the offer is, beyond a discount' },
           { lead: 'Your email + SMS roadmap', text: 'the campaigns, and the flows that must exist first' },
           { lead: 'Your paid social plan', text: 'what to spend, and the rule for when it goes up' },
+          { lead: 'Then your questions', text: 'live Q&A with David and Derek, straight after the hour' },
         ],
+      },
+    },
+    {
+      /**
+       * The Q&A gets its own block rather than a clause in the hero.
+       *
+       * It is the half of the session a registrant is most likely to skip and
+       * most likely to benefit from, and the thing no replay can give them. Said
+       * once in passing it reads as an afterthought; said here, with the two
+       * names on it, it is a second reason to turn up live.
+       */
+      type: 'Prose',
+      props: {
+        id: 'reg-qa-6',
+        eyebrow: 'After the hour',
+        heading: 'Bring a question. That is the part you cannot get from the replay.',
+        body: EVENT_QA,
+        background: 'wash',
       },
     },
     {
@@ -161,6 +182,7 @@ export const THANKS_PAGE = {
         bullets: [
           { lead: 'Add it to your calendar', text: 'the confirmation email has the link' },
           { lead: 'Bring your quarter', text: 'whatever the plan currently lives in — notes, a spreadsheet, your head' },
+          { lead: 'Bring a question', text: 'we stay on after the hour for Q&A, and the specific ones get the best answers' },
         ],
       },
     },

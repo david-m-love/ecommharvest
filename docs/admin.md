@@ -401,12 +401,16 @@ page looking broken on a slow connection.
 
 ## Moving the masterclass date
 
+Currently **Thursday, 24 September, 11:00 AM MT** — 60 minutes, then live Q&A
+with David and Derek. It has moved twice (3 → 10 → 24 September); here is how.
+
 The date lives in three kinds of place, and only one of them is code.
 
-**1. Edit `src/lib/event.ts`.** The times, the wording, and the day name are all
-there. Everything machine-readable derives from it: the calendar file at
-`/masterclass.ics`, the Event structured data Google reads, and the defaults on
-new blocks.
+**1. Edit `src/lib/event.ts`.** The times, the wording, the running time and the
+day name are all there. Everything machine-readable derives from it: the calendar
+file at `/masterclass.ics`, the Event structured data Google reads, and the
+defaults on new blocks. Raise `EVENT_SEQUENCE` too, or calendars ignore the
+update.
 
 **2. Run `npm run ghl:build`.** The GoHighLevel blocks are built from
 `ghl/src/*.html`, and those are pasted by hand — nothing can reach into GHL from
@@ -416,13 +420,28 @@ the form, and the thank-you page.
 **3. Write a migration for the live pages.** `/` and `/masterclass` are
 page-builder pages, so their words are in the database and changing the code does
 not change what is on the site.
-`src/migrations/20260830_010000_masterclass_date.ts` is the worked example: a
-targeted find-and-replace on the stored JSON, which leaves any other editing
-alone and is a no-op if the date was already changed by hand in the builder.
+`src/migrations/20260917_160000_masterclass_sept24.ts` is the worked example: a
+targeted find-and-replace on the stored JSON for the words, and a JSON edit for
+whole blocks that checks the block still says what it used to before overwriting
+it. Either way, anything reworded by hand is left alone and said so in the
+deploy log, and running it twice changes nothing the second time.
 
 Then `npm test` — `test/event.test.ts` fails and names the file if anything
-still says the old date. It also checks the UTC times match the local ones, and
-that the day name matches the date.
+still says the old date **or the old running time**. It also checks the UTC times
+match the local ones, and that the day name matches the date.
+
+### The length, and the Q&A
+
+The session is 60 minutes, and the Q&A follows it. Two rules worth keeping:
+
+- **The calendar entry runs to 12:30**, not 12:00. It has to cover the Q&A or
+  diaries free up at noon and the room empties exactly when the questions start.
+  Thirty minutes is what gets *blocked*; the hour is what gets *promised*.
+- **Never write "optional".** It is a word that gives permission to leave, and it
+  describes the half of the session where a founder with a real problem gets it
+  answered by name. Write it as a second thing you get, in the same breath as the
+  first — *60 minutes, plus live Q&A*. `EVENT_LENGTH_LINE` in `src/lib/event.ts`
+  is that phrasing; use it rather than inventing a new one.
 
 ### MT, not MST or MDT
 

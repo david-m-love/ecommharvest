@@ -6,11 +6,13 @@
 <div class="ech-slot">
     <div class="ech-slot-in">
       <div class="ech-card-dark">
-        <p class="ech-eyebrow">Faith first, then strategy</p>
-        <h2>What if your Q4 wasn&rsquo;t just built on strategy, but founded on faith first?</h2>
-        <p>Q4 is the quarter that quietly eats December. The late-night inventory panic. The Sunday spent putting out fires. The school concert you half-watched from the parking lot while answering support tickets. Most founders accept that as the price of a good holiday season.</p>
-        <p>It isn&rsquo;t. The scramble comes from deciding in November what should have been decided in September. When your promotional calendar, your offers, and your automated flows are planned early and built once, Q4 runs on systems instead of adrenaline &mdash; and your Sabbath, your ministering, and your family stay where they belong.</p>
-        <p><strong>Faith first. Family second. Then a Q4 that funds both.</strong></p>
+        <p class="ech-eyebrow">Improving the inputs</p>
+        <h2>We spend all our attention on the output. What about the person who has to produce it?</h2>
+        <p>Luke says that Jesus &ldquo;increased in wisdom and stature, and in favour with God and man.&rdquo; We don&rsquo;t know everything He was doing through those years of preparation, but the pattern is plain enough: growth that was intellectual, physical, spiritual and relational &mdash; all of it before the ministry began.</p>
+        <p>There is a parallel in that for founders. We spend nearly all of our attention on the output &mdash; revenue, growth, leadership, strategy, decisions, execution &mdash; and very little on developing the person who has to produce it. Are we still growing in wisdom? Are we taking care of our physical health and our energy? Are we staying spiritually grounded and connected to God? Are we strengthening the relationships and the people around us?</p>
+        <p>Those things aren&rsquo;t separate from entrepreneurship. They are part of what equips us for it. Building a company is a roller coaster, and you hear a great deal about the wins, the exits and the breakthroughs &mdash; far less about the fear, the losses, the difficult decisions, the uncertainty, and the seasons where things simply don&rsquo;t work. Those seasons come.</p>
+        <p>So part of preparing to be a founder, and part of lasting as one, is asking: what am I doing now to become the kind of person who can carry what this journey is going to require of me? When your spiritual life, your physical health, your mental and emotional wellbeing, your wisdom and your relationships are being strengthened on purpose, you are far better equipped to persevere in faith, stay clearheaded under pressure, make the hard decisions, and keep moving forward when it gets difficult.</p>
+        <p><strong>That is where David and Derek open the masterclass &mdash; before a single tactic.</strong></p>
       </div>
     </div>
   </div>
@@ -29,10 +31,11 @@
           <li><span class="ech-b-t"><strong>Your Q4 creative plan</strong> &mdash; what your ads need to communicate and the creative you&rsquo;ll need before you scale traffic</span></li>
           <li><span class="ech-b-t"><strong>Your pre-Q4 fix list</strong> &mdash; the conversion and retention pieces to tighten before pouring more money into Meta</span></li>
           <li><span class="ech-b-t"><strong>Your build-by date</strong> &mdash; what has to be finished before Thanksgiving so December runs on automation instead of your evenings</span></li>
+          <li><span class="ech-b-t"><strong>Then your questions, answered live</strong> &mdash; stay on after the hour for Q&amp;A with David and Derek. Ask anything about Q4: your offer, your calendar, your ad account, the inventory call you&rsquo;re putting off</span></li>
       </ul>
       <div class="ech-cta-row ech-cta-row-2">
         <a href="https://go.ecommharvest.com/register" class="ech-btn">Save my seat</a>
-        <span class="ech-cta-micro">Thursday, September 10 &middot; 11:00 AM MT &middot; replay available</span>
+        <span class="ech-cta-micro">Thursday, September 24 &middot; 11:00 AM MT &middot; replay available</span>
       </div>
     </div>
   </div>
@@ -93,7 +96,7 @@
   <div class="ech-slot ech-wash">
     <div class="ech-slot-in">
       <p class="ech-eyebrow">Who you&rsquo;re learning from</p>
-      <h2>Live with David Love and special guest Derek Crimin.</h2>
+      <h2>Live with David Love and special guest Derek Crimin. Both stay for the Q&amp;A.</h2>
       <div class="ech-speakers">
         <div class="ech-speaker">
           <p class="ech-sp-tag">Presenter</p>

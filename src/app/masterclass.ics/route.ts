@@ -42,10 +42,10 @@ const fold = (line: string): string => {
 }
 
 const DESCRIPTION =
-  'Free 90-minute masterclass with David Love and special guest Derek Crimin ' +
+  'Free 60-minute masterclass with David Love and special guest Derek Crimin ' +
   '(B.O.M.Socks). Build your Q4 promotional calendar, offer strategy, email and ' +
-  'SMS roadmap, and paid social plan in one sitting. The join link is in your ' +
-  'confirmation email.'
+  'SMS roadmap, and paid social plan in one sitting, then stay on for live Q&A ' +
+  'with both of them. The join link is in your confirmation email.'
 
 export function GET() {
   const lines = [

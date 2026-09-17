@@ -3,11 +3,15 @@
  *
  *   npx tsx test/event.test.ts
  *
- * Moving the masterclass from 3 September to 10 September meant changing it in
+ * Moving the masterclass — 3 September, then 10, then 24 — meant changing it in
  * the structured data, the calendar file, four block defaults, two seeded pages,
  * two legal pages, the thank-you page and four GoHighLevel blocks. Finding all
  * of those took a search; missing one would have advertised a date that had
  * already passed, or booked somebody's calendar for the wrong week.
+ *
+ * The running time is checked the same way and for the same reason: it went from
+ * ninety minutes to sixty, and a leftover "90 minutes" is a promise the session
+ * no longer keeps.
  *
  * So this fails if any file still says a date that disagrees with
  * `src/lib/event.ts`. Move the event by editing that file and running
@@ -24,9 +28,11 @@ import {
   EVENT_DAY,
   EVENT_END_ISO,
   EVENT_END_UTC,
+  EVENT_LENGTH,
   EVENT_START_ISO,
   EVENT_START_UTC,
   EVENT_TIME,
+  EVENT_TITLE,
 } from '@/lib/event'
 
 let passed = 0
@@ -41,7 +47,7 @@ const test = (label: string, fn: () => void) => {
   }
 }
 
-/** "20260910T170000Z" from an ISO string with an offset. */
+/** "20260924T170000Z" from an ISO string with an offset. */
 const compactUtc = (iso: string) => new Date(iso).toISOString().replace(/[-:]|\.\d{3}/g, '')
 
 test('the UTC times match the local ones', () => {
@@ -101,7 +107,7 @@ const walk = (dir: string, found: string[] = []): string[] => {
   return found
 }
 
-const expectedDay = EVENT_DAY.replace(/^[A-Za-z]+,\s*/, '') // "September 10"
+const expectedDay = EVENT_DAY.replace(/^[A-Za-z]+,\s*/, '') // "September 24"
 
 /**
  * Two names carry the *original* date on purpose, and must keep it.
@@ -142,7 +148,7 @@ test('no file carries a different date', () => {
       }
       // The machine-readable forms, in both the shapes they are written in.
       for (const match of contents.matchAll(/2026-09-\d{2}|202609\d{2}/g)) {
-        if (match[0].replace(/-/g, '').slice(6, 8) !== '10') {
+        if (match[0].replace(/-/g, '').slice(6, 8) !== '24') {
           offenders.push(`${file}: "${match[0]}"`)
         }
       }
@@ -153,6 +159,60 @@ test('no file carries a different date', () => {
     0,
     `these still say another date:\n      ${offenders.join('\n      ')}`,
   )
+})
+
+/**
+ * How long it runs is a promise too.
+ *
+ * It moved from ninety minutes to sixty, and it is scattered through the copy in
+ * five shapes — "90 minutes", "90-minute", "Built in 90 Minutes", "Ninety
+ * minutes". A leftover is not a typo: somebody blocks out an hour and a half, or
+ * reads two different lengths on two pages and trusts neither.
+ */
+test('no file claims a different running time', () => {
+  const minutes = Number(EVENT_LENGTH.replace(/\D/g, ''))
+  const words: Record<string, string> = { '60': 'sixty', '90': 'ninety' }
+  /**
+   * Only lengths a masterclass could plausibly be.
+   *
+   * The app talks about minutes elsewhere — a login link expires in fifteen —
+   * and a test that reported those would be noise somebody learns to ignore,
+   * which is worse than no test. A genuine leftover here is always one of these.
+   */
+  const EVENT_LENGTHS = new Set([45, 60, 75, 90, 120])
+  const offenders: string[] = []
+
+  for (const root of SCAN_ROOTS) {
+    let files: string[] = []
+    try {
+      files = walk(root)
+    } catch {
+      continue
+    }
+    for (const file of files) {
+      const contents = readFileSync(file, 'utf8')
+      for (const match of contents.matchAll(/(\d{2,3})[\s+-](?:minute|Minute)/g)) {
+        const found = Number(match[1])
+        if (found !== minutes && EVENT_LENGTHS.has(found)) offenders.push(`${file}: "${match[0]}"`)
+      }
+      // The spelled-out form, which a find-and-replace on digits walks straight past.
+      for (const match of contents.matchAll(/\b(Ninety|Sixty|ninety|sixty)\s+minutes/g)) {
+        if (match[1].toLowerCase() !== words[String(minutes)]) {
+          offenders.push(`${file}: "${match[0]}"`)
+        }
+      }
+    }
+  }
+  assert.equal(
+    offenders.length,
+    0,
+    `these still claim another running time:\n      ${offenders.join('\n      ')}`,
+  )
+})
+
+test('the title says the same running time as everything else', () => {
+  // The headline is the one people quote back at you, and it carries the number.
+  assert.match(EVENT_TITLE, new RegExp(`\\b${EVENT_LENGTH.replace(/\D/g, '')}\\b`, 'i'))
 })
 
 console.log(`\n${passed} passed`)

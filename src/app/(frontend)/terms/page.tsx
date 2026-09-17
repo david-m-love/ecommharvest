@@ -42,7 +42,7 @@ function HandBuiltTermsPage() {
             <img src="/logo.png" alt="eCommHarvest" width={197} height={34} />
           </a>
           <div className="topbar-right">
-            <span className="stamp">Thursday, September 10 &middot; 11:00 AM MT &middot; free</span>
+            <span className="stamp">Thursday, September 24 &middot; 11:00 AM MT &middot; free</span>
           </div>
         </div>
       </header>
@@ -58,7 +58,7 @@ function HandBuiltTermsPage() {
         <p>These terms apply to this website and to the free Q4 Revenue Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by <strong>Love Your Marketing LLC</strong>, an Idaho limited liability company, trading as <strong>eCommHarvest</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;).</p>
 
         <h2>What you are registering for</h2>
-        <p>A free online masterclass of approximately 90 minutes, presented live by David Love with special guest Derek Crimin, hosted in partnership with Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE. Registration is free and no payment details are required.</p>
+        <p>A free online masterclass of approximately 60 minutes, plus a live question-and-answer session, presented live by David Love with special guest Derek Crimin, hosted in partnership with Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE. Registration is free and no payment details are required.</p>
         <p>We will send a replay to registrants after the event. We aim to run the session as scheduled, but we may change the date, time, running order, presenters, or content, or cancel the event. If we cancel, we will tell registrants by email.</p>
         <p>During the session we may describe our paid services. You are never obliged to buy anything.</p>
 

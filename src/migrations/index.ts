@@ -12,6 +12,7 @@ import * as migration_20260829_234831_blog_heading from './20260829_234831_blog_
 import * as migration_20260830_010000_masterclass_date from './20260830_010000_masterclass_date'
 import * as migration_20260901_120000_funnel_on_our_site from './20260901_120000_funnel_on_our_site'
 import * as migration_20260901_180000_nest_register from './20260901_180000_nest_register';
+import * as migration_20260917_160000_masterclass_sept24 from './20260917_160000_masterclass_sept24';
 
 export const migrations = [
   {
@@ -83,5 +84,10 @@ export const migrations = [
     up: migration_20260901_180000_nest_register.up,
     down: migration_20260901_180000_nest_register.down,
     name: '20260901_180000_nest_register',
+  },
+  {
+    up: migration_20260917_160000_masterclass_sept24.up,
+    down: migration_20260917_160000_masterclass_sept24.down,
+    name: '20260917_160000_masterclass_sept24',
   },
 ];
