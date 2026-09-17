@@ -100,6 +100,7 @@ test('our own hostnames are not “leaving the site”', () => {
    * means the visitor fills the form in a second window while the page they
    * were reading sits abandoned in the first.
    */
+  assert.equal(isExternalHref('https://ecommharvest.com/masterclass/register'), false)
   assert.equal(isExternalHref('https://app.ecommharvest.com/masterclass/register'), false)
   assert.equal(isExternalHref('https://ecommharvest.com/masterclass'), false)
   assert.equal(isExternalHref('www.ecommharvest.com'), false)

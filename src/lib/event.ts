@@ -121,11 +121,20 @@ export const THANKS_PATH = '/masterclass/thanks'
  * whoever is reading `ecommharvest.com/masterclass` to the public one, and the
  * funnel would be two funnels in the numbers.
  *
- * Both hostnames serve this deployment, so this is a choice about which one the
- * campaign counts under, not about what works. `src/lib/href.ts` knows both are
- * ours, which is what stops a full address opening in a new tab.
+ * **`ecommharvest.com`, the public site.** Both hostnames serve this deployment,
+ * so either would work — but `app.` is where the admin, the builder and the
+ * member area live, and it is the host you are on while logged in, which makes it
+ * the one you accidentally copy out of the address bar. A public campaign belongs
+ * on the public domain: it is the name on the ads, and it keeps "app" meaning the
+ * private half of the site.
+ *
+ * Not `go.ecommharvest.com` either. That is GoHighLevel, and the funnel moved off
+ * it — only the form is still theirs, embedded in our page.
+ *
+ * `src/lib/href.ts` knows both of our hostnames are ours, which is what stops a
+ * full address opening in a new tab.
  */
-export const REGISTER_URL = 'https://app.ecommharvest.com/masterclass/register'
+export const REGISTER_URL = 'https://ecommharvest.com/masterclass/register'
 
 /**
  * Nested under the masterclass, not flat at `/register`.
