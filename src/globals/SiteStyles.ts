@@ -167,6 +167,81 @@ export const SiteStyles: GlobalConfig = {
       ],
     },
     {
+      /**
+       * The live masterclass, in one place.
+       *
+       * Its own group rather than a field tucked under advertising, because of
+       * when it gets used: at 10:55 on the morning of the event, by someone who
+       * is about to present and has one browser tab and no patience. Paste,
+       * tick, save — three fields on one screen, in the order they are done.
+       *
+       * **Site-wide, not per page.** The same link belongs on the masterclass
+       * page, the registration page and the thank-you page — the last of which
+       * is where a registrant looks first. Held per page it would be three
+       * pages to edit and publish while the room is filling up, and the way that
+       * goes wrong is that two of them get done.
+       */
+      type: 'collapsible',
+      label: 'The live masterclass',
+      admin: { initCollapsed: false },
+      fields: [
+        {
+          /**
+           * The switch, and deliberately the *only* thing deciding whether the
+           * link is on the page.
+           *
+           * An earlier version worked it out from the clock — visible from 10:30
+           * Mountain, hidden again at 1:00. It was correct and it was the wrong
+           * design: it could only ever be right about a date somebody had typed
+           * into a source file weeks earlier, and the day the event moves by an
+           * hour, the fix is a deploy. A switch is right about whatever is
+           * actually happening, and the person who knows that is holding it.
+           */
+          name: 'showJoinLive',
+          label: 'Show the “join live” link',
+          type: 'checkbox',
+          defaultValue: false,
+          admin: {
+            description:
+              'Off until the masterclass is about to start. Tick it on the morning — a few minutes before you open the room — and the link appears under the Save my seat button on the masterclass, registration and thank-you pages. Untick it afterwards.',
+          },
+        },
+        {
+          /**
+           * In the admin rather than in code: Zoom can hand you a new link on
+           * the morning, and "paste it and save" has to work at 10:55 without a
+           * deploy, a build, or anybody who knows git.
+           */
+          name: 'liveJoinUrl',
+          label: 'Live webinar link',
+          type: 'text',
+          validate: (value: unknown) =>
+            !value || (typeof value === 'string' && /^https:\/\/\S+$/i.test(value.trim()))
+              ? true
+              : 'Paste the full link, starting with https://',
+          admin: {
+            description:
+              'The Zoom (or other) link attendees click to join. Safe to paste as soon as you have it — nothing appears on the site until the switch above is on. Only links starting with https:// are accepted.',
+          },
+        },
+        {
+          /**
+           * Editable because the right words depend on what is happening. "Join
+           * the live masterclass" before it starts; "We have started — join us"
+           * ten minutes in; "Watch the replay" the next day, pointed at a
+           * recording, with no code change and no new field.
+           */
+          name: 'joinLiveLabel',
+          label: 'What the link says',
+          type: 'text',
+          admin: {
+            description:
+              'Leave empty for “Already registered? Join the live masterclass →”. Worth changing once you are underway — “We have started — join us →” tells a latecomer they have not missed it.',
+          },
+        },
+      ],
+    },
+    {
       type: 'collapsible',
       label: 'Advertising and measurement',
       admin: { initCollapsed: true },
@@ -181,31 +256,6 @@ export const SiteStyles: GlobalConfig = {
            * loading. Empty means no pixel script reaches the page at all, which
            * is the honest default for a site not running ads.
            */
-          /**
-           * The live webinar link.
-           *
-           * In the admin rather than in code on purpose: Zoom can hand you a new
-           * link on the morning, and "paste it and save" has to be possible at
-           * 10:55 without a deploy, a build, or anybody who knows git.
-           *
-           * It is only *rendered* inside the join window set in
-           * `src/lib/event.ts` — before 10:30 on the day the URL is not in the
-           * page source at all, so pasting it early costs nothing and is in fact
-           * the point: paste it whenever you have it.
-           */
-          name: 'liveJoinUrl',
-          label: 'Live webinar join link',
-          type: 'text',
-          validate: (value: unknown) =>
-            !value || (typeof value === 'string' && /^https:\/\/\S+$/i.test(value.trim()))
-              ? true
-              : 'Paste the full link, starting with https://',
-          admin: {
-            description:
-              'The Zoom (or other) link attendees click to join. Paste it as soon as you have it — it stays hidden until 30 minutes before the masterclass starts, then appears as “Already registered? Join the live masterclass” on the masterclass, registration and thank-you pages. Leave empty and no join link is shown at all.',
-          },
-        },
-        {
           name: 'metaPixelId',
           label: 'Meta (Facebook) pixel ID',
           type: 'text',

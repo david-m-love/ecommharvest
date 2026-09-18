@@ -979,9 +979,17 @@ export interface SiteStyle {
    */
   blogIntro?: string | null;
   /**
-   * The Zoom (or other) link attendees click to join. Paste it as soon as you have it — it stays hidden until 30 minutes before the masterclass starts, then appears as “Already registered? Join the live masterclass” on the masterclass, registration and thank-you pages. Leave empty and no join link is shown at all.
+   * Off until the masterclass is about to start. Tick it on the morning — a few minutes before you open the room — and the link appears under the Save my seat button on the masterclass, registration and thank-you pages. Untick it afterwards.
+   */
+  showJoinLive?: boolean | null;
+  /**
+   * The Zoom (or other) link attendees click to join. Safe to paste as soon as you have it — nothing appears on the site until the switch above is on. Only links starting with https:// are accepted.
    */
   liveJoinUrl?: string | null;
+  /**
+   * Leave empty for “Already registered? Join the live masterclass →”. Worth changing once you are underway — “We have started — join us →” tells a latecomer they have not missed it.
+   */
+  joinLiveLabel?: string | null;
   /**
    * From Meta Events Manager. Just the number. Leave empty and no tracking script is loaded at all. In the UK, EU and Switzerland it will not load until a visitor accepts, and anywhere it is switched off for people whose browser sends a Do Not Track / Global Privacy Control signal.
    */
@@ -1035,7 +1043,9 @@ export interface SiteStylesSelect<T extends boolean = true> {
       };
   blogHeading?: T;
   blogIntro?: T;
+  showJoinLive?: T;
   liveJoinUrl?: T;
+  joinLiveLabel?: T;
   metaPixelId?: T;
   gold?: T;
   goldDeep?: T;

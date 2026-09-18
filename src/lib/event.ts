@@ -111,35 +111,18 @@ export const EVENT_WORKBOOK = 'Free live training. Workbook included.'
 export const EVENT_TITLE = 'Your Q4 Profit Playbook, Built in 60 Minutes'
 
 /**
- * When the "join the live masterclass" link appears, and when it stops.
+ * The live join link is **not** scheduled from here.
  *
- * **Absolute instants, so the visitor's clock is never consulted.** These carry
- * the −06:00 offset Mountain Time is actually on that day, and comparing two
- * `Date`s compares moments, not calendar readings — so a visitor in London and a
- * visitor in Denver see the link appear at the same instant, with no timezone
- * conversion anywhere in the code. That is the whole reason there is no
- * `America/Denver` string in this file: the arithmetic that would need it has
- * already been done, once, here.
+ * It was, once: two instants in this file decided when "join the live
+ * masterclass" appeared and disappeared. The logic was correct and the design
+ * was wrong — it could only ever be right about a date typed into a source file
+ * weeks beforehand, so the morning the start slipped by an hour, the fix was a
+ * deploy. Worse, the person who knows whether the room is open is the one
+ * presenting, and they had no way to say so.
  *
- * Half an hour early, because people arrive early for things they paid
- * attention to. Two hours after the start, because the expensive failure is the
- * person who joins at 12:10 and finds the link gone — not the person who finds
- * it still there at 12:55.
+ * It is a switch in **Site Styles → The live masterclass** instead: tick it on,
+ * paste the link, save. See `src/lib/site-styles.ts`.
  */
-export const JOIN_OPENS_ISO = '2026-09-24T10:30:00-06:00'
-export const JOIN_CLOSES_ISO = '2026-09-24T13:00:00-06:00'
-
-/**
- * Whether the join link should be on the page right now.
- *
- * Takes `now` so it can be tested at a specific moment rather than only at the
- * moment the test runs — which for a window that opens once, on one morning, is
- * the difference between a test and a coin toss.
- */
-export const isJoinWindowOpen = (now: Date = new Date()): boolean => {
-  const time = now.getTime()
-  return time >= Date.parse(JOIN_OPENS_ISO) && time < Date.parse(JOIN_CLOSES_ISO)
-}
 
 /**
  * The GoHighLevel form that takes registrations.

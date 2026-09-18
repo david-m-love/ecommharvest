@@ -75,22 +75,21 @@ const Cta = ({ label, href, large }: { label?: string; href?: string; large?: bo
  * beside "Save my seat" would give them a way past the form and cost a
  * registration. Secondary in weight, unmissable to the person who needs it.
  *
- * Renders nothing at all unless the page was handed a `joinUrl` — which only
- * happens inside the join window, and only once a link has been pasted into
- * Site Styles. No block decides when the event is.
+ * Renders nothing unless the page was handed a `joinUrl`, which happens only
+ * when the switch in **Site Styles → The live masterclass** is on and a link has
+ * been pasted. No block knows what time it is, and none of them decides.
  */
-const JoinLive = ({ url }: { url?: string }) =>
-  url ? (
+const JoinLive = ({ meta }: { meta: BlockMeta }) =>
+  meta?.joinUrl ? (
     <p className="joinlive">
-      Already registered?{' '}
-      <a href={url} target="_blank" rel="noopener">
-        Join the live masterclass →
+      <a href={meta.joinUrl} target="_blank" rel="noopener">
+        {meta.joinLabel || 'Already registered? Join the live masterclass →'}
       </a>
     </p>
   ) : null
 
 /** What every block can read off Puck's metadata. */
-type BlockMeta = { joinUrl?: string } | undefined
+type BlockMeta = { joinUrl?: string; joinLabel?: string } | undefined
 
 /**
  * Document body: paragraphs, and lists where a line starts with a dash.
@@ -405,7 +404,7 @@ export const config: Config<Blocks> = {
               the button there — and the thank-you page is the first place a
               registrant looks for the link on the day.
             */}
-            <JoinLive url={(puck?.metadata as BlockMeta)?.joinUrl} />
+            <JoinLive meta={puck?.metadata as BlockMeta} />
           </div>
         </div>
       ),
@@ -848,7 +847,7 @@ export const config: Config<Blocks> = {
             {note ? <p className="formnote">{note}</p> : null}
             {/* The other end of a long page: somebody who scrolled the whole
                 way on the morning should not have to scroll back up. */}
-            <JoinLive url={(puck?.metadata as BlockMeta)?.joinUrl} />
+            <JoinLive meta={puck?.metadata as BlockMeta} />
           </div>
         </div>
       ),

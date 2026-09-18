@@ -1,5 +1,5 @@
 import { payload } from '@/lib/entitlements'
-import { isJoinWindowOpen } from '@/lib/event'
+import { joinLive } from '@/lib/join-live'
 
 /**
  * Reads Site Styles and turns it into a CSS variable override block.
@@ -32,6 +32,10 @@ export type SiteStyles = {
   metaPixelId: string | null
   /** The live webinar link, as typed in the admin. Null until somebody pastes one. */
   liveJoinUrl: string | null
+  /** The switch in Site Styles. Nothing is shown unless this is on. */
+  showJoinLive: boolean
+  /** What the link says. Null means use the built-in wording. */
+  joinLiveLabel: string | null
   css: string | null
 }
 
@@ -89,7 +93,7 @@ const LOGO_HEIGHTS_MOBILE: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, liveJoinUrl: null, css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, liveJoinUrl: null, showJoinLive: false, joinLiveLabel: null, css: null }
 
   try {
     const p = await payload()
@@ -166,6 +170,11 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
         typeof styles.liveJoinUrl === 'string' && /^https:\/\/\S+$/i.test(styles.liveJoinUrl.trim())
           ? styles.liveJoinUrl.trim()
           : null,
+      showJoinLive: styles.showJoinLive === true,
+      joinLiveLabel:
+        typeof styles.joinLiveLabel === 'string' && styles.joinLiveLabel.trim()
+          ? styles.joinLiveLabel.trim()
+          : null,
       css: declarations.length ? `:root{${declarations.join(';')}}` : null,
     }
   } catch {
@@ -208,7 +217,11 @@ export type SiteMetadata = {
    * know what time it is.
    */
   joinUrl?: string
+  /** What the link says. Only ever present alongside `joinUrl`. */
+  joinLabel?: string
 }
+
+
 
 export type RecentPost = {
   title: string
@@ -255,17 +268,20 @@ const recentPosts = async (): Promise<RecentPost[]> => {
 }
 
 export const siteMetadata = async (): Promise<SiteMetadata> => {
-  const [{ logoUrl, logoText, logoWidth, logoHeight, navLinks, liveJoinUrl }, posts] =
-    await Promise.all([getSiteStyles(), recentPosts()])
+  const [styles, posts] = await Promise.all([getSiteStyles(), recentPosts()])
   return {
     recentPosts: posts,
-    siteLogoUrl: logoUrl,
-    siteLogoText: logoText,
-    siteLogoWidth: logoWidth,
-    siteLogoHeight: logoHeight,
-    siteNavLinks: navLinks,
-    // Both conditions, every render: a link that has not been pasted yet, and a
-    // window that has not opened, look the same to a block — absent.
-    ...(liveJoinUrl && isJoinWindowOpen() ? { joinUrl: liveJoinUrl } : {}),
+    siteLogoUrl: styles.logoUrl,
+    siteLogoText: styles.logoText,
+    siteLogoWidth: styles.logoWidth,
+    siteLogoHeight: styles.logoHeight,
+    siteNavLinks: styles.navLinks,
+    /**
+     * Spread, so that when the switch is off the keys are not there at all —
+     * the URL never reaches the browser rather than arriving and being hidden.
+     * A link somebody can find in View Source three weeks early is a link that
+     * gets shared three weeks early.
+     */
+    ...(joinLive(styles) ?? {}),
   }
 }

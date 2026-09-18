@@ -430,6 +430,41 @@ Then `npm test` — `test/event.test.ts` fails and names the file if anything
 still says the old date **or the old running time**. It also checks the UTC times
 match the local ones, and that the day name matches the date.
 
+## On the morning: the “join live” link
+
+**`/admin` → Site → Site Styles → The live masterclass.** Three fields, one save.
+
+1. **Live webinar link** — paste the Zoom link. Safe to do this days early:
+   nothing appears on the site until the switch is on, so the URL is not in the
+   page source for anyone to find.
+2. **Show the “join live” link** — tick it a few minutes before you open the
+   room.
+3. **Save.**
+
+It then appears under the *Save my seat* button on the masterclass page, the
+registration page and the thank-you page — the last of which is where somebody
+who registered last week will look first. It reads *“Already registered? Join the
+live masterclass →”* as a text link, deliberately quieter than the registration
+button.
+
+**Untick it when the event is over.** Nothing does that for you.
+
+### Two things worth knowing
+
+- **A switch on with no link shows nothing**, rather than a dead link. Whoever
+  clicks a link that goes nowhere stops looking, and the morning of the event is
+  the worst possible moment for that.
+- **“What the link says” is editable**, and worth changing once you are under
+  way: *“We have started — join us →”* tells a latecomer they have not missed it.
+  The next day you can point it at a recording and call it *“Watch the replay →”*
+  without touching any code.
+
+There is deliberately **no automatic schedule.** An earlier version showed the
+link from 10:30 and hid it at 1:00, working from a date in a source file. It was
+correct and it was the wrong design — the morning a start time slips by an hour,
+the fix should not be a deploy, and the person who knows whether the room is open
+is the one presenting.
+
 ### The length, and the Q&A
 
 The session is 60 minutes, and the Q&A follows it. Two rules worth keeping:

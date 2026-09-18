@@ -208,18 +208,17 @@ p{margin:0 0 20px;max-width:66ch;color:var(--brown)}
 .cta-micro{font-size:14.5px;color:var(--muted);line-height:1.45}
 
 /* ---- join live ----
-   Only on screen during the event itself, which is exactly why it is a link and
-   not a button: on the day it has one job and the person doing it already knows
-   what they came for, and on every other day it is not there at all. A second
-   button beside "Save my seat" would have offered three weeks of visitors a way
-   round the form. The prompt stays muted; the link itself takes the accent and
-   an underline, so it is findable in two seconds without competing. */
-.joinlive{margin:18px 0 0;font-size:15px;color:var(--muted)}
-.joinlive a{color:var(--gold-deep);font-weight:700;text-decoration:underline;
+   Shown only while the switch in Site Styles is on, which in practice is the
+   morning of the event. A link and not a button, deliberately: on the day the
+   person clicking already knows what they came for, and a second button beside
+   "Save my seat" would give every visitor before then a way round the form.
+   Weight 600 rather than 700 — the whole sentence is the link now, and bold
+   across seven words starts competing with the thing above it. */
+.joinlive{margin:18px 0 0;font-size:15px;line-height:1.5}
+.joinlive a{color:var(--gold-deep);font-weight:600;text-decoration:underline;
   text-underline-offset:3px;text-decoration-thickness:1.5px}
 .joinlive a:hover{color:var(--navy)}
-/* The final card sits on a dark ground, where --muted has no contrast. */
-.finalcard .joinlive{color:var(--chalk)}
+/* The final card sits on a dark ground, where --gold-deep disappears. */
 .finalcard .joinlive a{color:var(--gold)}
 .finalcard .joinlive a:hover{color:var(--white)}
 
