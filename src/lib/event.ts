@@ -86,8 +86,12 @@ export const EVENT_QA_LENGTH = '30 minutes'
  * six places — the hero, the final card, the calendar file, the structured data,
  * the registration page and the confirmation. Six hand-typed variants is how a
  * page ends up implying three different agendas.
+ *
+ * **"up to"** is load-bearing. The Q&A runs while there are questions worth
+ * answering, and a flat "30 minutes" is a promise about someone else's
+ * behaviour — the day it finishes in twenty, the page was wrong.
  */
-export const EVENT_FORMAT = '60-minute working masterclass + 30 minutes of live Q&A'
+export const EVENT_FORMAT = '60-minute working masterclass + up to 30 minutes of live Q&A'
 export const EVENT_LENGTH_CLAIM = '60 minutes to build it. 30 minutes to ask us anything.'
 
 /**

@@ -1,7 +1,6 @@
 import {
   EVENT_ELSEWHERE,
   EVENT_FORMAT,
-  EVENT_LENGTH_CLAIM,
   EVENT_WHEN,
   MASTERCLASS_FORM_ID,
   REGISTER_PATH,
@@ -61,14 +60,22 @@ export const REGISTER_PAGE = {
        * body as a monospace, uppercase "last updated" line, which on a
        * registration page reads as a timestamp rather than a sentence. With no
        * button set it renders none — the form below is the button.
+       *
+       * It also carries the "join the live masterclass" link when the switch in
+       * Site Styles is on, which is why the block earns its place here over
+       * anything simpler.
        */
       type: 'Hero',
       props: {
         id: 'reg-heading-1',
-        eyebrow: `Free · ${EVENT_FORMAT}`,
-        heading: 'Save your seat.',
-        deck: 'One hour to build your Q4 plan, then half an hour to ask us anything.',
-        body: 'The workbook and the replay go to everyone who registers, so book it even if the time is awkward.',
+        eyebrow: 'Free live masterclass for LDS e-commerce founders',
+        heading: 'Your Q4 Profit Playbook',
+        deck: 'Build the plan live with us.',
+        body:
+          'In one focused working session we’ll help you map the offers, promotions, traffic, ' +
+          'email and SMS, and conversion priorities that belong in your Q4 plan — while making ' +
+          'sure the numbers behind them actually work.' +
+          `\n\nA ${EVENT_FORMAT}.`,
         when: `${EVENT_WHEN} ${EVENT_ELSEWHERE}`,
         ctaLabel: '',
         ctaHref: '',
@@ -90,57 +97,96 @@ export const REGISTER_PAGE = {
     },
     {
       /**
-       * Under the form, not above it. Above, it is an obstacle between someone
+       * Under the form, not above it. Above, it is an obstacle between somebody
        * who has decided and the box they came to fill in; below, it is there for
        * the person who scrolled past because they had not decided yet.
+       *
+       * A list rather than the six cards the landing page uses. This page has
+       * already done the persuading — it exists to be filled in — so the job here
+       * is to be scannable in five seconds, not to be impressive.
        */
       type: 'BulletList',
       props: {
         id: 'reg-bullets-3',
-        eyebrow: 'What you walk out with',
-        leadIn: 'We build it together, live:',
+        eyebrow: 'What you’ll work through',
+        leadIn: 'Six decisions, made together, live:',
         bullets: [
-          { lead: 'Your promotional calendar', text: 'every promotion, dated, on one page' },
-          { lead: 'Your offer strategy', text: 'what the offer is, beyond a discount' },
-          { lead: 'Your email + SMS roadmap', text: 'the campaigns, and the flows that must exist first' },
-          { lead: 'Your traffic + creative priorities', text: 'who to reach, and what the creative has to say' },
-          { lead: 'Your numbers', text: 'what you can afford to pay to acquire a customer' },
+          {
+            lead: 'Q4 promotional calendar',
+            text: '— what you’re promoting, when, and why someone should buy now',
+          },
+          {
+            lead: 'Offer strategy',
+            text: '— beyond “20% off everything”, without giving away margin you didn’t need to',
+          },
+          {
+            lead: 'Email + SMS plan',
+            text: '— the campaigns and follow-up that convert the attention you’re generating',
+          },
+          {
+            lead: 'Traffic + creative priorities',
+            text: '— who you’re reaching, what matters to them, and the creative you’ll need',
+          },
+          {
+            lead: 'Conversion priorities',
+            text: '— the website fixes worth making before you pour more traffic in',
+          },
+          {
+            lead: 'Know your numbers',
+            text: '— what you can actually afford to pay to acquire a customer',
+          },
         ],
       },
     },
     {
       /**
-       * What "built in 60 minutes" is actually promising, and what the extra
-       * half hour is.
+       * What the hour is and is not.
        *
-       * The number is in the headline, so somebody arriving here has already
-       * read it as a promise. An hour cannot finish a quarter's marketing, and
-       * the page that lets them believe it will is the page whose attendees
-       * leave disappointed by a session that went well. Said plainly on the way
-       * in, the same number reads as confidence rather than a claim about to be
-       * tested — and the Q&A reads as more than was promised rather than as
-       * padding inside it.
+       * Said before somebody registers rather than discovered during the session.
+       * Sixty minutes cannot make anyone expert in six disciplines, and a page
+       * that implies it will is the page whose attendees leave disappointed by
+       * something that went well.
        */
       type: 'Prose',
       props: {
-        id: 'reg-scope-6',
+        id: 'reg-scope-4',
         eyebrow: 'What to expect',
-        heading: EVENT_LENGTH_CLAIM,
-        body: 'We build the framework and make the important decisions together, live. You will fill in much of the workbook in the room, and we will show you exactly what to finish afterward.\n\nThen David and Derek stay for up to 30 minutes of live Q&A — bring whatever is keeping you stuck.',
+        heading: 'We’ll move quickly.',
+        body:
+          'The goal isn’t to make you an expert in every marketing discipline in an hour. It’s ' +
+          'to help you make the important Q4 decisions, understand the framework behind them, ' +
+          'and know exactly what still needs finishing afterwards.\n\nYou may complete much of ' +
+          'the workbook live. We’ll show you what to finish on your own.',
         background: 'wash',
       },
     },
     {
       type: 'Prose',
       props: {
-        id: 'reg-prose-4',
+        id: 'reg-qa-5',
+        eyebrow: 'And then',
+        heading: 'Stay for live Q&A.',
+        body:
+          'After the working session, David Love and Derek Crimin stay for up to 30 minutes to ' +
+          'answer questions about your business — ads, email, creative, offers, conversion, ' +
+          'profitability, planning, and whatever else is keeping you stuck heading into Q4.',
+        background: 'wash',
+      },
+    },
+    {
+      type: 'Prose',
+      props: {
+        id: 'reg-prose-6',
         eyebrow: 'A note on your details',
         heading: 'We will not sell your email. Obviously.',
-        body: 'You get the join link, two reminders and the replay. After that, occasional writing on what is working in e-commerce — and an unsubscribe link on every one of them.\n\nRead the privacy policy for the full version.',
+        body:
+          'You get the join link and a reminder before we start. After that, occasional writing ' +
+          'on what is working in e-commerce — and an unsubscribe link on every one of them.' +
+          '\n\nRead the privacy policy for the full version.',
         background: 'white',
       },
     },
-    footer('reg-footer-5'),
+    footer('reg-footer-7'),
   ],
 }
 
@@ -149,13 +195,18 @@ export const THANKS_PAGE = {
   content: [
     header('thx-header-0'),
     {
+      /**
+       * Confirms, and nothing else. The Hero also renders the "join the live
+       * masterclass" link when the switch is on — which is the whole reason this
+       * page is the first place a registrant will come back to on the day.
+       */
       type: 'Hero',
       props: {
         id: 'thx-heading-1',
-        eyebrow: 'You are registered',
+        eyebrow: 'You’re in',
         heading: 'Your seat is saved.',
-        deck: 'The join link and your workbook are in your inbox now.',
-        body: 'Everyone who registers gets the replay too, so a clash on the day is not a problem.',
+        deck: 'You’re registered for Your Q4 Profit Playbook.',
+        body: `A ${EVENT_FORMAT}.`,
         when: `${EVENT_WHEN} ${EVENT_ELSEWHERE}`,
         ctaLabel: '',
         ctaHref: '',
@@ -164,45 +215,88 @@ export const THANKS_PAGE = {
     },
     {
       /**
-       * The one job this page has beyond confirming: getting the email out of
-       * the promotions tab. A confirmation nobody finds is a registration that
-       * does not turn up.
+       * The one job this page has beyond confirming.
+       *
+       * A confirmation nobody finds is a registration that does not turn up, and
+       * every step here is really about deliverability: an email moved to the
+       * primary inbox, a sender added to contacts and — best of all — a reply
+       * are the three strongest signals a mailbox provider takes that the next
+       * message should be delivered too.
+       *
+       * A list rather than prose because these are things to *do*, and because
+       * somebody skimming on a phone thirty seconds after registering will read
+       * four short lines and not four sentences.
        */
-      type: 'DarkCard',
-      props: {
-        id: 'thx-card-2',
-        eyebrow: 'Do this now, it takes ten seconds',
-        heading: 'Check your email and move it to your inbox.',
-        body: 'Look for “Your Q4 Profit Playbook seat is confirmed”. If it landed in Promotions or Spam, drag it to your main inbox — that is what tells your email provider to let the reminders and the join link through on the day.',
-        kicker: 'No email after five minutes? Check spam, then write to hello@ecommharvest.com and we will sort it.',
-      },
-    },
-    {
       type: 'BulletList',
       props: {
-        id: 'thx-bullets-3',
-        eyebrow: 'Before the day',
-        leadIn: 'Two things worth doing:',
+        id: 'thx-inbox-2',
+        eyebrow: 'Important',
+        leadIn:
+          'First, make sure you got my email. I’ve just sent your confirmation from “David at ' +
+          'eCommHarvest”, and it has the link you’ll use to join. If it isn’t there within a few ' +
+          'minutes:',
         bullets: [
-          { lead: 'Add it to your calendar', text: 'the confirmation email has the link' },
-          { lead: 'Bring your quarter', text: 'whatever the plan currently lives in — notes, a spreadsheet, your head' },
-          { lead: 'Block the follow-up', text: 'another 60 minutes that week to finish the workbook while it is fresh' },
+          { lead: 'Check Spam or Promotions', text: '— that’s usually where it is' },
+          { lead: 'Search your inbox', text: 'for “David at eCommHarvest”' },
+          {
+            lead: 'Move it to your Primary inbox',
+            text: 'if you found it anywhere else',
+          },
+          {
+            lead: 'Add david@ecommharvest.com',
+            text: 'to your contacts or safe-sender list',
+          },
         ],
       },
     },
     {
-      type: 'CtaCard',
+      type: 'Prose',
       props: {
-        id: 'thx-cta-4',
-        eyebrow: 'While you wait',
-        heading: 'Read the thing we will be building.',
-        body: 'A short piece on the five decisions that shape a quarter — the same ones we work through live.',
-        ctaLabel: 'Read it',
-        ctaHref: '/blog',
-        note: 'Nothing to buy. See you on the day.',
+        id: 'thx-why-3',
+        eyebrow: '',
+        heading: '',
+        body:
+          'That’s what keeps the reminder and the join link from getting buried when it’s time ' +
+          'to go live.',
+        background: 'wash',
       },
     },
-    footer('thx-footer-5'),
+    {
+      /**
+       * The reply.
+       *
+       * The dark card, because this is the one thing on the page worth
+       * interrupting for. It does two jobs at once: a reply is the single
+       * strongest deliverability signal a person can send, and the answers decide
+       * what gets covered live.
+       */
+      type: 'DarkCard',
+      props: {
+        id: 'thx-reply-4',
+        eyebrow: 'One more thing',
+        heading: 'Hit reply.',
+        body:
+          'When you find the confirmation email, reply and tell me the single biggest thing you ' +
+          'need help figuring out before Q4. Ads, email and SMS, creative, offers, planning, ' +
+          'conversion, profitability — whatever is actually on your mind.\n\nI read every reply. ' +
+          'If several people are wrestling with the same thing, we’ll make sure we cover it in ' +
+          'the masterclass or the live Q&A.',
+        kicker: 'Your question may shape what we cover live.',
+      },
+    },
+    {
+      type: 'Prose',
+      props: {
+        id: 'thx-close-5',
+        eyebrow: 'That’s it',
+        heading: 'See you Thursday.',
+        body:
+          'Find the email, save it somewhere easy to get back to, and come ready to work.' +
+          '\n\nDavid Love, eCommHarvest',
+        background: 'white',
+      },
+    },
+    footer('thx-footer-6'),
   ],
 }
 

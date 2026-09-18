@@ -5,7 +5,7 @@ import React from 'react'
 import { config } from '@/blocks'
 import { SiteFooterBar, SiteHeaderBar } from '@/blocks/SiteHeaderBar'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_ELSEWHERE, EVENT_WHEN } from '@/lib/event'
+import { EVENT_ELSEWHERE, EVENT_FORMAT, EVENT_WHEN } from '@/lib/event'
 import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
 
 const FALLBACK: Metadata = {
@@ -51,17 +51,25 @@ export default async function ThanksPage() {
       <main>
         <section className="slot">
           <div className="slot-in">
-            <p className="eyebrow">You are registered</p>
+            <p className="eyebrow">You’re in</p>
             <h1>Your seat is saved.</h1>
             <p className="lede">
-              {EVENT_WHEN} {EVENT_ELSEWHERE}. The join link is in your inbox now.
+              You’re registered for Your Q4 Profit Playbook — {EVENT_WHEN} {EVENT_ELSEWHERE}. A{' '}
+              {EVENT_FORMAT}.
             </p>
             <div className="card-dark">
-              <p className="eyebrow">Do this now, it takes ten seconds</p>
-              <h2>Check your email and move it to your inbox.</h2>
+              <p className="eyebrow">Important</p>
+              <h2>First, make sure you got my email.</h2>
               <p>
-                If it landed in Promotions or Spam, drag it to your main inbox — that is what tells
-                your email provider to let the reminders and the join link through on the day.
+                It comes from “David at eCommHarvest” and has the link you’ll use to join. If it
+                isn’t there within a few minutes, check Spam or Promotions, move it to your Primary
+                inbox, and add david@ecommharvest.com to your contacts.
+              </p>
+              <p>
+                <strong>
+                  Then hit reply and tell me the biggest thing you need help figuring out before
+                  Q4 — your question may shape what we cover live.
+                </strong>
               </p>
             </div>
           </div>

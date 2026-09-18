@@ -70,7 +70,7 @@ function HandBuiltPrivacyPage() {
 
         <h2>Why we use it</h2>
         <ul>
-        <li><strong>To deliver the masterclass</strong> &mdash; confirmation, reminders, the join link, and the replay. This is necessary to give you the thing you signed up for.</li>
+        <li><strong>To deliver the masterclass</strong> &mdash; confirmation, reminders and the join link. This is necessary to give you the thing you signed up for.</li>
         <li><strong>To send you marketing emails</strong> about e-commerce growth, Q4 strategy, and our services. This is based on the consent you gave at registration, and you can withdraw it at any time.</li>
         <li><strong>To keep the form working</strong> &mdash; rate limiting and spam prevention, based on our legitimate interest in not being flooded by bots.</li>
         </ul>

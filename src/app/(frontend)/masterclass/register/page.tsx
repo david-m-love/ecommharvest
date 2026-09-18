@@ -6,13 +6,13 @@ import { config } from '@/blocks'
 import { FormEmbed } from '@/blocks/FormEmbed'
 import { SiteFooterBar, SiteHeaderBar } from '@/blocks/SiteHeaderBar'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_ELSEWHERE, EVENT_WHEN, MASTERCLASS_FORM_ID } from '@/lib/event'
+import { EVENT_ELSEWHERE, EVENT_FORMAT, EVENT_WHEN, MASTERCLASS_FORM_ID } from '@/lib/event'
 import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
 
 const FALLBACK: Metadata = {
   title: 'Save my seat',
   description:
-    'Save your seat for the Q4 Profit Playbook masterclass. Sixty minutes live plus 30 minutes of Q&A, workbook and replay included.',
+    'Save your seat for the Q4 Profit Playbook masterclass. A 60-minute working session plus up to 30 minutes of live Q&A, workbook included.',
   alternates: { canonical: '/masterclass/register' },
   // The masterclass page is the one that should rank; a thin registration page
   // competing with it in search helps nobody.
@@ -60,11 +60,9 @@ export default async function RegisterPage() {
             <p className="eyebrow">
               {EVENT_WHEN} {EVENT_ELSEWHERE}
             </p>
-            <h1>Save your seat.</h1>
+            <h1>Your Q4 Profit Playbook</h1>
             <p className="lede">
-              One hour, live, and you leave with your Q4 mapped out — then stay on for Q&amp;A with
-              David and Derek. The replay comes to everyone who registers, so book it even if the
-              time is awkward.
+              Build the plan live with us. A {EVENT_FORMAT}.
             </p>
           </div>
         </section>

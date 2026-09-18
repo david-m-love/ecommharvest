@@ -59,7 +59,7 @@ function HandBuiltTermsPage() {
 
         <h2>What you are registering for</h2>
         <p>A free online masterclass of approximately 60 minutes, plus a live question-and-answer session, presented live by David Love with special guest Derek Crimin, hosted in partnership with Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE. Registration is free and no payment details are required.</p>
-        <p>We will send a replay to registrants after the event. We aim to run the session as scheduled, but we may change the date, time, running order, presenters, or content, or cancel the event. If we cancel, we will tell registrants by email.</p>
+        <p>We aim to run the session as scheduled, but we may change the date, time, running order, presenters, or content, or cancel the event. If we cancel, we will tell registrants by email.</p>
         <p>During the session we may describe our paid services. You are never obliged to buy anything.</p>
 
         <h2>No guarantee of results</h2>
@@ -78,7 +78,7 @@ function HandBuiltTermsPage() {
         <p>The session will be recorded, and the recording may be distributed to registrants and reused in our marketing. If you speak, appear on camera, or post in chat or Q&amp;A, that contribution may form part of the recording. If you would rather not appear, keep your camera and microphone off and do not post &mdash; you can still attend and watch.</p>
 
         <h2>Materials and intellectual property</h2>
-        <p>The masterclass content, slides, templates, worksheets, recordings, and everything on this website belong to us or our licensors. You may use them for your own business, internally. You may not resell them, republish them, share the replay link or materials publicly, or present them as your own work without our written permission.</p>
+        <p>The masterclass content, slides, templates, worksheets, recordings, and everything on this website belong to us or our licensors. You may use them for your own business, internally. You may not resell them, republish them, share the recording or materials publicly, or present them as your own work without our written permission.</p>
         <p>Trade marks and logos belonging to Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE remain the property of those brands and are used here with their permission as event hosts.</p>
 
         <h2>Acceptable use</h2>

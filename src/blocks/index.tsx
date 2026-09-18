@@ -832,10 +832,10 @@ export const config: Config<Blocks> = {
       defaultProps: {
         eyebrow: 'Thursday, September 24 · 11:00 AM MT · free · 60 minutes',
         heading: 'Your Q4 Profit Playbook, Built in 60 Minutes.',
-        body: 'Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.',
+        body: 'Two fields and you’re in. We’ll send the join link straight away, and a reminder before we start.',
         ctaLabel: 'Save my seat →',
         ctaHref: REGISTER_URL,
-        note: 'Free · no card required · replay sent to every registrant',
+        note: 'Free · no card required · workbook included',
       },
       render: ({ eyebrow, heading, body, ctaLabel, ctaHref, note, puck }) => (
         <div className="final-in">
@@ -981,7 +981,7 @@ export const config: Config<Blocks> = {
         },
       },
       defaultProps: {
-        eyebrow: 'Free · 60 minutes · replay included',
+        eyebrow: 'Free · 60 minutes · workbook included',
         heading: 'Save your seat.',
         body: 'Two fields and you are in. The join link arrives by email straight away.',
         formId: MASTERCLASS_FORM_ID,
