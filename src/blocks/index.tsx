@@ -842,7 +842,14 @@ export const config: Config<Blocks> = {
           <div className="finalcard">
             {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
             {heading ? <h2>{heading}</h2> : null}
-            {body ? <p className="final-lead">{body}</p> : null}
+            {/*
+              Paragraphs, not one `<p>`. It was a single paragraph, which meant
+              a blank line in the field rendered as a space — so the closing
+              card was the one block on the page where pressing return twice
+              silently did nothing. Every other block splits on blank lines, and
+              the editor should not have to remember which is which.
+            */}
+            <Paragraphs text={body} className="final-lead" />
             <Cta label={ctaLabel} href={ctaHref} large />
             {note ? <p className="formnote">{note}</p> : null}
             {/* The other end of a long page: somebody who scrolled the whole

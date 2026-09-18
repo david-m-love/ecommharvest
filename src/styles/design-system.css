@@ -716,4 +716,9 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 
 /* The dark CTA card with no form in it. Chalk rather than cream, so the button
    is the brightest thing in the card and nothing competes with it. */
-.final-lead{color:var(--chalk);font-size:17.5px;line-height:1.62;max-width:48ch;margin:0 auto 34px}
+/* The closing card takes more than one paragraph now, so the 34px that used to
+   sit under a single lead is split: a normal paragraph gap between them, and the
+   rest put on the button — which keeps the same breathing room above the button
+   whether there is one paragraph or three. */
+.final-lead{color:var(--chalk);font-size:17.5px;line-height:1.62;max-width:48ch;margin:0 auto 16px}
+.finalcard .btn{margin-top:18px}

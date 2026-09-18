@@ -59,6 +59,16 @@
       }
     },
     {
+      "type": "Prose",
+      "props": {
+        "id": "seed-prose-3b",
+        "eyebrow": "",
+        "heading": "And Q4 has a way of taking over.",
+        "body": "Another promotion to build. Another email you forgot to send. Another Sunday night realizing you still don't know what you're doing next week.\n\nAnd if you've ever found yourself checking Shopify during Sunday School — well, you're among friends.\n\nA good Q4 plan isn't just about making more sales. It's about making the important decisions before everything gets busy, so you can spend less time reacting, execute with more confidence, and have more room for your family, your calling, your faith and everything else you're trying to be present for.",
+        "background": "white"
+      }
+    },
+    {
       "type": "BulletList",
       "props": {
         "id": "seed-bulletlist-4",
@@ -83,7 +93,7 @@
         "id": "seed-cardrow-5",
         "eyebrow": "What you'll work through",
         "heading": "Leave with a Q4 plan you can actually execute.",
-        "body": "You won't leave with 75 new marketing ideas and no idea what to do first. We'll work through the core decisions that create a strong Q4 plan — and you'll have a workbook to finish afterwards if we move faster than you can fill it in.",
+        "body": "You won't leave with 75 new marketing ideas and no idea what to do first. We'll work through the core decisions that create a strong Q4 plan — and you'll have a workbook to finish afterwards if we move faster than you can fill it in.\n\nSo instead of waking up every Monday wondering what to promote next, you already know what matters — and can put your energy into executing it well.",
         "background": "white",
         "cards": [
           {
@@ -163,7 +173,7 @@
         "id": "seed-darkcard-9",
         "eyebrow": "A word from Derek",
         "heading": "The business isn't the only thing you're building.",
-        "body": "Q4 can expose weaknesses in your marketing. It can also expose weaknesses in the founder. Long hours, more decisions and more pressure make it easy for the business to consume everything else that matters.\n\nAs founders — and especially as people trying to build businesses consistent with our faith and our families — we think growing the person behind the business matters too. Derek Crimin will spend a few minutes on what he's learned about continuing to develop yourself while building a company: spiritually, mentally, physically and relationally.",
+        "body": "Ambition is good. Building something meaningful is good. Providing for our families, creating jobs and serving customers well are good things. But the business should support the life and the values you're trying to build — not quietly consume them.\n\nAs founders it's easy for the business to follow us everywhere. Long hours, constant decisions and always having one more thing to check make it hard to be fully present anywhere else.\n\nDerek Crimin will spend a few minutes on what he's learned about continuing to develop the person behind the business — spiritually, mentally, physically and relationally.",
         "kicker": "The kind of business you build is influenced by the kind of person you're becoming while you build it."
       }
     },
@@ -200,7 +210,7 @@
         "id": "seed-ctacard-11",
         "eyebrow": "Thursday, September 24 · 11:00 AM Mountain Time · free",
         "heading": "Your Q4 Profit Playbook, Built in 60 Minutes.",
-        "body": "A 60-minute working masterclass + 30 minutes of live Q&A, with David Love and Derek Crimin. Built for LDS e-commerce founders preparing for Q4. You'll get the workbook, work through your strategy with us live, and leave knowing exactly what to finish next.",
+        "body": "Q4 is coming either way. Spend an hour now deciding how you want to approach it, instead of spending the next three months reacting to it.\n\nA 60-minute working masterclass + 30 minutes of live Q&A, with David Love and Derek Crimin. You'll get the workbook, work through your strategy with us live, and leave knowing exactly what to finish next.",
         "ctaLabel": "Save my seat →",
         "ctaHref": "https://ecommharvest.com/masterclass/register",
         "note": "Free to attend. Replay sent to every registrant."
