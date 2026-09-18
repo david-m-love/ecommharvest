@@ -181,6 +181,31 @@ export const SiteStyles: GlobalConfig = {
            * loading. Empty means no pixel script reaches the page at all, which
            * is the honest default for a site not running ads.
            */
+          /**
+           * The live webinar link.
+           *
+           * In the admin rather than in code on purpose: Zoom can hand you a new
+           * link on the morning, and "paste it and save" has to be possible at
+           * 10:55 without a deploy, a build, or anybody who knows git.
+           *
+           * It is only *rendered* inside the join window set in
+           * `src/lib/event.ts` — before 10:30 on the day the URL is not in the
+           * page source at all, so pasting it early costs nothing and is in fact
+           * the point: paste it whenever you have it.
+           */
+          name: 'liveJoinUrl',
+          label: 'Live webinar join link',
+          type: 'text',
+          validate: (value: unknown) =>
+            !value || (typeof value === 'string' && /^https:\/\/\S+$/i.test(value.trim()))
+              ? true
+              : 'Paste the full link, starting with https://',
+          admin: {
+            description:
+              'The Zoom (or other) link attendees click to join. Paste it as soon as you have it — it stays hidden until 30 minutes before the masterclass starts, then appears as “Already registered? Join the live masterclass” on the masterclass, registration and thank-you pages. Leave empty and no join link is shown at all.',
+          },
+        },
+        {
           name: 'metaPixelId',
           label: 'Meta (Facebook) pixel ID',
           type: 'text',

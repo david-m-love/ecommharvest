@@ -129,7 +129,7 @@ export const FIRST_POST_BODY = {
         ),
       ),
       p(
-        text('We build exactly this, live, in 90 minutes at the '),
+        text('We build exactly this, live, in 60 minutes at the '),
         link('Q4 Profit Playbook masterclass', '/masterclass'),
         text('. Bring your calendar and leave with it filled in.'),
       ),

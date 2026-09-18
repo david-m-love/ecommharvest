@@ -11,7 +11,7 @@ import { readGhlBlock } from '@/lib/ghl-block'
 const FALLBACK: Metadata = {
   title: EVENT_TITLE,
   description:
-    'Thursday, September 24 at 11:00 AM Mountain Time. A free 90-minute working session for LDS e-commerce founders: build your Q4 promotional calendar, offers, email and SMS plan, traffic priorities and the numbers behind them.',
+    'Thursday, September 24 at 11:00 AM Mountain Time. A free 60-minute working masterclass for LDS e-commerce founders: build your Q4 promotional calendar, offers, email and SMS plan, traffic priorities and the numbers behind them.',
   alternates: { canonical: '/masterclass' },
 }
 
@@ -50,7 +50,7 @@ const EVENT_SCHEMA = {
   '@type': 'Event',
   name: EVENT_TITLE,
   description:
-    'A free 90-minute working session for LDS e-commerce founders. Build your Q4 promotional calendar, offer strategy, email and SMS plan, traffic priorities and the numbers behind them — with a workbook to finish afterwards.',
+    'A free 60-minute working masterclass for LDS e-commerce founders. Build your Q4 promotional calendar, offer strategy, email and SMS plan, traffic priorities and the numbers behind them — with a workbook to finish afterwards.',
   startDate: EVENT_START_ISO,
   endDate: EVENT_END_ISO,
   eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',

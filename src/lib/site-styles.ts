@@ -1,4 +1,5 @@
 import { payload } from '@/lib/entitlements'
+import { isJoinWindowOpen } from '@/lib/event'
 
 /**
  * Reads Site Styles and turns it into a CSS variable override block.
@@ -29,6 +30,8 @@ export type SiteStyles = {
   blogIntro: string | null
   /** Empty until advertising is actually running: no ID, no script. */
   metaPixelId: string | null
+  /** The live webinar link, as typed in the admin. Null until somebody pastes one. */
+  liveJoinUrl: string | null
   css: string | null
 }
 
@@ -86,7 +89,7 @@ const LOGO_HEIGHTS_MOBILE: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, liveJoinUrl: null, css: null }
 
   try {
     const p = await payload()
@@ -155,6 +158,14 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
         typeof styles.metaPixelId === 'string' && /^\d{10,20}$/.test(styles.metaPixelId.trim())
           ? styles.metaPixelId.trim()
           : null,
+      /**
+       * Only `https://` survives. It becomes an href on a public page, and
+       * `javascript:` in an href is a script somebody pasted into a text box.
+       */
+      liveJoinUrl:
+        typeof styles.liveJoinUrl === 'string' && /^https:\/\/\S+$/i.test(styles.liveJoinUrl.trim())
+          ? styles.liveJoinUrl.trim()
+          : null,
       css: declarations.length ? `:root{${declarations.join(';')}}` : null,
     }
   } catch {
@@ -186,6 +197,17 @@ export type SiteMetadata = {
    * layout of that block shows.
    */
   recentPosts: RecentPost[]
+  /**
+   * The live join link — present **only** while the join window is open.
+   *
+   * Gated here rather than hidden in the blocks, so before 10:30 on the day the
+   * URL is not in the page source at all. Hiding it with CSS or an `aria-hidden`
+   * would still ship it to anyone who opened View Source three weeks early,
+   * which is the one thing this feature is supposed to prevent. A block simply
+   * receives nothing, and renders nothing, which is also why no block needs to
+   * know what time it is.
+   */
+  joinUrl?: string
 }
 
 export type RecentPost = {
@@ -233,10 +255,8 @@ const recentPosts = async (): Promise<RecentPost[]> => {
 }
 
 export const siteMetadata = async (): Promise<SiteMetadata> => {
-  const [{ logoUrl, logoText, logoWidth, logoHeight, navLinks }, posts] = await Promise.all([
-    getSiteStyles(),
-    recentPosts(),
-  ])
+  const [{ logoUrl, logoText, logoWidth, logoHeight, navLinks, liveJoinUrl }, posts] =
+    await Promise.all([getSiteStyles(), recentPosts()])
   return {
     recentPosts: posts,
     siteLogoUrl: logoUrl,
@@ -244,5 +264,8 @@ export const siteMetadata = async (): Promise<SiteMetadata> => {
     siteLogoWidth: logoWidth,
     siteLogoHeight: logoHeight,
     siteNavLinks: navLinks,
+    // Both conditions, every render: a link that has not been pasted yet, and a
+    // window that has not opened, look the same to a block — absent.
+    ...(liveJoinUrl && isJoinWindowOpen() ? { joinUrl: liveJoinUrl } : {}),
   }
 }

@@ -42,7 +42,7 @@ const fold = (line: string): string => {
 }
 
 const DESCRIPTION =
-  'Free 90-minute working session with David Love and special guest Derek Crimin ' +
+  'Free 60-minute working masterclass with David Love and special guest Derek Crimin ' +
   '(B.O.M.Socks). Build your Q4 promotional calendar, offer strategy, email and ' +
   'SMS plan, traffic priorities and the numbers behind them — with a workbook to ' +
   'finish afterwards. The join link is in your confirmation email.'

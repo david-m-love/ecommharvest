@@ -1,7 +1,7 @@
 import {
   EVENT_ELSEWHERE,
+  EVENT_FORMAT,
   EVENT_LENGTH_CLAIM,
-  EVENT_LENGTH_LINE,
   EVENT_WHEN,
   MASTERCLASS_FORM_ID,
   REGISTER_PATH,
@@ -65,9 +65,9 @@ export const REGISTER_PAGE = {
       type: 'Hero',
       props: {
         id: 'reg-heading-1',
-        eyebrow: `Free · ${EVENT_LENGTH_LINE} · workbook included`,
+        eyebrow: `Free · ${EVENT_FORMAT}`,
         heading: 'Save your seat.',
-        deck: 'Ninety minutes, live, and you leave with your Q4 plan built.',
+        deck: 'One hour to build your Q4 plan, then half an hour to ask us anything.',
         body: 'The workbook and the replay go to everyone who registers, so book it even if the time is awkward.',
         when: `${EVENT_WHEN} ${EVENT_ELSEWHERE}`,
         ctaLabel: '',
@@ -110,21 +110,23 @@ export const REGISTER_PAGE = {
     },
     {
       /**
-       * What "built in 90 minutes" is actually promising.
+       * What "built in 60 minutes" is actually promising, and what the extra
+       * half hour is.
        *
        * The number is in the headline, so somebody arriving here has already
-       * read it as a promise. Ninety minutes cannot finish a quarter's
-       * marketing, and the page that lets them believe it will is the page whose
-       * attendees leave disappointed by a session that went well. Said plainly
-       * on the way in, the same number reads as confidence rather than a claim
-       * about to be tested.
+       * read it as a promise. An hour cannot finish a quarter's marketing, and
+       * the page that lets them believe it will is the page whose attendees
+       * leave disappointed by a session that went well. Said plainly on the way
+       * in, the same number reads as confidence rather than a claim about to be
+       * tested — and the Q&A reads as more than was promised rather than as
+       * padding inside it.
        */
       type: 'Prose',
       props: {
         id: 'reg-scope-6',
         eyebrow: 'What to expect',
         heading: EVENT_LENGTH_CLAIM,
-        body: 'We build the framework and make the important decisions together, live. You will fill in much of the workbook in the room, and block another 90 minutes that week to finish anything left over.',
+        body: 'We build the framework and make the important decisions together, live. You will fill in much of the workbook in the room, and we will show you exactly what to finish afterward.\n\nThen David and Derek stay for up to 30 minutes of live Q&A — bring whatever is keeping you stuck.',
         background: 'wash',
       },
     },
@@ -184,7 +186,7 @@ export const THANKS_PAGE = {
         bullets: [
           { lead: 'Add it to your calendar', text: 'the confirmation email has the link' },
           { lead: 'Bring your quarter', text: 'whatever the plan currently lives in — notes, a spreadsheet, your head' },
-          { lead: 'Block the follow-up', text: 'another 90 minutes that week to finish the workbook while it is fresh' },
+          { lead: 'Block the follow-up', text: 'another 60 minutes that week to finish the workbook while it is fresh' },
         ],
       },
     },

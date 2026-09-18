@@ -12,7 +12,7 @@ import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
 const FALLBACK: Metadata = {
   title: 'Save my seat',
   description:
-    'Save your seat for the Q4 Profit Playbook masterclass. Ninety minutes live, workbook and replay included.',
+    'Save your seat for the Q4 Profit Playbook masterclass. Sixty minutes live plus 30 minutes of Q&A, workbook and replay included.',
   alternates: { canonical: '/masterclass/register' },
   // The masterclass page is the one that should rank; a thin registration page
   // competing with it in search helps nobody.

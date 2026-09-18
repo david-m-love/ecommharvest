@@ -207,6 +207,22 @@ p{margin:0 0 20px;max-width:66ch;color:var(--brown)}
 .cta-row-2{margin-top:36px}
 .cta-micro{font-size:14.5px;color:var(--muted);line-height:1.45}
 
+/* ---- join live ----
+   Only on screen during the event itself, which is exactly why it is a link and
+   not a button: on the day it has one job and the person doing it already knows
+   what they came for, and on every other day it is not there at all. A second
+   button beside "Save my seat" would have offered three weeks of visitors a way
+   round the form. The prompt stays muted; the link itself takes the accent and
+   an underline, so it is findable in two seconds without competing. */
+.joinlive{margin:18px 0 0;font-size:15px;color:var(--muted)}
+.joinlive a{color:var(--gold-deep);font-weight:700;text-decoration:underline;
+  text-underline-offset:3px;text-decoration-thickness:1.5px}
+.joinlive a:hover{color:var(--navy)}
+/* The final card sits on a dark ground, where --muted has no contrast. */
+.finalcard .joinlive{color:var(--chalk)}
+.finalcard .joinlive a{color:var(--gold)}
+.finalcard .joinlive a:hover{color:var(--white)}
+
 /* ---- bullets ---- */
 .bullets{list-style:none;margin:0;padding:0}
 .bullets li{display:flex;gap:14px;padding:17px 0;border-bottom:1px solid var(--line-2);font-size:17px;line-height:1.5;color:var(--brown)}

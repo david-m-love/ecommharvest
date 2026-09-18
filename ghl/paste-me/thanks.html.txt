@@ -22,12 +22,12 @@
 
   <div class="ech-addcal">
     <a class="ech-btn ech-btn-ghost" href="https://ecommharvest.com/masterclass.ics">Add to calendar (.ics)</a>
-    <a class="ech-btn ech-btn-ghost" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Your+Q4+Profit+Playbook%2C+Built+in+90+Minutes&dates=20260924T170000Z%2F20260924T183000Z&details=Free+90-minute+masterclass+with+David+Love+and+Derek+Crimin%2C+plus+live+Q%26A.+The+join+link+is+in+your+confirmation+email." target="_blank" rel="noopener">Add to Google Calendar</a>
+    <a class="ech-btn ech-btn-ghost" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Your+Q4+Profit+Playbook%2C+Built+in+60+Minutes&dates=20260924T170000Z%2F20260924T183000Z&details=Free+60-minute+masterclass+with+David+Love+and+Derek+Crimin%2C+plus+live+Q%26A.+The+join+link+is+in+your+confirmation+email." target="_blank" rel="noopener">Add to Google Calendar</a>
   </div>
 
   <div class="ech-nextsteps">
     <p class="ech-eyebrow">Before September 24</p>
-    <p class="ech-leadin">Two things that will make the 90 minutes far more useful:</p>
+    <p class="ech-leadin">Two things that will make the 60 minutes far more useful:</p>
     <ul class="ech-bullets">
       <li><span class="ech-b-t"><strong>Pull last year&rsquo;s Q4 numbers</strong> &mdash; revenue, AOV, conversion rate, and what you spent on ads. We build your plan against your real baseline, not a generic one.</span></li>
       <li><span class="ech-b-t"><strong>Write down the promotions you&rsquo;re already considering</strong> &mdash; even half-formed ones. We&rsquo;ll slot them into the calendar rather than starting from a blank page.</span></li>

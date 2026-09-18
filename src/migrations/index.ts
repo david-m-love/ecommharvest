@@ -17,6 +17,8 @@ import * as migration_20260917_193000_register_on_app_host from './20260917_1930
 import * as migration_20260917_200000_register_on_public_host from './20260917_200000_register_on_public_host';
 import * as migration_20260917_210000_no_links_left_on_ghl from './20260917_210000_no_links_left_on_ghl';
 import * as migration_20260918_120000_masterclass_mvp_copy from './20260918_120000_masterclass_mvp_copy';
+import * as migration_20260918_190000_live_join_url from './20260918_190000_live_join_url';
+import * as migration_20260918_193000_masterclass_sixty_plus_qa from './20260918_193000_masterclass_sixty_plus_qa';
 
 export const migrations = [
   {
@@ -113,5 +115,15 @@ export const migrations = [
     up: migration_20260918_120000_masterclass_mvp_copy.up,
     down: migration_20260918_120000_masterclass_mvp_copy.down,
     name: '20260918_120000_masterclass_mvp_copy',
+  },
+  {
+    up: migration_20260918_190000_live_join_url.up,
+    down: migration_20260918_190000_live_join_url.down,
+    name: '20260918_190000_live_join_url',
+  },
+  {
+    up: migration_20260918_193000_masterclass_sixty_plus_qa.up,
+    down: migration_20260918_193000_masterclass_sixty_plus_qa.down,
+    name: '20260918_193000_masterclass_sixty_plus_qa',
   },
 ];

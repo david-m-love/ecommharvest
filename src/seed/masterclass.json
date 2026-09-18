@@ -15,8 +15,8 @@
       "props": {
         "id": "seed-hero-1",
         "eyebrow": "Free live masterclass for LDS e-commerce founders",
-        "heading": "Your Q4 Profit Playbook, Built in 90 Minutes.",
-        "deck": "A live working session, not a webinar you watch.",
+        "heading": "Your Q4 Profit Playbook, Built in 60 Minutes.",
+        "deck": "A 60-minute working masterclass + 30 minutes of live Q&A.",
         "body": "Walk in with Q4 still scattered across notes, ideas and half-finished plans. Walk out with the framework, the priorities and a working plan for the biggest buying season of the year.\n\nWe'll map the offers, promotions, traffic, email and SMS, and conversion priorities that belong in your Q4 plan — while making sure the numbers behind them actually work.",
         "when": "Thursday, September 24 · 11:00 AM Mountain Time (1:00 PM ET / 10:00 AM PT)",
         "ctaLabel": "Save my seat →",
@@ -117,9 +117,9 @@
       "type": "Prose",
       "props": {
         "id": "seed-prose-6",
-        "eyebrow": "What “built in 90 minutes” means",
-        "heading": "90 minutes with us to build it. 90 minutes on your own to finish it.",
-        "body": "We're going to build the framework and make the important decisions together, live. We'll move quickly, and you'll complete much of the workbook in the room.\n\nThen block another 90 minutes in your calendar for the same week to finish anything you couldn't answer on the day. That's the honest version — and it's still the fastest your Q4 plan has ever come together.",
+        "eyebrow": "How the time works",
+        "heading": "60 minutes to build it. 30 minutes to ask us anything.",
+        "body": "We move quickly through the framework and the major Q4 decisions. You may complete much of the workbook live, and we'll show you exactly what to finish afterward.\n\nWe won't teach you Ads Manager or write your emails in the room. We'll work out which flows need to exist, which creative you need and what you can afford to pay for a customer — enough understanding and structure to go and do the work well.\n\nThen David and Derek stay for up to 30 minutes of live Q&A. Bring the thing that's keeping you stuck: ads, email, offers, conversion, profitability, your promotional calendar, anything Q4.",
         "background": "white"
       }
     },
@@ -198,9 +198,9 @@
       "type": "CtaCard",
       "props": {
         "id": "seed-ctacard-11",
-        "eyebrow": "Free live masterclass · Thursday, September 24 · 11:00 AM Mountain Time",
-        "heading": "Your Q4 Profit Playbook, Built in 90 Minutes.",
-        "body": "Join David Love and Derek Crimin for a practical working session built for LDS e-commerce founders preparing for Q4. You'll get the workbook, work through your strategy with us live, and leave knowing exactly what to finish next.",
+        "eyebrow": "Thursday, September 24 · 11:00 AM Mountain Time · free",
+        "heading": "Your Q4 Profit Playbook, Built in 60 Minutes.",
+        "body": "A 60-minute working masterclass + 30 minutes of live Q&A, with David Love and Derek Crimin. Built for LDS e-commerce founders preparing for Q4. You'll get the workbook, work through your strategy with us live, and leave knowing exactly what to finish next.",
         "ctaLabel": "Save my seat →",
         "ctaHref": "https://ecommharvest.com/masterclass/register",
         "note": "Free to attend. Replay sent to every registrant."

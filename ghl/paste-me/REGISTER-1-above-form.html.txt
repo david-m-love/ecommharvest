@@ -146,7 +146,16 @@
   padding:9px 18px!important;border-radius:999px!important;margin:0 0 26px!important}.ech-scope .ech-badge::before{content:""!important;width:7px!important;height:7px!important;border-radius:50%!important;background:var(--gold)!important;flex:none!important}.ech-scope h1{font-weight:800!important;font-size:clamp(36px,4.9vw,56px)!important;line-height:1.04!important;letter-spacing:-.042em!important;margin:0 0 24px!important;max-width:17ch!important}.ech-scope h2{font-weight:800!important;font-size:clamp(27px,3.3vw,38px)!important;line-height:1.1!important;letter-spacing:-.035em!important;margin:0 0 20px!important}.ech-scope .ech-lede{font-size:19.5px!important;line-height:1.55!important;letter-spacing:-.012em!important;color:var(--muted)!important;max-width:62ch!important;margin:0 0 32px!important}.ech-scope p{margin:0 0 20px!important;max-width:66ch!important;color:var(--brown)!important}.ech-scope .ech-leadin{font-size:18px!important;font-weight:700!important;letter-spacing:-.018em!important;color:var(--ink)!important;margin:0 0 10px!important;max-width:60ch!important}.ech-scope .ech-plus{font-size:16.5px!important;color:var(--brown)!important;margin:26px 0 0!important;padding:18px 22px!important;background:var(--cream)!important;border-radius:var(--r-sm)!important;max-width:none!important}.ech-scope .ech-plus strong{color:var(--navy)!important}
 
 /* ---- cta ---- */
-.ech-scope .ech-cta-row{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:20px!important}.ech-scope .ech-cta-row-2{margin-top:36px!important}.ech-scope .ech-cta-micro{font-size:14.5px!important;color:var(--muted)!important;line-height:1.45!important}
+.ech-scope .ech-cta-row{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:20px!important}.ech-scope .ech-cta-row-2{margin-top:36px!important}.ech-scope .ech-cta-micro{font-size:14.5px!important;color:var(--muted)!important;line-height:1.45!important}/* ---- join live ----
+   Only on screen during the event itself, which is exactly why it is a link and
+   not a button: on the day it has one job and the person doing it already knows
+   what they came for, and on every other day it is not there at all. A second
+   button beside "Save my seat" would have offered three weeks of visitors a way
+   round the form. The prompt stays muted; the link itself takes the accent and
+   an underline,  so it is findable in two seconds without competing. */
+.ech-scope .ech-joinlive{margin:18px 0 0!important;font-size:15px!important;color:var(--muted)!important}.ech-scope .ech-joinlive a{color:var(--gold-deep)!important;font-weight:700!important;text-decoration:underline!important;
+  text-underline-offset:3px!important;text-decoration-thickness:1.5px!important}.ech-scope .ech-joinlive a:hover{color:var(--navy)!important}/* The final card sits on a dark ground,  where --muted has no contrast. */
+.ech-scope .ech-finalcard .ech-joinlive{color:var(--chalk)!important}.ech-scope .ech-finalcard .ech-joinlive a{color:var(--gold)!important}.ech-scope .ech-finalcard .ech-joinlive a:hover{color:var(--white)!important}
 
 /* ---- bullets ---- */
 .ech-scope .ech-bullets{list-style:none!important;margin:0!important;padding:0!important}.ech-scope .ech-bullets li{display:flex!important;gap:14px!important;padding:17px 0!important;border-bottom:1px solid var(--line-2)!important;font-size:17px!important;line-height:1.5!important;color:var(--brown)!important}.ech-scope .ech-bullets li:last-child{border-bottom:0!important}.ech-scope .ech-bullets li::before{content:""!important;width:8px!important;height:8px!important;border-radius:2px!important;background:var(--gold)!important;flex:none!important;margin-top:9px!important}.ech-scope .ech-bullets .ech-b-t{flex:1 1 auto!important;min-width:0!important}.ech-scope .ech-bullets strong{color:var(--navy)!important;font-weight:700!important}
@@ -392,7 +401,7 @@
     <div class="ech-slot-in">
       <p class="ech-badge">One step left</p>
       <h1>Save your seat.</h1>
-      <p class="ech-deck">Thursday, September 24 &middot; 11:00 AM MT &middot; 90 minutes &middot; free.</p>
+      <p class="ech-deck">Thursday, September 24 &middot; 11:00 AM MT &middot; 60 minutes &middot; free.</p>
       <p class="ech-lede">Tell us where to send the join link and your seat is held. The confirmation arrives straight away, with a reminder the day before and another an hour out &mdash; and the replay afterwards if the time doesn&rsquo;t suit.</p>
       <div class="ech-cta-row">
         <span class="ech-cta-micro">Takes about twenty seconds &mdash; the form is just below &darr;</span>

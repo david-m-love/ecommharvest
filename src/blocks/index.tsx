@@ -67,6 +67,32 @@ const Cta = ({ label, href, large }: { label?: string; href?: string; large?: bo
 }
 
 /**
+ * "Already registered? Join the live masterclass →"
+ *
+ * Deliberately a text link and not a button. Someone arriving three minutes
+ * before the start knows exactly what they are looking for and will find a link;
+ * someone arriving three weeks early is being sold to, and a second button
+ * beside "Save my seat" would give them a way past the form and cost a
+ * registration. Secondary in weight, unmissable to the person who needs it.
+ *
+ * Renders nothing at all unless the page was handed a `joinUrl` — which only
+ * happens inside the join window, and only once a link has been pasted into
+ * Site Styles. No block decides when the event is.
+ */
+const JoinLive = ({ url }: { url?: string }) =>
+  url ? (
+    <p className="joinlive">
+      Already registered?{' '}
+      <a href={url} target="_blank" rel="noopener">
+        Join the live masterclass →
+      </a>
+    </p>
+  ) : null
+
+/** What every block can read off Puck's metadata. */
+type BlockMeta = { joinUrl?: string } | undefined
+
+/**
  * Document body: paragraphs, and lists where a line starts with a dash.
  *
  * Legal text alternates between the two — "the form asks for:", then the list,
@@ -347,7 +373,7 @@ export const config: Config<Blocks> = {
       },
       defaultProps: {
         eyebrow: 'Free masterclass for LDS e-commerce founders',
-        heading: 'Your Q4 Profit Playbook, Built in 90 Minutes.',
+        heading: 'Your Q4 Profit Playbook, Built in 60 Minutes.',
         deck: '…without headaches or sacrificing family time.',
         body: 'Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, and what needs to be ready before the holiday rush.',
         when: 'Thursday, September 24 · 11:00 AM MT',
@@ -355,7 +381,7 @@ export const config: Config<Blocks> = {
         ctaHref: REGISTER_URL,
         ctaMicro: EVENT_WORKBOOK,
       },
-      render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro }) => (
+      render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro, puck }) => (
         <div className="slot hero">
           <div className="slot-in">
             {eyebrow ? <p className="badge">{eyebrow}</p> : null}
@@ -373,6 +399,13 @@ export const config: Config<Blocks> = {
                 {ctaMicro ? <span className="cta-micro">{ctaMicro}</span> : null}
               </div>
             ) : null}
+            {/*
+              Outside the `ctaLabel` test on purpose. The registration and
+              thank-you pages both use this block with no button — the form is
+              the button there — and the thank-you page is the first place a
+              registrant looks for the link on the day.
+            */}
+            <JoinLive url={(puck?.metadata as BlockMeta)?.joinUrl} />
           </div>
         </div>
       ),
@@ -798,14 +831,14 @@ export const config: Config<Blocks> = {
         note: { type: 'text', label: 'Small print under the button' },
       },
       defaultProps: {
-        eyebrow: 'Thursday, September 24 · 11:00 AM MT · free · 90 minutes',
-        heading: 'Your Q4 Profit Playbook, Built in 90 Minutes.',
+        eyebrow: 'Thursday, September 24 · 11:00 AM MT · free · 60 minutes',
+        heading: 'Your Q4 Profit Playbook, Built in 60 Minutes.',
         body: 'Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.',
         ctaLabel: 'Save my seat →',
         ctaHref: REGISTER_URL,
         note: 'Free · no card required · replay sent to every registrant',
       },
-      render: ({ eyebrow, heading, body, ctaLabel, ctaHref, note }) => (
+      render: ({ eyebrow, heading, body, ctaLabel, ctaHref, note, puck }) => (
         <div className="final-in">
           <div className="finalcard">
             {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
@@ -813,6 +846,9 @@ export const config: Config<Blocks> = {
             {body ? <p className="final-lead">{body}</p> : null}
             <Cta label={ctaLabel} href={ctaHref} large />
             {note ? <p className="formnote">{note}</p> : null}
+            {/* The other end of a long page: somebody who scrolled the whole
+                way on the morning should not have to scroll back up. */}
+            <JoinLive url={(puck?.metadata as BlockMeta)?.joinUrl} />
           </div>
         </div>
       ),
@@ -939,7 +975,7 @@ export const config: Config<Blocks> = {
         },
       },
       defaultProps: {
-        eyebrow: 'Free · 90 minutes · replay included',
+        eyebrow: 'Free · 60 minutes · replay included',
         heading: 'Save your seat.',
         body: 'Two fields and you are in. The join link arrives by email straight away.',
         formId: MASTERCLASS_FORM_ID,

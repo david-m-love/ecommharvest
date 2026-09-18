@@ -22,7 +22,13 @@
 
 /** The event, as the machines need it. Offset is MDT: UTC−6. */
 export const EVENT_START_ISO = '2026-09-24T11:00:00-06:00'
-/** 11:00 to 12:30 — the ninety minutes the headline promises, exactly. */
+/**
+ * 11:00 to 12:30 — the working session and the Q&A together.
+ *
+ * The calendar entry covers both on purpose. Ending it at noon would free
+ * everybody's diary exactly when the questions start, and the Q&A is the half a
+ * founder with a real problem actually came for.
+ */
 export const EVENT_END_ISO = '2026-09-24T12:30:00-06:00'
 
 /** The same instants in UTC, which is the only form an .ics file may use. */
@@ -54,22 +60,35 @@ export const EVENT_WHEN = `${EVENT_DAY} · ${EVENT_TIME}`
 export const EVENT_ELSEWHERE = '(1:00 PM ET / 10:00 AM PT)'
 
 /**
- * How long it is, and what "built in 90 minutes" is actually promising.
+ * How long it is, and what the number in the headline is promising.
  *
- * The number is in the headline, so it is a promise rather than a logistic, and
- * the promise has to survive the session. Ninety minutes cannot *finish* a
- * quarter's marketing, and a page that implies it will is a page whose attendees
- * leave feeling short-changed by a thing that went well.
+ * An hour and a half of wall-clock time, but **sixty** of those are the thing
+ * being sold: a working session that ends with a Q4 plan. The rest is Q&A.
  *
- * So the claim is scoped everywhere it appears: ninety minutes builds the
- * framework and makes the decisions, and the workbook is finished afterwards.
- * `EVENT_LENGTH_CLAIM` is that scoping in one line, and it is why the page can
- * keep a headline number without overpromising.
+ * That distinction is the whole reason the headline says sixty. Claiming the
+ * full running time was defensible — the event really is that long — and
+ * practically misleading, because a third of it is not building anything. A
+ * headline number that does not survive contact with the agenda is a number the
+ * audience discovers is wrong while they are sitting in the room.
+ *
+ * Sixty is also the easier ask. An hour is a meeting somebody can find; an hour
+ * and a half is an afternoon they have to protect. The Q&A then reads as more
+ * than was promised rather than as padding inside it.
  */
-export const EVENT_LENGTH = '90 minutes'
-export const EVENT_LENGTH_LINE = '90 minutes'
-export const EVENT_LENGTH_CLAIM =
-  '90 minutes with us to build it. 90 minutes on your own to finish it.'
+export const EVENT_LENGTH = '60 minutes'
+export const EVENT_LENGTH_LINE = '60 minutes'
+export const EVENT_QA_LENGTH = '30 minutes'
+
+/**
+ * The format, in one line, wherever it needs saying.
+ *
+ * Kept as a single string because it is the sentence that has to be identical in
+ * six places — the hero, the final card, the calendar file, the structured data,
+ * the registration page and the confirmation. Six hand-typed variants is how a
+ * page ends up implying three different agendas.
+ */
+export const EVENT_FORMAT = '60-minute working masterclass + 30 minutes of live Q&A'
+export const EVENT_LENGTH_CLAIM = '60 minutes to build it. 30 minutes to ask us anything.'
 
 /**
  * The workbook.
@@ -89,7 +108,38 @@ export const EVENT_WORKBOOK = 'Free live training. Workbook included.'
  * session is actually about, and the allowable-acquisition-cost segment only
  * makes sense under that word.
  */
-export const EVENT_TITLE = 'Your Q4 Profit Playbook, Built in 90 Minutes'
+export const EVENT_TITLE = 'Your Q4 Profit Playbook, Built in 60 Minutes'
+
+/**
+ * When the "join the live masterclass" link appears, and when it stops.
+ *
+ * **Absolute instants, so the visitor's clock is never consulted.** These carry
+ * the −06:00 offset Mountain Time is actually on that day, and comparing two
+ * `Date`s compares moments, not calendar readings — so a visitor in London and a
+ * visitor in Denver see the link appear at the same instant, with no timezone
+ * conversion anywhere in the code. That is the whole reason there is no
+ * `America/Denver` string in this file: the arithmetic that would need it has
+ * already been done, once, here.
+ *
+ * Half an hour early, because people arrive early for things they paid
+ * attention to. Two hours after the start, because the expensive failure is the
+ * person who joins at 12:10 and finds the link gone — not the person who finds
+ * it still there at 12:55.
+ */
+export const JOIN_OPENS_ISO = '2026-09-24T10:30:00-06:00'
+export const JOIN_CLOSES_ISO = '2026-09-24T13:00:00-06:00'
+
+/**
+ * Whether the join link should be on the page right now.
+ *
+ * Takes `now` so it can be tested at a specific moment rather than only at the
+ * moment the test runs — which for a window that opens once, on one morning, is
+ * the difference between a test and a coin toss.
+ */
+export const isJoinWindowOpen = (now: Date = new Date()): boolean => {
+  const time = now.getTime()
+  return time >= Date.parse(JOIN_OPENS_ISO) && time < Date.parse(JOIN_CLOSES_ISO)
+}
 
 /**
  * The GoHighLevel form that takes registrations.
