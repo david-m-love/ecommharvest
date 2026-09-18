@@ -98,9 +98,9 @@
       "type": "CtaCard",
       "props": {
         "id": "seed-ctacard-6",
-        "eyebrow": "Free · 60 minutes, plus live Q&A · Thursday, September 24",
-        "heading": "Your Q4 Revenue Playbook, Built in 60 Minutes.",
-        "ctaLabel": "Save my seat",
+        "eyebrow": "Free · 90 minutes · Thursday, September 24",
+        "heading": "Your Q4 Profit Playbook, Built in 90 Minutes.",
+        "ctaLabel": "Save my seat →",
         "ctaHref": "/masterclass/register"
       }
     },

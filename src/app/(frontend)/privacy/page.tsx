@@ -55,7 +55,7 @@ function HandBuiltPrivacyPage() {
         <p className="updated">Last updated: 19 August 2026</p>
         <div className="callout"><p><strong>Draft for review.</strong> This document was prepared as a starting point and has not been reviewed by a lawyer. Confirm the bracketed details and have counsel check it before launch.</p></div>
 
-        <p>This policy explains what we collect when you register for the Q4 Revenue Playbook masterclass, why we collect it, who it is shared with, and how to get it removed. It covers this website and the emails we send about the masterclass.</p>
+        <p>This policy explains what we collect when you register for the Q4 Profit Playbook masterclass, why we collect it, who it is shared with, and how to get it removed. It covers this website and the emails we send about the masterclass.</p>
         <p>The site is operated by <strong>Love Your Marketing LLC</strong>, an Idaho limited liability company based in Rexburg, Idaho, USA, trading as <strong>eCommHarvest</strong>. Questions about anything below go to <a href="mailto:privacy@ecommharvest.com">privacy@ecommharvest.com</a>.</p>
 
         <h2>What we collect</h2>

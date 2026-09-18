@@ -8,7 +8,7 @@ import { siteMetadata } from '@/lib/site-styles'
 
 const FALLBACK: Metadata = {
   title: 'Terms & Conditions',
-  description: 'Terms and conditions for the eCommHarvest Q4 Revenue Playbook masterclass.',
+  description: 'Terms and conditions for the eCommHarvest Q4 Profit Playbook masterclass.',
   alternates: { canonical: '/terms' },
 }
 
@@ -55,10 +55,10 @@ function HandBuiltTermsPage() {
         <p className="updated">Last updated: 19 August 2026</p>
         <div className="callout"><p><strong>Draft for review.</strong> This document was prepared as a starting point and has not been reviewed by a lawyer. Confirm the bracketed details and have counsel check it before launch.</p></div>
 
-        <p>These terms apply to this website and to the free Q4 Revenue Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by <strong>Love Your Marketing LLC</strong>, an Idaho limited liability company, trading as <strong>eCommHarvest</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;).</p>
+        <p>These terms apply to this website and to the free Q4 Profit Playbook masterclass on 3 September 2026. By registering or attending, you agree to them. The site and event are operated by <strong>Love Your Marketing LLC</strong>, an Idaho limited liability company, trading as <strong>eCommHarvest</strong> (&ldquo;we&rdquo;, &ldquo;us&rdquo;).</p>
 
         <h2>What you are registering for</h2>
-        <p>A free online masterclass of approximately 60 minutes, plus a live question-and-answer session, presented live by David Love with special guest Derek Crimin, hosted in partnership with Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE. Registration is free and no payment details are required.</p>
+        <p>A free online masterclass of approximately 90 minutes, plus a live question-and-answer session, presented live by David Love with special guest Derek Crimin, hosted in partnership with Tiny 3D Temples, B.O.M.Socks, and Come Follow Me FHE. Registration is free and no payment details are required.</p>
         <p>We will send a replay to registrants after the event. We aim to run the session as scheduled, but we may change the date, time, running order, presenters, or content, or cancel the event. If we cancel, we will tell registrants by email.</p>
         <p>During the session we may describe our paid services. You are never obliged to buy anything.</p>
 

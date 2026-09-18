@@ -1,7 +1,7 @@
 import {
   EVENT_ELSEWHERE,
+  EVENT_LENGTH_CLAIM,
   EVENT_LENGTH_LINE,
-  EVENT_QA,
   EVENT_WHEN,
   MASTERCLASS_FORM_ID,
   REGISTER_PATH,
@@ -65,10 +65,10 @@ export const REGISTER_PAGE = {
       type: 'Hero',
       props: {
         id: 'reg-heading-1',
-        eyebrow: `Free · ${EVENT_LENGTH_LINE} · replay included`,
+        eyebrow: `Free · ${EVENT_LENGTH_LINE} · workbook included`,
         heading: 'Save your seat.',
-        deck: 'One hour, live, and you leave with your Q4 mapped out — then stay on for the Q&A.',
-        body: 'The replay goes to everyone who registers, so book it even if the time is awkward.',
+        deck: 'Ninety minutes, live, and you leave with your Q4 plan built.',
+        body: 'The workbook and the replay go to everyone who registers, so book it even if the time is awkward.',
         when: `${EVENT_WHEN} ${EVENT_ELSEWHERE}`,
         ctaLabel: '',
         ctaHref: '',
@@ -103,26 +103,28 @@ export const REGISTER_PAGE = {
           { lead: 'Your promotional calendar', text: 'every promotion, dated, on one page' },
           { lead: 'Your offer strategy', text: 'what the offer is, beyond a discount' },
           { lead: 'Your email + SMS roadmap', text: 'the campaigns, and the flows that must exist first' },
-          { lead: 'Your paid social plan', text: 'what to spend, and the rule for when it goes up' },
-          { lead: 'Then your questions', text: 'live Q&A with David and Derek, straight after the hour' },
+          { lead: 'Your traffic + creative priorities', text: 'who to reach, and what the creative has to say' },
+          { lead: 'Your numbers', text: 'what you can afford to pay to acquire a customer' },
         ],
       },
     },
     {
       /**
-       * The Q&A gets its own block rather than a clause in the hero.
+       * What "built in 90 minutes" is actually promising.
        *
-       * It is the half of the session a registrant is most likely to skip and
-       * most likely to benefit from, and the thing no replay can give them. Said
-       * once in passing it reads as an afterthought; said here, with the two
-       * names on it, it is a second reason to turn up live.
+       * The number is in the headline, so somebody arriving here has already
+       * read it as a promise. Ninety minutes cannot finish a quarter's
+       * marketing, and the page that lets them believe it will is the page whose
+       * attendees leave disappointed by a session that went well. Said plainly
+       * on the way in, the same number reads as confidence rather than a claim
+       * about to be tested.
        */
       type: 'Prose',
       props: {
-        id: 'reg-qa-6',
-        eyebrow: 'After the hour',
-        heading: 'Bring a question. That is the part you cannot get from the replay.',
-        body: EVENT_QA,
+        id: 'reg-scope-6',
+        eyebrow: 'What to expect',
+        heading: EVENT_LENGTH_CLAIM,
+        body: 'We build the framework and make the important decisions together, live. You will fill in much of the workbook in the room, and block another 90 minutes that week to finish anything left over.',
         background: 'wash',
       },
     },
@@ -150,7 +152,7 @@ export const THANKS_PAGE = {
         id: 'thx-heading-1',
         eyebrow: 'You are registered',
         heading: 'Your seat is saved.',
-        deck: 'The join link is in your inbox now.',
+        deck: 'The join link and your workbook are in your inbox now.',
         body: 'Everyone who registers gets the replay too, so a clash on the day is not a problem.',
         when: `${EVENT_WHEN} ${EVENT_ELSEWHERE}`,
         ctaLabel: '',
@@ -169,7 +171,7 @@ export const THANKS_PAGE = {
         id: 'thx-card-2',
         eyebrow: 'Do this now, it takes ten seconds',
         heading: 'Check your email and move it to your inbox.',
-        body: 'Look for “Your Q4 Revenue Playbook seat is confirmed”. If it landed in Promotions or Spam, drag it to your main inbox — that is what tells your email provider to let the reminders and the join link through on the day.',
+        body: 'Look for “Your Q4 Profit Playbook seat is confirmed”. If it landed in Promotions or Spam, drag it to your main inbox — that is what tells your email provider to let the reminders and the join link through on the day.',
         kicker: 'No email after five minutes? Check spam, then write to hello@ecommharvest.com and we will sort it.',
       },
     },
@@ -182,7 +184,7 @@ export const THANKS_PAGE = {
         bullets: [
           { lead: 'Add it to your calendar', text: 'the confirmation email has the link' },
           { lead: 'Bring your quarter', text: 'whatever the plan currently lives in — notes, a spreadsheet, your head' },
-          { lead: 'Bring a question', text: 'we stay on after the hour for Q&A, and the specific ones get the best answers' },
+          { lead: 'Block the follow-up', text: 'another 90 minutes that week to finish the workbook while it is fresh' },
         ],
       },
     },

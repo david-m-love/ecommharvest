@@ -10,7 +10,7 @@ import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
 
 const FALLBACK: Metadata = {
   title: 'You’re registered',
-  description: `Your seat is saved for the Q4 Revenue Playbook masterclass on ${EVENT_WHEN}.`,
+  description: `Your seat is saved for the Q4 Profit Playbook masterclass on ${EVENT_WHEN}.`,
   // Never indexed: a confirmation page in search results is a page people reach
   // without having registered.
   robots: { index: false, follow: false },

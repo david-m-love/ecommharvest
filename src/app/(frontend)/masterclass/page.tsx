@@ -4,14 +4,14 @@ import React from 'react'
 
 import { config } from '@/blocks'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_END_ISO, EVENT_START_ISO, REGISTER_URL } from '@/lib/event'
+import { EVENT_END_ISO, EVENT_START_ISO, EVENT_TITLE, REGISTER_URL } from '@/lib/event'
 import { siteMetadata } from '@/lib/site-styles'
 import { readGhlBlock } from '@/lib/ghl-block'
 
 const FALLBACK: Metadata = {
-  title: 'Your Q4 Revenue Playbook, Built in 60 Minutes',
+  title: EVENT_TITLE,
   description:
-    'Thursday, September 24 at 11:00 AM MT. A free 60-minute masterclass for LDS e-commerce founders. Build your Q4 promotional calendar, offers, email and SMS plan in one sitting — without headaches or sacrificing family time.',
+    'Thursday, September 24 at 11:00 AM Mountain Time. A free 90-minute working session for LDS e-commerce founders: build your Q4 promotional calendar, offers, email and SMS plan, traffic priorities and the numbers behind them.',
   alternates: { canonical: '/masterclass' },
 }
 
@@ -48,9 +48,9 @@ export async function generateMetadata(): Promise<Metadata> {
 const EVENT_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'Event',
-  name: 'Your Q4 Revenue Playbook, Built in 60 Minutes',
+  name: EVENT_TITLE,
   description:
-    'A free 60-minute masterclass for LDS e-commerce founders. Build your Q4 promotional calendar, offers, and email and SMS plan in one sitting.',
+    'A free 90-minute working session for LDS e-commerce founders. Build your Q4 promotional calendar, offer strategy, email and SMS plan, traffic priorities and the numbers behind them — with a workbook to finish afterwards.',
   startDate: EVENT_START_ISO,
   endDate: EVENT_END_ISO,
   eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',

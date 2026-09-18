@@ -2,7 +2,7 @@ import type { Config, Data } from '@measured/puck'
 import React from 'react'
 
 import { BlockImage } from './BlockImage'
-import { MASTERCLASS_FORM_ID, REGISTER_URL } from '@/lib/event'
+import { EVENT_WORKBOOK, MASTERCLASS_FORM_ID, REGISTER_URL } from '@/lib/event'
 import { isExternalHref, toHref } from '@/lib/href'
 import type { RecentPost } from '@/lib/site-styles'
 
@@ -347,13 +347,13 @@ export const config: Config<Blocks> = {
       },
       defaultProps: {
         eyebrow: 'Free masterclass for LDS e-commerce founders',
-        heading: 'Your Q4 Revenue Playbook, Built in 60 Minutes.',
+        heading: 'Your Q4 Profit Playbook, Built in 90 Minutes.',
         deck: '…without headaches or sacrificing family time.',
         body: 'Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, and what needs to be ready before the holiday rush.',
         when: 'Thursday, September 24 · 11:00 AM MT',
-        ctaLabel: 'Save my seat',
+        ctaLabel: 'Save my seat →',
         ctaHref: REGISTER_URL,
-        ctaMicro: 'Free · 60 minutes, plus live Q&A · replay available',
+        ctaMicro: EVENT_WORKBOOK,
       },
       render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro }) => (
         <div className="slot hero">
@@ -523,10 +523,10 @@ export const config: Config<Blocks> = {
         kicker: { type: 'text', label: 'Closing line, emphasised' },
       },
       defaultProps: {
-        eyebrow: 'Improving the inputs',
-        heading: 'We spend all our attention on the output. What about the person who has to produce it?',
-        body: 'Luke says that Jesus “increased in wisdom and stature, and in favour with God and man.” Growth that was intellectual, physical, spiritual and relational — all of it before the ministry began.\n\nThere is a parallel in that for founders. Those things aren’t separate from entrepreneurship. They are what equips us for it.',
-        kicker: 'Strengthen the inputs, and you are equipped for what the journey asks of you.',
+        eyebrow: 'A word from Derek',
+        heading: 'The business isn’t the only thing you’re building.',
+        body: 'Q4 can expose weaknesses in your marketing. It can also expose weaknesses in the founder — long hours, more decisions and more pressure make it easy for the business to consume everything else that matters.',
+        kicker: 'The kind of business you build is influenced by the kind of person you’re becoming while you build it.',
       },
       render: ({ eyebrow, heading, body, kicker }) => (
         <div className="slot">
@@ -573,7 +573,7 @@ export const config: Config<Blocks> = {
           { lead: 'Your offer strategy', text: '— bundles, tiered discounts, gifts with purchase, and ways to sell beyond “25% off”' },
           { lead: 'Your email + SMS roadmap', text: '— the campaigns and automated flows that support the quarter' },
         ],
-        ctaLabel: 'Save my seat',
+        ctaLabel: 'Save my seat →',
         ctaHref: REGISTER_URL,
         ctaMicro: 'Thursday, September 24 · 11:00 AM MT',
       },
@@ -689,7 +689,16 @@ export const config: Config<Blocks> = {
             {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
             {heading ? <h2>{heading}</h2> : null}
             <Paragraphs text={body} className="lede" />
-            <div className={`cols-${Math.min(Math.max((cards || []).length, 1), 4)}`}>
+            {/*
+              One row up to four cards, three columns beyond that.
+
+              The old rule clamped to four, so five cards rendered as four plus a
+              lone orphan and six as four plus two — a grid that looks like a
+              mistake rather than a layout. Three columns divide six evenly and
+              leave five as 3 + 2, which reads as a deliberate short last row.
+              Everything collapses to a single column on a phone regardless.
+            */}
+            <div className={`cols-${(cards || []).length > 4 ? 3 : Math.max((cards || []).length, 1)}`}>
               {(cards || []).map((card, i) => (
                 <div className="card" key={i}>
                   {card.title ? <h3>{card.title}</h3> : null}
@@ -727,7 +736,7 @@ export const config: Config<Blocks> = {
       },
       defaultProps: {
         eyebrow: 'Who you’re learning from',
-        heading: 'Live with David Love and special guest Derek Crimin',
+        heading: 'Meet your hosts',
         people: [
           { label: 'Presenter', name: 'David Love', title: 'E-commerce growth strategist', monogram: 'DL', body: 'David spends his days on the unglamorous side of e-commerce growth — offer strategy, email and SMS, paid social, and the conversion work that turns existing traffic into more orders.' },
           { label: 'Special guest', name: 'Derek Crimin', title: 'Owner, B.O.M.Socks', monogram: 'DC', body: 'Derek owns and operates B.O.M.Socks, so he walks into Q4 as an operator rather than a theorist — same inventory calls, same ad costs, same deadline you’re working against.' },
@@ -789,10 +798,10 @@ export const config: Config<Blocks> = {
         note: { type: 'text', label: 'Small print under the button' },
       },
       defaultProps: {
-        eyebrow: 'Thursday, September 24 · 11:00 AM MT · free · 60 minutes, plus live Q&A',
-        heading: 'Your Q4 Revenue Playbook, Built in 60 Minutes.',
+        eyebrow: 'Thursday, September 24 · 11:00 AM MT · free · 90 minutes',
+        heading: 'Your Q4 Profit Playbook, Built in 90 Minutes.',
         body: 'Two fields and you’re in. We’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.',
-        ctaLabel: 'Save my seat',
+        ctaLabel: 'Save my seat →',
         ctaHref: REGISTER_URL,
         note: 'Free · no card required · replay sent to every registrant',
       },
@@ -930,7 +939,7 @@ export const config: Config<Blocks> = {
         },
       },
       defaultProps: {
-        eyebrow: 'Free · 60 minutes, plus live Q&A · replay included',
+        eyebrow: 'Free · 90 minutes · replay included',
         heading: 'Save your seat.',
         body: 'Two fields and you are in. The join link arrives by email straight away.',
         formId: MASTERCLASS_FORM_ID,

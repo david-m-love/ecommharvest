@@ -22,18 +22,7 @@
 
 /** The event, as the machines need it. Offset is MDT: UTC−6. */
 export const EVENT_START_ISO = '2026-09-24T11:00:00-06:00'
-/**
- * Half past twelve, for a sixty-minute masterclass.
- *
- * Not a contradiction: the taught hour runs 11:00–12:00 and the Q&A follows it.
- * The calendar entry has to cover both or it releases people's diaries at noon
- * and the room empties exactly when the questions start — which is the half
- * anyone who came with a real problem is actually there for.
- *
- * Thirty minutes is what gets blocked, not what gets promised. The promise is
- * the hour; running long on questions is a good outcome, and nobody complains
- * that an event they wanted ended late.
- */
+/** 11:00 to 12:30 — the ninety minutes the headline promises, exactly. */
 export const EVENT_END_ISO = '2026-09-24T12:30:00-06:00'
 
 /** The same instants in UTC, which is the only form an .ics file may use. */
@@ -49,8 +38,12 @@ export const EVENT_END_UTC = '20260924T183000Z'
  * the old one still there, at the hour they will actually turn up.
  */
 export const EVENT_UID = 'q4-masterclass-2026-09-03@ecommharvest'
-/** Raise this by one whenever the time changes, or calendars ignore the update. */
-export const EVENT_SEQUENCE = 2
+/**
+ * Raise this by one whenever the time changes, or calendars ignore the update.
+ * Raised for the rename too — an entry still reading "Q4 Revenue Playbook" in
+ * somebody's calendar is the old name of the thing they are about to attend.
+ */
+export const EVENT_SEQUENCE = 3
 
 /** The wording, as people read it. */
 export const EVENT_DAY = 'Thursday, September 24'
@@ -61,26 +54,42 @@ export const EVENT_WHEN = `${EVENT_DAY} · ${EVENT_TIME}`
 export const EVENT_ELSEWHERE = '(1:00 PM ET / 10:00 AM PT)'
 
 /**
- * How long it is, and what happens afterwards.
+ * How long it is, and what "built in 90 minutes" is actually promising.
  *
- * Two constants rather than one sentence, because they do different jobs. The
- * length is a *reason to come* — an hour is a meeting, an hour and a half is an
- * afternoon, and shortening it raises the number of people who register.
+ * The number is in the headline, so it is a promise rather than a logistic, and
+ * the promise has to survive the session. Ninety minutes cannot *finish* a
+ * quarter's marketing, and a page that implies it will is a page whose attendees
+ * leave feeling short-changed by a thing that went well.
  *
- * The Q&A is deliberately never written as "optional". Optional is a word that
- * gives permission to leave, and it describes the half of the session where the
- * founder with a real problem gets it answered by name. It is written as a
- * second thing you get, in the same breath as the first: *60 minutes, plus live
- * Q&A*. Everything the audience may leave early from is simply not mentioned as
- * leavable.
+ * So the claim is scoped everywhere it appears: ninety minutes builds the
+ * framework and makes the decisions, and the workbook is finished afterwards.
+ * `EVENT_LENGTH_CLAIM` is that scoping in one line, and it is why the page can
+ * keep a headline number without overpromising.
  */
-export const EVENT_LENGTH = '60 minutes'
-export const EVENT_LENGTH_LINE = '60 minutes, plus live Q&A'
-export const EVENT_QA =
-  'Stay on after the hour for live Q&A with David Love and Derek Crimin. ' +
-  'Ask anything about Q4 — your offer, your calendar, your ad account, your inventory call.'
+export const EVENT_LENGTH = '90 minutes'
+export const EVENT_LENGTH_LINE = '90 minutes'
+export const EVENT_LENGTH_CLAIM =
+  '90 minutes with us to build it. 90 minutes on your own to finish it.'
 
-export const EVENT_TITLE = 'Your Q4 Revenue Playbook, Built in 60 Minutes'
+/**
+ * The workbook.
+ *
+ * Named here because it is the one thing on the page that is *given* rather than
+ * taught, and it is what makes the running time credible — the session is a
+ * working session, and the workbook is the work. Every mention of it is a
+ * promise somebody has to keep on the day.
+ */
+export const EVENT_WORKBOOK = 'Free live training. Workbook included.'
+
+/**
+ * "Profit", not "Revenue".
+ *
+ * It was the Q4 Revenue Playbook. Revenue is the number that feels like success
+ * and the one a founder can buy with a discount; profit is the number the
+ * session is actually about, and the allowable-acquisition-cost segment only
+ * makes sense under that word.
+ */
+export const EVENT_TITLE = 'Your Q4 Profit Playbook, Built in 90 Minutes'
 
 /**
  * The GoHighLevel form that takes registrations.

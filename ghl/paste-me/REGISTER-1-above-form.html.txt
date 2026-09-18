@@ -392,7 +392,7 @@
     <div class="ech-slot-in">
       <p class="ech-badge">One step left</p>
       <h1>Save your seat.</h1>
-      <p class="ech-deck">Thursday, September 24 &middot; 11:00 AM MT &middot; 60 minutes, plus live Q&amp;A &middot; free.</p>
+      <p class="ech-deck">Thursday, September 24 &middot; 11:00 AM MT &middot; 90 minutes &middot; free.</p>
       <p class="ech-lede">Tell us where to send the join link and your seat is held. The confirmation arrives straight away, with a reminder the day before and another an hour out &mdash; and the replay afterwards if the time doesn&rsquo;t suit.</p>
       <div class="ech-cta-row">
         <span class="ech-cta-micro">Takes about twenty seconds &mdash; the form is just below &darr;</span>

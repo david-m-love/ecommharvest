@@ -14,14 +14,14 @@
       "type": "Hero",
       "props": {
         "id": "seed-hero-1",
-        "eyebrow": "Free masterclass for LDS e-commerce founders",
-        "heading": "Your Q4 Revenue Playbook, Built in 60 Minutes.",
-        "deck": "…without headaches or sacrificing family time.",
-        "body": "Walk in with Q4 still scattered across notes, ideas, and half-finished plans. Walk out knowing what you’re promoting, when you’re promoting it, how you’ll structure the offers, and what email, SMS, creative, and conversion systems need to be ready before the holiday rush.",
-        "when": "Thursday, September 24 · 11:00 AM MT (1:00 PM ET / 10:00 AM PT)",
-        "ctaLabel": "Save my seat",
+        "eyebrow": "Free live masterclass for LDS e-commerce founders",
+        "heading": "Your Q4 Profit Playbook, Built in 90 Minutes.",
+        "deck": "A live working session, not a webinar you watch.",
+        "body": "Walk in with Q4 still scattered across notes, ideas and half-finished plans. Walk out with the framework, the priorities and a working plan for the biggest buying season of the year.\n\nWe'll map the offers, promotions, traffic, email and SMS, and conversion priorities that belong in your Q4 plan — while making sure the numbers behind them actually work.",
+        "when": "Thursday, September 24 · 11:00 AM Mountain Time (1:00 PM ET / 10:00 AM PT)",
+        "ctaLabel": "Save my seat →",
         "ctaHref": "https://ecommharvest.com/masterclass/register",
-        "ctaMicro": "Free · 60 minutes, plus live Q&A · replay available"
+        "ctaMicro": "Free live training. Workbook included."
       }
     },
     {
@@ -49,162 +49,147 @@
       }
     },
     {
-      "type": "DarkCard",
+      "type": "Prose",
       "props": {
-        "id": "seed-darkcard-3",
-        "eyebrow": "Improving the inputs",
-        "heading": "We spend all our attention on the output. What about the person who has to produce it?",
-        "body": "Luke says that Jesus “increased in wisdom and stature, and in favour with God and man.” We don’t know everything He was doing through those years of preparation, but the pattern is plain enough: growth that was intellectual, physical, spiritual and relational — all of it before the ministry began.\n\nThere is a parallel in that for founders. We spend nearly all of our attention on the output — revenue, growth, leadership, strategy, decisions, execution — and very little on developing the person who has to produce it. Are we still growing in wisdom? Are we taking care of our physical health and our energy? Are we staying spiritually grounded and connected to God? Are we strengthening the relationships and the people around us?\n\nThose things aren’t separate from entrepreneurship. They are part of what equips us for it. Building a company is a roller coaster, and you hear a great deal about the wins, the exits and the breakthroughs — far less about the fear, the losses, the difficult decisions, the uncertainty, and the seasons where things simply don’t work. Those seasons come.\n\nSo part of preparing to be a founder, and part of lasting as one, is asking: what am I doing now to become the kind of person who can carry what this journey is going to require of me? When your spiritual life, your physical health, your mental and emotional wellbeing, your wisdom and your relationships are being strengthened on purpose, you are far better equipped to persevere in faith, stay clearheaded under pressure, make the hard decisions, and keep moving forward when it gets difficult.",
-        "kicker": "That is where David and Derek open the masterclass — before a single tactic."
+        "id": "seed-prose-3",
+        "eyebrow": "The opportunity",
+        "heading": "Q4 is bigger than Black Friday.",
+        "body": "Customers don't suddenly become ready to buy on Black Friday morning.\n\nThroughout Q4 they're shopping for gifts, watching for offers, discovering new brands, buying things they've wanted all year — and spending money differently than they do the rest of the year.\n\nThe opportunity isn't to run a bigger discount. It's to have a better plan.",
+        "background": "white"
       }
     },
     {
       "type": "BulletList",
       "props": {
         "id": "seed-bulletlist-4",
-        "eyebrow": "What you’ll learn",
-        "leadIn": "We build it together. You leave with a plan you can execute:",
+        "eyebrow": "",
+        "leadIn": "A better plan means knowing:",
         "bullets": [
-          {
-            "lead": "Your promotional calendar",
-            "text": "— what to run, when to run it, and how the promotions build on each other"
-          },
-          {
-            "lead": "Your offer strategy",
-            "text": "— including bundles, tiered discounts, gifts with purchase, thresholds, and other ways to sell beyond “25% off”"
-          },
-          {
-            "lead": "Your AOV plan",
-            "text": "— how to use those offers to encourage bigger baskets while protecting margin"
-          },
-          {
-            "lead": "Your email + SMS roadmap",
-            "text": "— the campaigns and must-have automated flows that support the quarter"
-          },
-          {
-            "lead": "Your Meta ads plan",
-            "text": "— where paid social sits in the calendar, which offers deserve spend, and how to scale without bidding against everyone else on the same three days"
-          },
-          {
-            "lead": "Your Q4 creative plan",
-            "text": "— what your ads need to communicate and the creative you’ll need before you scale traffic"
-          },
-          {
-            "lead": "Your pre-Q4 fix list",
-            "text": "— the conversion and retention pieces to tighten before pouring more money into Meta"
-          },
-          {
-            "lead": "Your build-by date",
-            "text": "— what has to be finished before Thanksgiving so December runs on automation instead of your evenings"
-          },
-          {
-            "lead": "Then your questions, answered live",
-            "text": "— stay on after the hour for Q&A with David and Derek. Ask anything about Q4: your offer, your calendar, your ad account, the inventory call you’re putting off"
-          }
+          { "lead": "What", "text": "you're promoting" },
+          { "lead": "Who", "text": "you're promoting it to" },
+          { "lead": "When", "text": "you're promoting it" },
+          { "lead": "How", "text": "you're bringing people into your world" },
+          { "lead": "How", "text": "you're following up with them" },
+          { "lead": "And what", "text": "you can afford to spend to acquire them" }
         ],
-        "ctaLabel": "Save my seat",
+        "ctaLabel": "Save my seat →",
         "ctaHref": "https://ecommharvest.com/masterclass/register",
-        "ctaMicro": "Thursday, September 24 · 11:00 AM MT · replay available"
+        "ctaMicro": "That's what we're going to build together."
+      }
+    },
+    {
+      "type": "CardRow",
+      "props": {
+        "id": "seed-cardrow-5",
+        "eyebrow": "What you'll work through",
+        "heading": "Leave with a Q4 plan you can actually execute.",
+        "body": "You won't leave with 75 new marketing ideas and no idea what to do first. We'll work through the core decisions that create a strong Q4 plan — and you'll have a workbook to finish afterwards if we move faster than you can fill it in.",
+        "background": "white",
+        "cards": [
+          {
+            "title": "Your Q4 promotional calendar",
+            "body": "Map your major promotional windows so you know what you're selling, when you're selling it, and why someone should buy now."
+          },
+          {
+            "title": "Your offer strategy",
+            "body": "Go beyond “20% off everything”. Bundles, thresholds, gifts with purchase, discounts — ways to make an offer compelling without giving away margin you didn't need to."
+          },
+          {
+            "title": "Your email + SMS plan",
+            "body": "Where your major campaigns fit across the season, and how to use email and SMS to capture, nurture and convert more of the attention you're generating."
+          },
+          {
+            "title": "Your traffic + creative priorities",
+            "body": "Who you're trying to reach, what matters to them, and the messages and creative you'll need to bring qualified people into your store."
+          },
+          {
+            "title": "Your conversion priorities",
+            "body": "A simple Q4 readiness check to find the improvements worth making on your website before you pour more traffic into it."
+          },
+          {
+            "title": "Know your numbers",
+            "body": "One of the most important calculations an e-commerce founder can understand: how much you can actually afford to pay to acquire a new customer."
+          }
+        ]
       }
     },
     {
       "type": "Prose",
       "props": {
-        "id": "seed-prose-5",
-        "eyebrow": "Where paid social fits",
-        "heading": "Your Meta ads don’t need a bigger budget. They need the other two arms working.",
-        "body": "Most Q4 plans treat paid social as the entire strategy: raise the budget in November and hope it clears. But your cost per acquisition isn’t decided inside the ad account. It’s decided by what happens after the click, and after the first order.",
+        "id": "seed-prose-6",
+        "eyebrow": "What “built in 90 minutes” means",
+        "heading": "90 minutes with us to build it. 90 minutes on your own to finish it.",
+        "body": "We're going to build the framework and make the important decisions together, live. We'll move quickly, and you'll complete much of the workbook in the room.\n\nThen block another 90 minutes in your calendar for the same week to finish anything you couldn't answer on the day. That's the honest version — and it's still the fastest your Q4 plan has ever come together.",
         "background": "white"
-      }
-    },
-    {
-      "type": "FormulaBar",
-      "props": {
-        "id": "seed-formulabar-6",
-        "terms": [
-          {
-            "term": "Ads"
-          },
-          {
-            "term": "Offer"
-          },
-          {
-            "term": "Repeat"
-          }
-        ],
-        "result": "the CAC you can afford",
-        "caption": "Each arm makes the other two cheaper",
-        "note": "That compounding is the reason we build all three arms in one sitting instead of one at a time."
       }
     },
     {
       "type": "CardRow",
       "props": {
         "id": "seed-cardrow-7",
-        "background": "white",
+        "eyebrow": "A simple way to think about e-commerce growth",
+        "heading": "Good Soil × Good Seed × Consistent Nurture",
+        "body": "The framework we'll use to build your Q4 plan. Growth gets much easier to understand once you stop treating marketing as a collection of tricks.",
+        "background": "wash",
         "cards": [
           {
-            "title": "Paid social",
-            "body": "What your Q4 creative has to communicate, which offers to put spend behind, and when to scale — so you’re not paying peak CPMs for a message that was never going to convert."
+            "title": "Good soil",
+            "body": "A product people actually want, supported by an offer, a website and a customer experience that make it easy to say yes.\n\nProduct-market fit. Offer. Conversion. Economics."
           },
           {
-            "title": "Offers & AOV",
-            "body": "A stronger offer lifts conversion rate, so the same clicks buy more customers. A bigger basket means you can afford to pay more for a customer than the competitor bidding beside you."
+            "title": "Good seed",
+            "body": "The right people discovering your product, through strong creative, messaging and traffic.\n\nAudience. Creative. Meta. Organic. Partnerships."
           },
           {
-            "title": "Email & SMS",
-            "body": "The second and third order don’t carry an ad cost. Flows and campaigns that bring buyers back are what pull your blended CAC down across the whole quarter."
+            "title": "Consistent nurture",
+            "body": "Email, SMS and ongoing communication that builds the relationship and turns customers into customers again.\n\nCapture. Follow-up. Campaigns. Retention."
           }
         ]
       }
     },
     {
-      "type": "CardRow",
+      "type": "Prose",
       "props": {
-        "id": "seed-cardrow-8",
-        "eyebrow": "Who this is for",
-        "heading": "Built for founders running a real store and a real life.",
-        "body": "If you’re selling online, carrying a calling, and trying to grow without letting Q4 take over your home, you’re in the right room.",
-        "background": "white",
-        "cards": [
-          {
-            "title": "A store, not a hobby",
-            "body": "You have products shipping and traffic coming in. Q4 genuinely matters to your number. What you don’t have yet is the quarter mapped out on one page."
-          },
-          {
-            "title": "Small team or solo",
-            "body": "No CMO, no agency retainer. You’re the strategist, the copywriter, and the one packing boxes — so the plan has to be something one person can actually execute."
-          },
-          {
-            "title": "A calling and a family",
-            "body": "Sundays aren’t workdays. Weeknights belong to your kids. Any Q4 plan worth building has to respect both, and this one is designed around them."
-          }
-        ]
+        "id": "seed-prose-8",
+        "eyebrow": "And underneath all three",
+        "heading": "Can we grow it profitably?",
+        "body": "That's why we'll also show you how to think about allowable customer acquisition cost — so you're not celebrating revenue in January while wondering where all the money went.",
+        "background": "wash"
+      }
+    },
+    {
+      "type": "DarkCard",
+      "props": {
+        "id": "seed-darkcard-9",
+        "eyebrow": "A word from Derek",
+        "heading": "The business isn't the only thing you're building.",
+        "body": "Q4 can expose weaknesses in your marketing. It can also expose weaknesses in the founder. Long hours, more decisions and more pressure make it easy for the business to consume everything else that matters.\n\nAs founders — and especially as people trying to build businesses consistent with our faith and our families — we think growing the person behind the business matters too. Derek Crimin will spend a few minutes on what he's learned about continuing to develop yourself while building a company: spiritually, mentally, physically and relationally.",
+        "kicker": "The kind of business you build is influenced by the kind of person you're becoming while you build it."
       }
     },
     {
       "type": "Speakers",
       "props": {
-        "id": "seed-speakers-9",
-        "eyebrow": "Who you’re learning from",
-        "heading": "Live with David Love and special guest Derek Crimin. Both stay for the Q&A.",
-        "ctaLabel": "Save my seat",
-        "ctaHref": "https://ecommharvest.com/masterclass/register",
-        "ctaMicro": "Hosted by Tiny 3D Temples, B.O.M.Socks & Come Follow Me FHE",
+        "id": "seed-speakers-10",
+        "eyebrow": "",
+        "heading": "Meet your hosts",
+        "ctaLabel": "",
+        "ctaHref": "",
+        "ctaMicro": "",
         "people": [
           {
             "label": "Presenter",
             "name": "David Love",
-            "title": "E-commerce growth strategist",
+            "title": "E-commerce founder + growth strategist",
             "monogram": "DL",
-            "body": "David spends his days on the unglamorous side of e-commerce growth — offer strategy, email and SMS, paid social, and the conversion work that turns existing traffic into more orders. Most of it comes down to decisions made before the quarter starts.\n\nHe built this masterclass the way he builds Q4 for a store: one page, one calendar, and a hard build-by date."
+            "body": "David has spent years building and growing e-commerce businesses from both sides of the table — as a founder, and as a marketing strategist helping other brands grow. He is a co-owner of Tiny 3D Temples, now a seven-figure e-commerce brand, and a partner in Come Follow Me FHE.\n\nThrough eCommHarvest he helps founders understand the marketing systems behind their businesses — Meta advertising, email and SMS, conversion strategy and offers — so they can grow more profitably without depending on an agency to explain their own business to them.\n\nHis goal isn't to turn founders into full-time marketers. It's to help them become better e-commerce CEOs."
           },
           {
             "label": "Special guest",
             "name": "Derek Crimin",
-            "title": "Owner, B.O.M.Socks",
+            "title": "Founder, B.O.M.Socks",
             "monogram": "DC",
-            "body": "Derek owns and operates B.O.M.Socks, so he walks into Q4 as an operator rather than a theorist — same inventory calls, same ad costs, same deadline you’re working against.\n\nHe’s joining to show what these plays look like inside a real store, and where the plan meets reality."
+            "body": "Derek is the founder of B.O.M.Socks, an e-commerce brand he has grown from an idea into a successful seven-figure business serving customers throughout the Latter-day Saint community.\n\nAlong the way he has learned firsthand what it takes to keep developing as a founder while managing the demands of a growing company. He'll share a short perspective on building the person behind the business — and why that still matters when the campaigns and responsibilities start piling up."
           }
         ]
       }
@@ -212,19 +197,19 @@
     {
       "type": "CtaCard",
       "props": {
-        "id": "seed-ctacard-10",
-        "eyebrow": "Thursday, September 24 · 11:00 AM MT · free · 60 minutes, plus live Q&A",
-        "heading": "Your Q4 Revenue Playbook, Built in 60 Minutes.",
-        "body": "One hour to build the quarter, then live Q&A with David and Derek for as long as the questions keep coming. Two fields and you’re in — we’ll send the join link straight away, a reminder before we start, and the replay afterwards either way.",
-        "ctaLabel": "Save my seat",
+        "id": "seed-ctacard-11",
+        "eyebrow": "Free live masterclass · Thursday, September 24 · 11:00 AM Mountain Time",
+        "heading": "Your Q4 Profit Playbook, Built in 90 Minutes.",
+        "body": "Join David Love and Derek Crimin for a practical working session built for LDS e-commerce founders preparing for Q4. You'll get the workbook, work through your strategy with us live, and leave knowing exactly what to finish next.",
+        "ctaLabel": "Save my seat →",
         "ctaHref": "https://ecommharvest.com/masterclass/register",
-        "note": "Free · no card required · replay sent to every registrant"
+        "note": "Free to attend. Replay sent to every registrant."
       }
     },
     {
       "type": "Footer",
       "props": {
-        "id": "seed-footer-11",
+        "id": "seed-footer-12",
         "copyright": "© 2026 eCommHarvest",
         "links": [
           {
