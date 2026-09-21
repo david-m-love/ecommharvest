@@ -31,3 +31,6 @@ next-env.d.ts
 # committing the broken variant. Both `build` and `vercel-build` generate it
 # before compiling, so nothing needs it in git.
 src/app/(payload)/admin/importMap.js
+
+# Screenshots written by the deck test.
+test/.slides/

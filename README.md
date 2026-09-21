@@ -66,6 +66,7 @@ GoHighLevel-hosted page do so.
 | --- | --- |
 | `/` | Marketing home — **editable in the page builder** |
 | `/masterclass` | Q4 Masterclass landing page — **editable in the page builder** |
+| `/masterclass/slides` | The deck presented during the masterclass — see below |
 | `/register` | Placeholder — funnel step 2 is GHL's form |
 | `/admin` | Admin: login, people, roles, page records, **Site Styles**, Media |
 | `/builder` | **Page builder** — drag and drop, preset blocks |
@@ -73,6 +74,32 @@ GoHighLevel-hosted page do so.
 | `/learn` | Member area — courses, lessons, progress (built, not in use) |
 | `/members` | Access management: grant/revoke, impersonate |
 | `/privacy`, `/terms` | Legal pages (**drafts, need legal review**) |
+
+### The masterclass deck
+
+`/masterclass/slides` is the slideshow presented live on the day — not a
+landing page. Arrow keys, space, `G` for the grid of all slides, `F` for
+fullscreen, `#slide-7` to open on a slide.
+
+It is three files, and no database:
+
+| File | What |
+| --- | --- |
+| `src/app/(frontend)/masterclass/slides/slides.tsx` | **The words.** Seventeen slides, in order. Edit here. |
+| `src/app/(frontend)/masterclass/slides/Deck.tsx` | The keys, the controls, the address bar |
+| `src/styles/slides.css` | Layout, on the site's own design tokens |
+
+Two things worth knowing before editing it. Pictures are entries in `ASSETS` at
+the top of `slides.tsx` — paste a URL and the branded placeholder becomes the
+picture, in the same frame. And a slide's `note:` is an internal reminder shown
+in the jump grid and never on the slide, which is what lets a deck with
+unfinished slides be presented without an audience reading "placeholder" off
+the screen.
+
+No page-builder record and no collection, deliberately: the deck is rewritten
+between rehearsals, seventeen slides of bespoke layout do not decompose into
+the builder's blocks, and an admin screen for it would be more to maintain than
+the thing it manages.
 
 Paths rather than subdomains on purpose: a separate `admin.` host means a
 separate cookie scope, so you either duplicate auth or widen the session cookie
@@ -142,6 +169,7 @@ npm run test:builder:ui   # the builder driven in a real browser
 npm run test:styles       # brand colours, / and /masterclass
 npm run test:logo         # one logo, one size, every page
 npm run test:images       # upload from inside the builder, and the page-list nav
+npm run test:slides       # the masterclass deck: keys, fit, spelling
 
 npm run test:importmap    # the admin's component registry is complete
 
