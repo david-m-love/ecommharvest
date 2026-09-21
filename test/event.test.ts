@@ -180,6 +180,15 @@ test('no file claims a different running time', () => {
    * which is worse than no test. A genuine leftover here is always one of these.
    */
   const EVENT_LENGTHS = new Set([45, 60, 75, 90, 120])
+  /**
+   * One phrase is exempt.
+   *
+   * The slide deck's "Your Next 90 Minutes" is about the ninety minutes the
+   * attendee spends *after* the session, finishing the plan they started — not
+   * about how long the session runs. Named here rather than loosening the
+   * pattern, so the next genuine leftover is still caught.
+   */
+  const ALLOWED = /Your Next 90 Minute/
   const offenders: string[] = []
 
   for (const root of SCAN_ROOTS) {
@@ -193,7 +202,10 @@ test('no file claims a different running time', () => {
       const contents = readFileSync(file, 'utf8')
       for (const match of contents.matchAll(/(\d{2,3})[\s+-](?:minute|Minute)/g)) {
         const found = Number(match[1])
-        if (found !== minutes && EVENT_LENGTHS.has(found)) offenders.push(`${file}: "${match[0]}"`)
+        if (found === minutes || !EVENT_LENGTHS.has(found)) continue
+        const from = match.index ?? 0
+        if (ALLOWED.test(contents.slice(Math.max(0, from - 12), from + match[0].length))) continue
+        offenders.push(`${file}: "${match[0]}"`)
       }
       // The spelled-out form, which a find-and-replace on digits walks straight past.
       for (const match of contents.matchAll(/\b(Ninety|Sixty|ninety|sixty)\s+minutes/g)) {
