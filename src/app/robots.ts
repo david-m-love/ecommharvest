@@ -18,7 +18,9 @@ import { absolute } from '@/lib/site-url'
  *
  * `/social` is excluded because it is a generated picture, not a page. `/status`
  * because it is a diagnostic. `/register` because it is a placeholder that
- * forwards to GoHighLevel.
+ * forwards to GoHighLevel. `/masterclass/slides` because it is the presenter's
+ * own screen — a deck that only makes sense with somebody talking over it, and
+ * one that would compete with `/masterclass` for the same search.
  */
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -33,6 +35,7 @@ export default function robots(): MetadataRoute.Robots {
           '/learn',
           '/members',
           '/login',
+          '/masterclass/slides',
           '/p/',
           '/register',
           '/social',
