@@ -430,6 +430,42 @@ Then `npm test` — `test/event.test.ts` fails and names the file if anything
 still says the old date **or the old running time**. It also checks the UTC times
 match the local ones, and that the day name matches the date.
 
+## The proof screenshots
+
+`/builder` → the masterclass page → the **Proof screenshots** block, between
+*Meet your hosts* and the closing card.
+
+**It publishes nothing until you upload a screenshot.** The copy, the labels and
+the stat are already written; the two image slots are empty, and the section is
+invisible on the live page until at least one of them has a file in it. That is
+deliberate — a section headlined “From $80K to $271K” with no screenshot under it
+is a claim with the evidence missing. In the builder you still see a dashed
+placeholder, so there is something to click on.
+
+To fill it in: click the block, then **Screenshots** → the first item →
+**Upload**. Same again for the second. Every other line — eyebrow, heading, the
+period above each image, the total under it, the three stat fields and the body —
+is a text field on the same panel.
+
+**Crop the screenshots to the numbers before uploading.** A full browser window
+shrinks the figures to nothing on a phone, and the only job these images have is
+that the number in them can be read.
+
+### The switch, and why it is there
+
+**Show this section** turns it off without deleting it. These numbers are for one
+season, so the section will be wrong at some point — and hiding it keeps the
+uploads and the wording for next time, where deleting the block would take them
+with it.
+
+### The line that has to stay
+
+*“I’m not promising you the same result.”* It is small, and it sits directly
+under the numbers rather than in the footer, because a disclaimer that is not
+beside the claim it qualifies is not doing anything. Revenue screenshots plus a
+percentage are the shape of an earnings claim; that sentence and the words
+“a store I help own and grow” are what keep this social proof instead.
+
 ## On the morning: the “join live” link
 
 **`/admin` → Site → Site Styles → The live masterclass.** Three fields, one save.

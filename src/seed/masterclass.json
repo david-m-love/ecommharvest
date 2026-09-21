@@ -75,12 +75,30 @@
         "eyebrow": "",
         "leadIn": "A better plan means knowing:",
         "bullets": [
-          { "lead": "What", "text": "you're promoting" },
-          { "lead": "Who", "text": "you're promoting it to" },
-          { "lead": "When", "text": "you're promoting it" },
-          { "lead": "How", "text": "you're bringing people into your world" },
-          { "lead": "How", "text": "you're following up with them" },
-          { "lead": "And what", "text": "you can afford to spend to acquire them" }
+          {
+            "lead": "What",
+            "text": "you're promoting"
+          },
+          {
+            "lead": "Who",
+            "text": "you're promoting it to"
+          },
+          {
+            "lead": "When",
+            "text": "you're promoting it"
+          },
+          {
+            "lead": "How",
+            "text": "you're bringing people into your world"
+          },
+          {
+            "lead": "How",
+            "text": "you're following up with them"
+          },
+          {
+            "lead": "And what",
+            "text": "you can afford to spend to acquire them"
+          }
         ],
         "ctaLabel": "Save my seat →",
         "ctaHref": "https://ecommharvest.com/masterclass/register",
@@ -202,6 +220,31 @@
             "body": "Derek is the founder of B.O.M.Socks, an e-commerce brand he has grown from an idea into a successful seven-figure business serving customers throughout the Latter-day Saint community.\n\nAlong the way he has learned firsthand what it takes to keep developing as a founder while managing the demands of a growing company. He'll share a short perspective on building the person behind the business — and why that still matters when the campaigns and responsibilities start piling up."
           }
         ]
+      }
+    },
+    {
+      "type": "Proof",
+      "props": {
+        "id": "seed-proof-10b",
+        "show": true,
+        "eyebrow": "Real e-commerce growth",
+        "heading": "From $80K to $271K in one Q4.",
+        "deck": "Same store. Same season. Better systems, better planning, better execution.",
+        "shots": [
+          {
+            "when": "Oct 1 – Dec 31, 2024",
+            "amount": "$80,340.59"
+          },
+          {
+            "when": "Oct 1 – Dec 31, 2025",
+            "amount": "$271,722.88"
+          }
+        ],
+        "statBefore": "$80,340",
+        "statAfter": "$271,723",
+        "statChange": "+238% YoY",
+        "body": "These are real Shopify screenshots from a store I help own and grow.\n\nThat growth didn’t come from one hack, one lucky ad or one Black Friday weekend. It came from improving the same fundamentals we’ll work through in this masterclass: stronger offers, better acquisition, more intentional email and SMS, better conversion, and a clearer Q4 plan.",
+        "note": "I’m not promising you the same result. I’m showing you the kind of system and decision-making that helped create it."
       }
     },
     {

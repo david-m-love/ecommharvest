@@ -22,6 +22,7 @@ import * as migration_20260918_193000_masterclass_sixty_plus_qa from './20260918
 import * as migration_20260918_213000_join_live_switch from './20260918_213000_join_live_switch';
 import * as migration_20260918_224500_masterclass_founder_copy from './20260918_224500_masterclass_founder_copy';
 import * as migration_20260918_234500_funnel_pages_consistency from './20260918_234500_funnel_pages_consistency';
+import * as migration_20260921_120000_proof_screenshots from './20260921_120000_proof_screenshots';
 
 export const migrations = [
   {
@@ -143,5 +144,10 @@ export const migrations = [
     up: migration_20260918_234500_funnel_pages_consistency.up,
     down: migration_20260918_234500_funnel_pages_consistency.down,
     name: '20260918_234500_funnel_pages_consistency',
+  },
+  {
+    up: migration_20260921_120000_proof_screenshots.up,
+    down: migration_20260921_120000_proof_screenshots.down,
+    name: '20260921_120000_proof_screenshots',
   },
 ];

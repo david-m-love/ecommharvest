@@ -88,6 +88,22 @@ const JoinLive = ({ meta }: { meta: BlockMeta }) =>
     </p>
   ) : null
 
+/**
+ * What a block that renders nothing on the live page looks like in the builder.
+ *
+ * Without it, a section waiting for an upload is invisible and therefore
+ * unselectable — there is nothing to click to get at its fields, so the image
+ * can never be added and the block can only be deleted. Editor-only by
+ * construction: every caller guards it with `puck.isEditing`.
+ */
+const HiddenHere = ({ label }: { label: string }) => (
+  <div className="slot">
+    <div className="slot-in">
+      <p className="blockhidden">{label}</p>
+    </div>
+  </div>
+)
+
 /** What every block can read off Puck's metadata. */
 type BlockMeta = { joinUrl?: string; joinLabel?: string } | undefined
 
@@ -242,6 +258,18 @@ export type Blocks = {
     minHeight?: number
     background?: 'white' | 'wash'
   }
+  Proof: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    deck?: string
+    shots?: { image?: PickedImage; when?: string; amount?: string }[]
+    statBefore?: string
+    statAfter?: string
+    statChange?: string
+    body?: string
+    note?: string
+  }
   PostList: { eyebrow?: string; heading?: string; body?: string; count?: number; ctaLabel?: string }
   Footer: { copyright?: string; links?: { label: string; href: string }[]; note?: string }
 }
@@ -264,7 +292,7 @@ export const config: Config<Blocks> = {
     },
     Body: {
       title: 'Body sections',
-      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'Speakers', 'Prose', 'LegalText'],
+      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'Speakers', 'Proof', 'Prose', 'LegalText'],
       defaultExpanded: true,
     },
     'Bottom of page': { title: 'Bottom of page', components: ['PostList', 'CtaCard', 'Footer'] },
@@ -999,6 +1027,151 @@ export const config: Config<Blocks> = {
           </div>
         </section>
       ),
+    },
+
+    Proof: {
+      label: 'Proof screenshots',
+      fields: {
+        /**
+         * A switch rather than deleting the block.
+         *
+         * Turning proof off and on again is a thing that happens — the numbers
+         * are for one season, and the section will be wrong the moment this Q4
+         * ends. Deleting the block would take the copy and the uploads with it;
+         * this keeps them and the page stops showing them.
+         */
+        show: {
+          type: 'radio',
+          label: 'Show this section',
+          options: [
+            { label: 'Show it', value: true },
+            { label: 'Hide it', value: false },
+          ],
+        },
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        deck: { type: 'textarea', label: 'Line under the heading' },
+        shots: {
+          type: 'array',
+          label: 'Screenshots',
+          getItemSummary: (item) => item?.when || 'Screenshot',
+          defaultItemProps: { image: undefined, when: 'Oct 1 – Dec 31', amount: '$0' },
+          arrayFields: {
+            image: imageField(
+              'Screenshot',
+              'A screenshot from Shopify. Crop it to the numbers before uploading — a full browser window shrinks the figures to nothing on a phone.',
+            ),
+            when: { type: 'text', label: 'Period (above the image)' },
+            amount: { type: 'text', label: 'Total (under the image)' },
+          },
+        },
+        statBefore: { type: 'text', label: 'Stat: before' },
+        statAfter: { type: 'text', label: 'Stat: after' },
+        statChange: { type: 'text', label: 'Stat: the change (emphasised)' },
+        body: { type: 'textarea', label: 'Body (blank line = new paragraph)' },
+        note: {
+          type: 'textarea',
+          label: 'The honest note (small, under everything)',
+        },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: 'Real e-commerce growth',
+        heading: 'From $80K to $271K in one Q4.',
+        deck: 'Same store. Same season. Better systems, better planning, better execution.',
+        shots: [
+          { image: undefined, when: 'Oct 1 – Dec 31, 2024', amount: '$80,340.59' },
+          { image: undefined, when: 'Oct 1 – Dec 31, 2025', amount: '$271,722.88' },
+        ],
+        statBefore: '$80,340',
+        statAfter: '$271,723',
+        statChange: '+238% YoY',
+        body:
+          'These are real Shopify screenshots from a store I help own and grow.\n\nThat growth didn’t come from one hack, one lucky ad or one Black Friday weekend. It came from improving the same fundamentals we’ll work through in this masterclass: stronger offers, better acquisition, more intentional email and SMS, better conversion, and a clearer Q4 plan.',
+        note:
+          'I’m not promising you the same result. I’m showing you the kind of system and decision-making that helped create it.',
+      },
+      render: ({
+        show,
+        eyebrow,
+        heading,
+        deck,
+        shots,
+        statBefore,
+        statAfter,
+        statChange,
+        body,
+        note,
+        puck,
+      }) => {
+        const withImages = (shots || []).filter((shot) => shot.image?.url)
+        const editing = puck?.isEditing
+
+        /**
+         * Nothing on the live page until a screenshot is actually there.
+         *
+         * A proof section with no proof is worse than no proof section: the
+         * headline still claims $271K and the evidence for it is a gap. So the
+         * block can be dropped on the page, written, and left — it appears the
+         * moment the first image is uploaded.
+         *
+         * In the builder it always renders something, because a block that
+         * disappears is a block nobody can click on to upload the image into.
+         */
+        // An empty fragment rather than null: Puck's render signature requires
+        // an element, and returning null is a type error rather than a blank.
+        if (show === false)
+          return editing ? <HiddenHere label="Proof screenshots — hidden" /> : <></>
+        if (!withImages.length)
+          return editing ? (
+            <HiddenHere label="Proof screenshots — upload a screenshot to publish this section" />
+          ) : (
+            <></>
+          )
+
+        return (
+          <div className="slot wash">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              {deck ? <p className="lede">{deck}</p> : null}
+
+              <div className={`proofshots cols-${Math.min(withImages.length, 3)}`}>
+                {withImages.map((shot, i) => (
+                  <figure className="proofshot" key={i}>
+                    {shot.when ? <figcaption className="proofshot-when">{shot.when}</figcaption> : null}
+                    <BlockImage
+                      image={shot.image}
+                      fallbackAlt={`Shopify total sales, ${shot.when || ''}`.trim()}
+                      /**
+                       * Nearly the full screen on a phone, because the whole job
+                       * of this image is that the number in it can be read.
+                       */
+                      sizes="(max-width: 760px) 92vw, 440px"
+                    />
+                    {shot.amount ? <p className="proofshot-amount">{shot.amount}</p> : null}
+                  </figure>
+                ))}
+              </div>
+
+              {statBefore || statAfter || statChange ? (
+                <p className="proofstat">
+                  {statBefore ? <span className="proofstat-was">{statBefore}</span> : null}
+                  {statBefore && statAfter ? <span className="proofstat-to">→</span> : null}
+                  {statAfter ? <span className="proofstat-now">{statAfter}</span> : null}
+                  {statChange ? <span className="proofstat-change">{statChange}</span> : null}
+                </p>
+              ) : null}
+
+              <Paragraphs text={body} />
+              {/* Small, and directly under the numbers rather than in a footer —
+                  a disclaimer nobody reads beside the claim it qualifies is not
+                  really a disclaimer. */}
+              {note ? <p className="proofnote">{note}</p> : null}
+            </div>
+          </div>
+        )
+      },
     },
 
     PostList: {
