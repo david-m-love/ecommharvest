@@ -29,6 +29,7 @@ import {
   EVENT_END_ISO,
   EVENT_END_UTC,
   EVENT_LENGTH,
+  EVENT_SOCIAL,
   EVENT_START_ISO,
   EVENT_START_UTC,
   EVENT_TIME,
@@ -225,6 +226,27 @@ test('no file claims a different running time', () => {
 test('the title says the same running time as everything else', () => {
   // The headline is the one people quote back at you, and it carries the number.
   assert.match(EVENT_TITLE, new RegExp(`\\b${EVENT_LENGTH.replace(/\D/g, '')}\\b`, 'i'))
+})
+
+/**
+ * The share card is the copy nobody re-reads.
+ *
+ * It is drawn on demand into somebody else's group chat, ad account or inbox,
+ * where a stale date cannot be corrected and will not be noticed by anyone who
+ * could fix it. So the one thing worth asserting is that it is derived from the
+ * date above rather than typed beside it.
+ */
+test('the share card carries the current date', () => {
+  assert.ok(
+    EVENT_SOCIAL.when.includes(EVENT_DAY),
+    `the share card says "${EVENT_SOCIAL.when}", which does not contain "${EVENT_DAY}"`,
+  )
+  assert.ok(EVENT_SOCIAL.when.includes(EVENT_TIME), EVENT_SOCIAL.when)
+  // Free is the strongest word on a share card; losing it would be a quiet
+  // downgrade of the offer in the one place it gets forwarded.
+  assert.match(EVENT_SOCIAL.when, /free/i)
+  assert.ok(EVENT_SOCIAL.kicker.length <= 80, 'the kicker is truncated at 80 characters when drawn')
+  assert.ok(EVENT_SOCIAL.when.length <= 80, 'the date line is truncated at 80 characters when drawn')
 })
 
 console.log(`\n${passed} passed`)

@@ -4,7 +4,7 @@ import React from 'react'
 
 import { config } from '@/blocks'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_END_ISO, EVENT_START_ISO, EVENT_TITLE, REGISTER_URL } from '@/lib/event'
+import { EVENT_END_ISO, EVENT_SOCIAL, EVENT_START_ISO, EVENT_TITLE, REGISTER_URL } from '@/lib/event'
 import { siteMetadata } from '@/lib/site-styles'
 import { readGhlBlock } from '@/lib/ghl-block'
 
@@ -15,8 +15,9 @@ const FALLBACK: Metadata = {
   alternates: { canonical: '/masterclass' },
 }
 
+
 export async function generateMetadata(): Promise<Metadata> {
-  return builderMetadata(await loadBuilderPage('masterclass'), FALLBACK)
+  return builderMetadata(await loadBuilderPage('masterclass'), FALLBACK, EVENT_SOCIAL)
 }
 
 /**
