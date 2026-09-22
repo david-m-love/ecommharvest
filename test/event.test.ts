@@ -87,8 +87,14 @@ test('the day name matches the date', () => {
   )
 })
 
-/** Every file that could carry a stale date, minus the ones allowed to. */
-const SCAN_ROOTS = ['src', 'ghl/src', 'ghl/blocks', 'ghl/paste-me', 'public']
+/**
+ * Every file that could carry a stale date, minus the ones allowed to.
+ *
+ *  is in here because  is pasted into other tools to
+ * generate ads — which makes a stale date there worse than one on the site,
+ * not better: it gets copied into artwork nobody will re-check.
+ */
+const SCAN_ROOTS = ['src', 'docs', 'ghl/src', 'ghl/blocks', 'ghl/paste-me', 'public']
 const SKIP = [
   'src/migrations', // a record of what ran, not of what is true now
   'node_modules',
@@ -126,6 +132,17 @@ const expectedDay = EVENT_DAY.replace(/^[A-Za-z]+,\s*/, '') // "September 24"
  */
 const IDENTIFIERS = /q4-masterclass-2026-09-03/g
 
+/**
+ * Migration filenames are dates too, and they are supposed to be old.
+ *
+ * `20260917_160000_masterclass_sept24` is the name of a thing that ran on the
+ * 17th; it is a record, exactly like the migrations directory this scan already
+ * skips. The docs name them in prose, so the name has to come out of the text
+ * rather than the file being skipped — a genuinely stale date in the same
+ * paragraph should still be caught.
+ */
+const MIGRATION_NAMES = /\d{8}_\d{6}_[a-z0-9_]+/g
+
 test('no file carries a different date', () => {
   const offenders: string[] = []
   for (const root of SCAN_ROOTS) {
@@ -136,7 +153,9 @@ test('no file carries a different date', () => {
       continue // an optional directory that does not exist here
     }
     for (const file of files) {
-      const contents = readFileSync(file, 'utf8').replace(IDENTIFIERS, '')
+      const contents = readFileSync(file, 'utf8')
+        .replace(IDENTIFIERS, '')
+        .replace(MIGRATION_NAMES, '')
       /**
        * `(?!\d)` matters: without it "September 2026" — the last-updated line on
        * the legal pages — reads as "September 20" and gets reported as a stale
