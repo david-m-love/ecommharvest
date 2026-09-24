@@ -6,7 +6,7 @@ import { config } from '@/blocks'
 import { FormEmbed } from '@/blocks/FormEmbed'
 import { SiteFooterBar, SiteHeaderBar } from '@/blocks/SiteHeaderBar'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_ELSEWHERE, EVENT_FORMAT, EVENT_WHEN, MASTERCLASS_FORM_ID } from '@/lib/event'
+import { EVENT_ELSEWHERE, EVENT_FORMAT, EVENT_SOCIAL, EVENT_WHEN, MASTERCLASS_FORM_ID } from '@/lib/event'
 import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
 
 const FALLBACK: Metadata = {
@@ -19,8 +19,9 @@ const FALLBACK: Metadata = {
   robots: { index: false, follow: true },
 }
 
+
 export async function generateMetadata(): Promise<Metadata> {
-  return builderMetadata(await loadBuilderPage('masterclass-register'), FALLBACK)
+  return builderMetadata(await loadBuilderPage('masterclass-register'), FALLBACK, EVENT_SOCIAL)
 }
 
 /**

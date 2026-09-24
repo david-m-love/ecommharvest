@@ -29,6 +29,7 @@ import {
   EVENT_END_ISO,
   EVENT_END_UTC,
   EVENT_LENGTH,
+  EVENT_SOCIAL,
   EVENT_START_ISO,
   EVENT_START_UTC,
   EVENT_TIME,
@@ -86,8 +87,14 @@ test('the day name matches the date', () => {
   )
 })
 
-/** Every file that could carry a stale date, minus the ones allowed to. */
-const SCAN_ROOTS = ['src', 'ghl/src', 'ghl/blocks', 'ghl/paste-me', 'public']
+/**
+ * Every file that could carry a stale date, minus the ones allowed to.
+ *
+ *  is in here because  is pasted into other tools to
+ * generate ads — which makes a stale date there worse than one on the site,
+ * not better: it gets copied into artwork nobody will re-check.
+ */
+const SCAN_ROOTS = ['src', 'docs', 'ghl/src', 'ghl/blocks', 'ghl/paste-me', 'public']
 const SKIP = [
   'src/migrations', // a record of what ran, not of what is true now
   'node_modules',
@@ -125,6 +132,17 @@ const expectedDay = EVENT_DAY.replace(/^[A-Za-z]+,\s*/, '') // "September 24"
  */
 const IDENTIFIERS = /q4-masterclass-2026-09-03/g
 
+/**
+ * Migration filenames are dates too, and they are supposed to be old.
+ *
+ * `20260917_160000_masterclass_sept24` is the name of a thing that ran on the
+ * 17th; it is a record, exactly like the migrations directory this scan already
+ * skips. The docs name them in prose, so the name has to come out of the text
+ * rather than the file being skipped — a genuinely stale date in the same
+ * paragraph should still be caught.
+ */
+const MIGRATION_NAMES = /\d{8}_\d{6}_[a-z0-9_]+/g
+
 test('no file carries a different date', () => {
   const offenders: string[] = []
   for (const root of SCAN_ROOTS) {
@@ -135,7 +153,9 @@ test('no file carries a different date', () => {
       continue // an optional directory that does not exist here
     }
     for (const file of files) {
-      const contents = readFileSync(file, 'utf8').replace(IDENTIFIERS, '')
+      const contents = readFileSync(file, 'utf8')
+        .replace(IDENTIFIERS, '')
+        .replace(MIGRATION_NAMES, '')
       /**
        * `(?!\d)` matters: without it "September 2026" — the last-updated line on
        * the legal pages — reads as "September 20" and gets reported as a stale
@@ -225,6 +245,27 @@ test('no file claims a different running time', () => {
 test('the title says the same running time as everything else', () => {
   // The headline is the one people quote back at you, and it carries the number.
   assert.match(EVENT_TITLE, new RegExp(`\\b${EVENT_LENGTH.replace(/\D/g, '')}\\b`, 'i'))
+})
+
+/**
+ * The share card is the copy nobody re-reads.
+ *
+ * It is drawn on demand into somebody else's group chat, ad account or inbox,
+ * where a stale date cannot be corrected and will not be noticed by anyone who
+ * could fix it. So the one thing worth asserting is that it is derived from the
+ * date above rather than typed beside it.
+ */
+test('the share card carries the current date', () => {
+  assert.ok(
+    EVENT_SOCIAL.when.includes(EVENT_DAY),
+    `the share card says "${EVENT_SOCIAL.when}", which does not contain "${EVENT_DAY}"`,
+  )
+  assert.ok(EVENT_SOCIAL.when.includes(EVENT_TIME), EVENT_SOCIAL.when)
+  // Free is the strongest word on a share card; losing it would be a quiet
+  // downgrade of the offer in the one place it gets forwarded.
+  assert.match(EVENT_SOCIAL.when, /free/i)
+  assert.ok(EVENT_SOCIAL.kicker.length <= 80, 'the kicker is truncated at 80 characters when drawn')
+  assert.ok(EVENT_SOCIAL.when.length <= 80, 'the date line is truncated at 80 characters when drawn')
 })
 
 console.log(`\n${passed} passed`)

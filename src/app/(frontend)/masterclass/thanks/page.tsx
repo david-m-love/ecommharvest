@@ -5,7 +5,7 @@ import React from 'react'
 import { config } from '@/blocks'
 import { SiteFooterBar, SiteHeaderBar } from '@/blocks/SiteHeaderBar'
 import { builderMetadata, loadBuilderPage } from '@/lib/builder-page'
-import { EVENT_ELSEWHERE, EVENT_FORMAT, EVENT_WHEN } from '@/lib/event'
+import { EVENT_ELSEWHERE, EVENT_FORMAT, EVENT_SOCIAL, EVENT_WHEN } from '@/lib/event'
 import { getSiteStyles, siteMetadata } from '@/lib/site-styles'
 
 const FALLBACK: Metadata = {
@@ -16,9 +16,10 @@ const FALLBACK: Metadata = {
   robots: { index: false, follow: false },
 }
 
+
 export async function generateMetadata(): Promise<Metadata> {
   const page = await loadBuilderPage('masterclass-thanks')
-  return { ...builderMetadata(page, FALLBACK), robots: { index: false, follow: false } }
+  return { ...builderMetadata(page, FALLBACK, EVENT_SOCIAL), robots: { index: false, follow: false } }
 }
 
 /**

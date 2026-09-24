@@ -115,6 +115,24 @@ export const EVENT_WORKBOOK = 'Free live training. Workbook included.'
 export const EVENT_TITLE = 'Your Q4 Profit Playbook, Built in 60 Minutes'
 
 /**
+ * The two lines the generated share card carries, for the pages selling this
+ * event.
+ *
+ * Here, beside the date, because a share card is the copy nobody re-reads: it is
+ * rendered on demand into somebody else's group chat, ad account or inbox, where
+ * a stale date cannot be corrected and will not be noticed. Derived from
+ * `EVENT_WHEN`, so moving the masterclass moves every card with it.
+ *
+ * Only `/masterclass`, `/masterclass/register` and `/masterclass/thanks` pass
+ * this. The blog and the legal pages have no date, and their cards should not
+ * pretend otherwise.
+ */
+export const EVENT_SOCIAL = {
+  kicker: 'Free live masterclass · LDS e-commerce founders',
+  when: `${EVENT_WHEN} · Free`,
+}
+
+/**
  * The live join link is **not** scheduled from here.
  *
  * It was, once: two instants in this file decided when "join the live

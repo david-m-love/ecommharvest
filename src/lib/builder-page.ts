@@ -75,7 +75,21 @@ export const loadBuilderPage = async (slug: string): Promise<LoadedPage | null> 
  * a page renamed in the builder gets a new card without anyone remembering to
  * make one — which is the only way this stays true over time.
  */
-export const builderMetadata = (page: LoadedPage | null, fallback: Metadata): Metadata => {
+export const builderMetadata = (
+  page: LoadedPage | null,
+  fallback: Metadata,
+  /**
+   * Extra lines for the share card, for pages that are advertising something
+   * with a date on it.
+   *
+   * Passed in by the route rather than guessed here, because only the route
+   * knows whether it is selling an event. The masterclass pages hand over the
+   * constants from `src/lib/event.ts`, so a moved date changes the share card
+   * along with everything else — the alternative is a card in a group chat
+   * still advertising a Thursday that has passed.
+   */
+  socialExtras?: { kicker?: string; when?: string },
+): Metadata => {
   /**
    * Order of preference: the page's own SEO headline, then the route's built-in
    * one, then the page's internal name. The route's default beats the internal
@@ -86,7 +100,7 @@ export const builderMetadata = (page: LoadedPage | null, fallback: Metadata): Me
   const routeTitle = typeof fallback.title === 'string' ? fallback.title : undefined
   const title = page?.seoTitle || routeTitle || page?.title || 'eCommHarvest'
   const description = page?.description ?? fallback.description ?? undefined
-  const social = socialImage(title)
+  const social = socialImage(title, socialExtras?.kicker, socialExtras?.when)
 
   if (!page) return { ...fallback, openGraph: { ...fallback.openGraph, title, description, images: [social] }, twitter: { card: 'summary_large_image', title, description, images: [social.url] } }
 
@@ -100,13 +114,24 @@ export const builderMetadata = (page: LoadedPage | null, fallback: Metadata): Me
   }
 }
 
-/** The generated share picture for a given title. */
-export const socialImage = (title: string, kicker?: string) => ({
-  url: `/social?title=${encodeURIComponent(title)}${kicker ? `&kicker=${encodeURIComponent(kicker)}` : ''}`,
-  width: 1200,
-  height: 630,
-  alt: title,
-})
+/**
+ * The generated share picture for a given title.
+ *
+ * `when` is what turns a brand card into an event card. A link to a live
+ * masterclass that does not say when it is gives the person who sees it in a
+ * group chat nothing to act on, which is most of the point of the picture.
+ */
+export const socialImage = (title: string, kicker?: string, when?: string) => {
+  const params = new URLSearchParams({ title })
+  if (kicker) params.set('kicker', kicker)
+  if (when) params.set('when', when)
+  return {
+    url: `/social?${params.toString()}`,
+    width: 1200,
+    height: 630,
+    alt: when ? `${title} — ${when}` : title,
+  }
+}
 
 /**
  * Where a page actually lives.
