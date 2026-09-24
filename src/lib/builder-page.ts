@@ -127,6 +127,8 @@ export const OWN_ROUTES: Record<string, string> = {
    */
   'masterclass-register': '/masterclass/register',
   'masterclass-thanks': '/masterclass/thanks',
+  /** The deck. Presented from the browser, so it owns a URL like any page. */
+  'masterclass-slides': '/masterclass/slides',
 }
 
 export const publicPathFor = (slug: string): string => OWN_ROUTES[slug] ?? `/p/${slug}`

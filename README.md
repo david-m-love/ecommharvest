@@ -81,25 +81,43 @@ GoHighLevel-hosted page do so.
 landing page. Arrow keys, space, `G` for the grid of all slides, `F` for
 fullscreen, `#slide-7` to open on a slide.
 
-It is three files, and no database:
+**It is edited in the page builder**, like every other page here. Open
+`/builder`, open **Masterclass slides**, and the canvas shows the deck as a
+light table: one slide per row at the shape it will be presented at. Drag a
+slide layout in from the left, reorder by dragging, type in the panel on the
+right, upload a picture into a slide without leaving the canvas, Save draft,
+Update live page. `pages.kind` is what decides which editor a record opens in —
+`page` for sections down a page, `deck` for slides — and the **New slide deck**
+button on `/builder` creates another one.
 
 | File | What |
 | --- | --- |
-| `src/app/(frontend)/masterclass/slides/slides.tsx` | **The words.** Seventeen slides, in order. Edit here. |
+| `src/blocks/slides.tsx` | The twelve slide layouts and their fields (the Puck config) |
+| `src/blocks/slides-render.tsx` | How a slide is drawn — used by the canvas *and* the live deck, so they cannot drift |
+| `src/seed/deck.ts` | The eighteen slides as content: seeds the page, and the fallback if the record is missing |
 | `src/app/(frontend)/masterclass/slides/Deck.tsx` | The keys, the controls, the address bar |
 | `src/styles/slides.css` | Layout, on the site's own design tokens |
 
-Two things worth knowing before editing it. Pictures are entries in `ASSETS` at
-the top of `slides.tsx` — paste a URL and the branded placeholder becomes the
-picture, in the same frame. And a slide's `note:` is an internal reminder shown
-in the jump grid and never on the slide, which is what lets a deck with
-unfinished slides be presented without an audience reading "placeholder" off
-the screen.
+Twelve layouts cover eighteen slides because each one is a *shape* rather than
+a slide: "Row of columns" is the growth levers, the readiness audit, the
+product plan and the closing actions with different words in it. An
+eighteenth slide is a drag, not a deploy.
 
-No page-builder record and no collection, deliberately: the deck is rewritten
-between rehearsals, seventeen slides of bespoke layout do not decompose into
-the builder's blocks, and an admin screen for it would be more to maintain than
-the thing it manages.
+Three conventions worth knowing, all of them visible in the canvas as you type
+them:
+
+- **`*asterisks*`** around part of a closing line turn it gold; a new line
+  breaks it in two.
+- **A slide's private note** shows in the builder and in the jump grid, never
+  on the slide — which is what lets a deck with unfinished slides be presented
+  without an audience reading "placeholder" off the screen.
+- **A presenter cue** ("EXAMPLE: Shopify growth view") *is* on the slide,
+  small, beside the brand mark: a reminder to show the real thing at that
+  point.
+
+Every size inside a slide is in container units against a fixed 16:9 frame, so
+a slide laid out once fits any window — laptop, 4K, Zoom share, fullscreen —
+and `npm run test:slides` asserts exactly that, at three window sizes.
 
 Paths rather than subdomains on purpose: a separate `admin.` host means a
 separate cookie scope, so you either duplicate auth or widen the session cookie

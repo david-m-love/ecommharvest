@@ -39,9 +39,47 @@
      collapsing address bar does not crop the bottom of a slide. */
   width: min(100vw, calc(100dvh * 16 / 9));
   height: min(100dvh, calc(100vw * 9 / 16));
+  overflow: hidden;
+  background: var(--white);
+}
+
+/* The slide's own frame — the 16:9 box, and the container every `cqw` inside a
+   slide is measured against.
+   
+   On the frame rather than on the stage because the *builder* has no stage: a
+   slide in the editing canvas is this frame at whatever width the canvas is,
+   and it has to size its type by the same rule or the canvas would be showing
+   something other than the slide. One box, two homes. */
+.sl-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   container-type: size;
   overflow: hidden;
   background: var(--white);
+}
+/* On the stage it simply fills it, since the stage is already 16:9. */
+.deck-stage .sl-frame {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  aspect-ratio: auto;
+}
+
+/* ---- the same slide, in the page builder ----
+   Puck's canvas is a column of blocks, so the deck edits as a light table: one
+   slide per row, at the shape it will be presented at. */
+.Puck .sl-frame {
+  max-width: 1120px;
+  margin: 0 auto 26px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(22, 50, 79, 0.08);
+}
+/* The canvas is a page, and a page scrolls; a slide inside it must not also try
+   to be a fixed stage. */
+.Puck .deck-root {
+  position: static;
 }
 
 /* A phone held upright. The deck is built to be presented from a laptop, but it
@@ -273,6 +311,10 @@
 .sl-cols-3 {
   grid-template-columns: repeat(3, 1fr);
 }
+.sl-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.7cqw;
+}
 .sl-cols-5 {
   grid-template-columns: repeat(5, 1fr);
   gap: 1.5cqw;
@@ -360,6 +402,24 @@
   border: 1.5px solid var(--gold);
 }
 
+/* A checklist on a navy slide. Without this the items inherit the light-ground
+   brown and read as unlit text on a dark card. */
+.sl-dark .sl-list li {
+  color: #d6e0e8;
+  border-bottom-color: rgba(169, 190, 207, 0.22);
+}
+
+/* Two columns inside one card, for a list long enough to need them. */
+.sl-list-2col {
+  columns: 2;
+  column-gap: 2cqw;
+}
+.sl-list-2col li {
+  break-inside: avoid;
+  border-bottom: 0;
+  padding: 0.62cqw 0;
+}
+
 /* ---- the workbook indicator ----
    Slides 5, 8, 11 and 16 are the moments the presenter may stop teaching and
    screen-share the workbook. Same chip every time, so by the third one the room
@@ -436,7 +496,9 @@
   grid-template-columns: 3.2cqw 1fr auto;
   align-items: center;
   gap: 1.4cqw;
-  padding: 0.72cqw 2cqw;
+  /* Eight lines of arithmetic is the longest sum the deck carries, and this is
+     what keeps the first of them clear of the headline. */
+  padding: 0.62cqw 2cqw;
   border-radius: var(--r-sm);
 }
 .sl-op {
@@ -1287,4 +1349,70 @@
 .sl-ph-thumb .sl-ph-icon {
   width: 2.2cqw;
   height: 2.2cqw;
+}
+
+/* ---- the presenter's cue ----
+   "EXAMPLE: Shopify growth view", beside the brand mark. Quiet on purpose: it
+   tells the presenter to show the real thing here, and tells the room nothing
+   it needs to read. */
+.sl-cue {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 1.02cqw;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+/* ---- what the room leaves knowing (slide 2) ---- */
+.sl-outcomes {
+  margin: 2.4cqw 0 0;
+}
+.sl-outcomes-t {
+  font-family: var(--mono);
+  font-size: 1.05cqw;
+  letter-spacing: 0.14em;
+  color: var(--gold-deep);
+  margin: 0 0 1.1cqw;
+}
+.sl-dark .sl-outcomes-t {
+  color: var(--gold);
+}
+.sl-outcomes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8cqw 2.4cqw;
+}
+.sl-outcomes-grid span {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8cqw;
+  font-size: 1.45cqw;
+  line-height: 1.3;
+  color: var(--brown);
+}
+.sl-outcomes-grid span::before {
+  content: '';
+  flex: none;
+  width: 0.55cqw;
+  height: 0.55cqw;
+  border-radius: 50%;
+  background: var(--gold);
+  transform: translateY(-0.2cqw);
+}
+.sl-dark .sl-outcomes-grid span {
+  color: #d6e0e8;
+}
+
+/* ---- examples under a framework label (slide 4) ---- */
+.sl-examples {
+  font-family: var(--mono);
+  font-size: 1.05cqw;
+  letter-spacing: 0.05em;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0.9cqw 0 0;
+}
+.sl-dark .sl-examples {
+  color: var(--chalk);
 }

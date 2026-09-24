@@ -28,7 +28,15 @@ export async function POST(request: Request) {
    * surface a database error to someone who just clicked a button, find the
    * first free suffix.
    */
-  const base = 'untitled-page'
+  /**
+   * A page or a deck, from whichever button was pressed. They are the same
+   * record with a different editor behind it, so this is the only thing the two
+   * buttons differ by.
+   */
+  const form = await request.formData().catch(() => null)
+  const deck = form?.get('kind') === 'deck'
+
+  const base = deck ? 'untitled-deck' : 'untitled-page'
   let slug = base
   for (let n = 2; n < 200; n++) {
     const { totalDocs } = await p.count({ collection: 'pages', where: { slug: { equals: slug } } })
@@ -40,8 +48,9 @@ export async function POST(request: Request) {
     const created = await p.create({
       collection: 'pages',
       data: {
-        title: 'Untitled page',
+        title: deck ? 'Untitled deck' : 'Untitled page',
         slug,
+        kind: deck ? 'deck' : 'page',
         /**
          * `status` is deliberately not set here, even though 'draft' is what we
          * want. Writing it requires `pages:publish`, so sending it would either

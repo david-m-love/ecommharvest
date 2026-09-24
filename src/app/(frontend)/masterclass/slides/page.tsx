@@ -2,23 +2,26 @@ import type { Metadata } from 'next'
 import React from 'react'
 
 import { Deck } from './Deck'
-import { getSiteStyles } from '@/lib/site-styles'
+import { renderSlide, slideMeta, type SlideBlock } from '@/blocks/slides-render'
+import { loadBuilderPage } from '@/lib/builder-page'
 import { EVENT_TITLE } from '@/lib/event'
+import { DECK_BLOCKS, DECK_SLUG } from '@/seed/deck'
+import { getSiteStyles } from '@/lib/site-styles'
 import '@/styles/slides.css'
 
 /**
  * The masterclass deck, presented from the browser.
  *
- * Not a landing page and not a page-builder page: it is a slideshow, and the
- * two things a slideshow needs — a fixed stage and keys that move it — are not
- * things the block editor can express. The content lives in `slides.tsx`, which
- * is a file to edit rather than a screen to click through; for seventeen slides
- * rewritten between rehearsals that is the smaller tool, and it is the reason
- * there is no new collection, no new admin view and no migration here.
+ * A page-builder page like the rest of the site — same editor, same Media
+ * library, same Save draft and Update live page — rendered as a slideshow
+ * instead of a scrolling page. The slides come from the `masterclass-slides`
+ * record; each block in it is one slide.
  *
- * What it *does* reuse is the brand: the design tokens, the typefaces and the
- * logo all come from the same places the rest of the site takes them from, so a
- * colour changed in Site Styles changes the deck too.
+ * Falls back to `src/seed/deck.ts` when that record is missing, exactly as
+ * `/masterclass` falls back to its generated block. The window it covers is
+ * real: between this deploying and its migration running there is no page row,
+ * and "the deck 404s an hour before the webinar" is not a failure worth
+ * allowing for the sake of tidiness.
  */
 export const metadata: Metadata = {
   title: 'Slides',
@@ -33,12 +36,20 @@ export const metadata: Metadata = {
 }
 
 export default async function SlidesPage() {
+  const [page, styles] = await Promise.all([loadBuilderPage(DECK_SLUG), getSiteStyles()])
+
+  const blocks = (page?.data?.content as SlideBlock[] | undefined) ?? DECK_BLOCKS
+  const ctx = { siteLogoUrl: styles.logoUrl }
+
   /**
-   * The logo, for the title slide. Soft: `getSiteStyles` returns nulls rather
-   * than throwing if the database is unreachable, and the title slide falls
-   * back to the wordmark — a deck that opens without its logo is recoverable
-   * thirty seconds before a webinar; one that shows an error page is not.
+   * Rendered here, on the server, and handed to the client component as
+   * elements. The deck's machinery — the keys, the counter, the jump grid — has
+   * to run in the browser; the slides themselves do not, so they do not ship as
+   * JavaScript.
    */
-  const { logoUrl } = await getSiteStyles()
-  return <Deck logoUrl={logoUrl} />
+  const slides = blocks
+    .map((block, index) => ({ ...slideMeta(block, index), node: renderSlide(block, ctx) }))
+    .filter((slide) => slide.node !== null)
+
+  return <Deck slides={slides} />
 }

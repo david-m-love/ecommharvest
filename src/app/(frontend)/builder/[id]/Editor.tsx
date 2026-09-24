@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 
 import { config, starterContent } from '@/blocks'
+import { deckStarter, slidesConfig } from '@/blocks/slides'
 import type { SiteMetadata } from '@/lib/site-styles'
 
 import {
@@ -26,6 +27,7 @@ export function Editor({
   pageId,
   title,
   slug,
+  kind,
   status,
   canPublish,
   initialData,
@@ -35,6 +37,13 @@ export function Editor({
   pageId: number
   title: string
   slug: string
+  /**
+   * A page is sections down a scrolling page; a deck is slides. Same canvas,
+   * same saving, same Media library — a different set of blocks to drop in,
+   * because a hero section in a deck and a slide layout on a landing page are
+   * both nonsense.
+   */
+  kind: 'page' | 'deck'
   status: 'draft' | 'published'
   canPublish: boolean
   initialData: Data | null
@@ -50,6 +59,9 @@ export function Editor({
   publicPath: string
 }) {
   const router = useRouter()
+  const deck = kind === 'deck'
+  const puckConfig = deck ? (slidesConfig as unknown as typeof config) : config
+  const starter = deck ? deckStarter : starterContent
   const [saving, setSaving] = React.useState(false)
   const [message, setMessage] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)
@@ -86,8 +98,8 @@ export function Editor({
     () =>
       initialData?.content?.length
         ? initialData
-        : { content: starterContent as Data['content'], root: {} },
-    [initialData],
+        : { content: starter as Data['content'], root: {} },
+    [initialData, starter],
   )
 
   /**
@@ -276,7 +288,7 @@ export function Editor({
     ) : (
     <Puck
       key={canvasKey}
-      config={config}
+      config={puckConfig}
       data={canvasData}
       /**
        * Two overrides, both for phones: one wraps the whole editor to add a bar

@@ -69,6 +69,32 @@ export const Pages: CollectionConfig = {
     },
     ...slugField('title'),
     {
+      /**
+       * What kind of thing this record is, which decides the editor it opens in.
+       *
+       * A page is sections down a scrolling page; a deck is slides. They are the
+       * same machinery — the same canvas, the same Media library, the same draft
+       * and publish — over two different sets of blocks, because a slide layout
+       * on a landing page and a hero section in a deck are both nonsense.
+       *
+       * Stored rather than inferred from the slug: the day there is a second
+       * deck, a rule like "slugs ending in -slides are decks" is a trap, and a
+       * page silently opening in the wrong editor loses work.
+       */
+      name: 'kind',
+      type: 'select',
+      defaultValue: 'page',
+      index: true,
+      options: [
+        { label: 'Page', value: 'page' },
+        { label: 'Slide deck', value: 'deck' },
+      ],
+      admin: {
+        description:
+          'A page is sections down a page. A deck is slides, presented from the browser.',
+      },
+    },
+    {
       name: 'status',
       type: 'select',
       /**

@@ -23,7 +23,7 @@ import { chromium } from 'playwright'
 const BASE = process.env.TEST_BASE_URL || 'http://localhost:3000'
 const URL = `${BASE}/masterclass/slides`
 const SHOTS = process.env.SLIDE_SHOTS || 'test/.slides'
-const EXPECTED_SLIDES = 17
+const EXPECTED_SLIDES = 18
 
 let passed = 0
 let failed = 0
@@ -143,7 +143,7 @@ check(
   String(await page.locator('.deck-tile').count()),
 )
 const notes = await page.locator('.deck-tile-note').count()
-check(notes >= 3, 'Derek’s slides are flagged as placeholders in the grid', `${notes} flagged`)
+check(notes >= 1, 'private notes show in the grid, not on the slides', `${notes} flagged`)
 await page.locator('.deck-tile').nth(11).click()
 check((await counter()).startsWith('12 '), 'clicking a tile jumps to that slide', await counter())
 check(!(await page.locator('.deck-overlay').isVisible()), 'the grid closes behind you')

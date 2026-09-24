@@ -8,9 +8,9 @@ import * as migration_20260822_060931_nav_links from './20260822_060931_nav_link
 import * as migration_20260822_063000_cookie_section from './20260822_063000_cookie_section';
 import * as migration_20260822_180146_meta_pixel_id from './20260822_180146_meta_pixel_id';
 import * as migration_20260829_233857_add_blog from './20260829_233857_add_blog';
-import * as migration_20260829_234831_blog_heading from './20260829_234831_blog_heading'
-import * as migration_20260830_010000_masterclass_date from './20260830_010000_masterclass_date'
-import * as migration_20260901_120000_funnel_on_our_site from './20260901_120000_funnel_on_our_site'
+import * as migration_20260829_234831_blog_heading from './20260829_234831_blog_heading';
+import * as migration_20260830_010000_masterclass_date from './20260830_010000_masterclass_date';
+import * as migration_20260901_120000_funnel_on_our_site from './20260901_120000_funnel_on_our_site';
 import * as migration_20260901_180000_nest_register from './20260901_180000_nest_register';
 import * as migration_20260917_160000_masterclass_sept24 from './20260917_160000_masterclass_sept24';
 import * as migration_20260917_193000_register_on_app_host from './20260917_193000_register_on_app_host';
@@ -22,6 +22,8 @@ import * as migration_20260918_193000_masterclass_sixty_plus_qa from './20260918
 import * as migration_20260918_213000_join_live_switch from './20260918_213000_join_live_switch';
 import * as migration_20260918_224500_masterclass_founder_copy from './20260918_224500_masterclass_founder_copy';
 import * as migration_20260918_234500_funnel_pages_consistency from './20260918_234500_funnel_pages_consistency';
+import * as migration_20260924_162916_add_page_kind from './20260924_162916_add_page_kind';
+import * as migration_20260924_163500_seed_slide_deck from './20260924_163500_seed_slide_deck';
 
 export const migrations = [
   {
@@ -77,7 +79,7 @@ export const migrations = [
   {
     up: migration_20260829_234831_blog_heading.up,
     down: migration_20260829_234831_blog_heading.down,
-    name: '20260829_234831_blog_heading'
+    name: '20260829_234831_blog_heading',
   },
   {
     up: migration_20260830_010000_masterclass_date.up,
@@ -143,5 +145,15 @@ export const migrations = [
     up: migration_20260918_234500_funnel_pages_consistency.up,
     down: migration_20260918_234500_funnel_pages_consistency.down,
     name: '20260918_234500_funnel_pages_consistency',
+  },
+  {
+    up: migration_20260924_162916_add_page_kind.up,
+    down: migration_20260924_162916_add_page_kind.down,
+    name: '20260924_162916_add_page_kind'
+  },
+  {
+    up: migration_20260924_163500_seed_slide_deck.up,
+    down: migration_20260924_163500_seed_slide_deck.down,
+    name: '20260924_163500_seed_slide_deck'
   },
 ];
