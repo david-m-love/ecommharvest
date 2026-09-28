@@ -4,9 +4,20 @@ import React from 'react'
 import { BlockImage } from './BlockImage'
 import { EVENT_WORKBOOK, MASTERCLASS_FORM_ID, REGISTER_URL } from '@/lib/event'
 import { isExternalHref, toHref } from '@/lib/href'
+import { filled, hasText, sectionState } from '@/lib/section-visibility'
+import {
+  WEEKLY_CHECKOUT_MISSING,
+  WEEKLY_CHECKOUT_URL,
+  WEEKLY_CTA,
+  WEEKLY_INTERVAL,
+  WEEKLY_NAME,
+  WEEKLY_PRICE,
+  WEEKLY_TERMS,
+} from '@/lib/weekly'
 import type { RecentPost } from '@/lib/site-styles'
 
 import { FormEmbed } from './FormEmbed'
+import { JoinButton } from './JoinButton'
 import { SiteHeaderBar } from './SiteHeaderBar'
 import { type PickedImage, imageField } from './image-field'
 
@@ -104,6 +115,45 @@ const HiddenHere = ({ label }: { label: string }) => (
   </div>
 )
 
+/**
+ * The switch every section carries.
+ *
+ * A radio rather than a checkbox, matching the Header block's menu control:
+ * two labelled choices read unambiguously in a hurry, where a lone tickbox
+ * needs its label read carefully to know which way round it is.
+ */
+const showField = {
+  type: 'radio' as const,
+  label: 'Show this section',
+  options: [
+    { label: 'Show it', value: true },
+    { label: 'Hide it', value: false },
+  ],
+}
+
+/**
+ * What a section renders when it is switched off or has nothing in it yet.
+ *
+ * Returns an element to render *instead*, or null to carry on normally. The
+ * rule itself is in `src/lib/section-visibility.ts` so it can be tested without
+ * React; this is only the markup for it.
+ *
+ * The editor placeholder is not decoration. A block that renders nothing cannot
+ * be clicked, so its fields cannot be reached, so the content it is waiting for
+ * can never be added — the section would be permanently empty and only
+ * deletable.
+ */
+const sectionGuard = (
+  { show, hasContent, editing }: { show?: boolean; hasContent: boolean; editing?: boolean },
+  label: string,
+): React.ReactElement | null => {
+  const state = sectionState({ show, hasContent, editing })
+  if (state === 'render') return null
+  // Puck's render signature requires an element, so "nothing" is an empty
+  // fragment rather than null.
+  return state === 'placeholder' ? <HiddenHere label={label} /> : <></>
+}
+
 /** What every block can read off Puck's metadata. */
 type BlockMeta = { joinUrl?: string; joinLabel?: string } | undefined
 
@@ -180,6 +230,7 @@ export type Blocks = {
     showMenu?: boolean
   }
   Hero: {
+    show?: boolean
     eyebrow?: string
     heading?: string
     deck?: string
@@ -188,6 +239,7 @@ export type Blocks = {
     ctaLabel?: string
     ctaHref?: string
     ctaMicro?: string
+    image?: PickedImage
   }
   HostedBy: {
     label?: string
@@ -206,17 +258,19 @@ export type Blocks = {
       href?: string
     }[]
   }
-  DarkCard: { eyebrow?: string; heading?: string; body?: string; kicker?: string }
+  DarkCard: { show?: boolean; eyebrow?: string; heading?: string; body?: string; kicker?: string }
   BulletList: {
+    show?: boolean
     eyebrow?: string
     leadIn?: string
-    bullets?: { lead?: string; text?: string }[]
+    bullets?: { lead?: string; text?: string; show?: boolean }[]
     ctaLabel?: string
     ctaHref?: string
     ctaMicro?: string
   }
   FormulaBar: { terms?: { term: string }[]; result?: string; caption?: string; note?: string }
   CardRow: {
+    show?: boolean
     eyebrow?: string
     heading?: string
     body?: string
@@ -224,6 +278,7 @@ export type Blocks = {
     background?: 'white' | 'wash'
   }
   Speakers: {
+    show?: boolean
     eyebrow?: string
     heading?: string
     ctaLabel?: string
@@ -239,6 +294,7 @@ export type Blocks = {
     }[]
   }
   CtaCard: {
+    show?: boolean
     eyebrow?: string
     heading?: string
     body?: string
@@ -248,7 +304,7 @@ export type Blocks = {
   }
   PageHeading: { eyebrow?: string; heading?: string; body?: string }
   LegalText: { heading?: string; body?: string }
-  Prose: { eyebrow?: string; heading?: string; body?: string; background?: 'white' | 'wash' }
+  Prose: { show?: boolean; eyebrow?: string; heading?: string; body?: string; background?: 'white' | 'wash' }
   FormEmbed: {
     formId?: string
     title?: string
@@ -269,6 +325,80 @@ export type Blocks = {
     statChange?: string
     body?: string
     note?: string
+  }
+  StatStrip: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    stats?: { value?: string; label?: string }[]
+  }
+  LogoTicker: {
+    show?: boolean
+    heading?: string
+    logos?: { image?: PickedImage; name?: string; href?: string; show?: boolean }[]
+  }
+  QuestionList: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    body?: string
+    questions?: { text?: string }[]
+  }
+  CaseStudy: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    body?: string
+    statBefore?: string
+    statAfter?: string
+    statChange?: string
+    shots?: { image?: PickedImage; caption?: string }[]
+    note?: string
+    background?: 'white' | 'wash'
+  }
+  Testimonials: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    items?: {
+      quote?: string
+      name?: string
+      business?: string
+      title?: string
+      href?: string
+      photo?: PickedImage
+    }[]
+  }
+  FitLists: {
+    show?: boolean
+    eyebrow?: string
+    forHeading?: string
+    forItems?: { text?: string }[]
+    notHeading?: string
+    notItems?: { text?: string }[]
+  }
+  PricingCard: {
+    show?: boolean
+    eyebrow?: string
+    name?: string
+    price?: string
+    interval?: string
+    compareAt?: string
+    body?: string
+    benefits?: { text?: string }[]
+    ctaLabel?: string
+    checkoutUrl?: string
+    terms?: string
+    risk?: string
+    founding?: string
+    cap?: string
+    urgency?: string
+  }
+  Faq: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    items?: { q?: string; a?: string }[]
   }
   PostList: { eyebrow?: string; heading?: string; body?: string; count?: number; ctaLabel?: string }
   Footer: { copyright?: string; links?: { label: string; href: string }[]; note?: string }
@@ -292,7 +422,17 @@ export const config: Config<Blocks> = {
     },
     Body: {
       title: 'Body sections',
-      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'Speakers', 'Proof', 'Prose', 'LegalText'],
+      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'Speakers', 'Prose', 'LegalText'],
+      defaultExpanded: true,
+    },
+    /**
+     * The blocks that sell something. Grouped apart from the body sections
+     * because they are chosen for a different reason — not "what does this
+     * page say next" but "what does a stranger need before they will pay".
+     */
+    Proof: {
+      title: 'Proof and offer',
+      components: ['StatStrip', 'LogoTicker', 'Testimonials', 'CaseStudy', 'Proof', 'QuestionList', 'FitLists', 'PricingCard', 'Faq'],
       defaultExpanded: true,
     },
     'Bottom of page': { title: 'Bottom of page', components: ['PostList', 'CtaCard', 'Footer'] },
@@ -397,6 +537,10 @@ export const config: Config<Blocks> = {
         ctaLabel: { type: 'text', label: 'Button text' },
         ctaHref: linkField,
         ctaMicro: { type: 'text', label: 'Small text beside the button' },
+        image: imageField(
+          'Picture under the headline',
+          'Optional. A photo of David, the community, or a call in progress — wide rather than tall, since it sits under the button.',
+        ),
       },
       defaultProps: {
         eyebrow: 'Free masterclass for LDS e-commerce founders',
@@ -408,7 +552,7 @@ export const config: Config<Blocks> = {
         ctaHref: REGISTER_URL,
         ctaMicro: EVENT_WORKBOOK,
       },
-      render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro, puck }) => (
+      render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro, image, puck }) => (
         <div className="slot hero">
           <div className="slot-in">
             {eyebrow ? <p className="badge">{eyebrow}</p> : null}
@@ -433,6 +577,14 @@ export const config: Config<Blocks> = {
               registrant looks for the link on the day.
             */}
             <JoinLive meta={puck?.metadata as BlockMeta} />
+            {/* Optional, and below the button rather than beside it: the picture
+                is reassurance, and nothing above the call to action should have
+                to load before somebody can act on it. */}
+            {image?.url ? (
+              <div className="heroshot">
+                <BlockImage image={image} sizes="(max-width: 760px) 92vw, 860px" />
+              </div>
+            ) : null}
           </div>
         </div>
       ),
@@ -617,6 +769,7 @@ export const config: Config<Blocks> = {
           getItemSummary: (item) => item?.lead || 'Bullet',
           defaultItemProps: { lead: 'The thing', text: '— what it is and why it matters' },
           arrayFields: {
+            show: showField,
             lead: { type: 'text', label: 'Bold lead' },
             text: { type: 'textarea', label: 'Rest of the line' },
           },
@@ -643,7 +796,10 @@ export const config: Config<Blocks> = {
             {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
             {leadIn ? <p className="leadin">{leadIn}</p> : null}
             <ul className="bullets">
-              {(bullets || []).map((b, i) => (
+              {/* A bullet can be switched off without being deleted — a promise
+                  that is not ready this week is usually ready next week, and
+                  retyping it is how the wording drifts. */}
+              {(bullets || []).filter((b) => b.show !== false).map((b, i) => (
                 <li key={i}>
                   <span className="b-t">
                     {b.lead ? <strong>{b.lead}</strong> : null} {b.text}
@@ -1174,6 +1330,667 @@ export const config: Config<Blocks> = {
       },
     },
 
+    StatStrip: {
+      label: 'Authority strip (stats)',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        stats: {
+          type: 'array',
+          label: 'Points',
+          getItemSummary: (item) => item?.label || 'Point',
+          defaultItemProps: { value: '', label: 'What you have done' },
+          arrayFields: {
+            value: { type: 'text', label: 'Number (optional)' },
+            label: { type: 'text', label: 'What it says' },
+          },
+        },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: 'Who you are listening to',
+        heading: 'Advice from someone who has actually been in the arena.',
+        stats: [
+          { value: '', label: 'Built and operated e-commerce businesses' },
+          { value: '', label: 'Sold an e-commerce business' },
+          { value: '', label: 'Fractional CMO to multiple Shopify brands' },
+          { value: '', label: 'Meta ads, Klaviyo and conversion work' },
+        ],
+      },
+      /**
+       * The number is optional, and most of these have none.
+       *
+       * "Sold an e-commerce business" is a stronger line than any figure, and
+       * inventing "$4M managed" to fill the slot would be the one thing this
+       * page cannot afford. So a point with no number sets its words larger and
+       * the row still reads as a row.
+       */
+      render: ({ show, eyebrow, heading, stats, puck }) => {
+        const items = filled(stats, (stat) => hasText(stat.label))
+        const guard = sectionGuard(
+          { show, hasContent: items.length > 0, editing: puck?.isEditing },
+          'Authority strip — add a point to publish',
+        )
+        if (guard) return guard
+        return (
+          <div className="slot wash">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              <div className="statstrip">
+                {items.map((stat, i) => (
+                  <div className={hasText(stat.value) ? 'statitem' : 'statitem statitem-words'} key={i}>
+                    {hasText(stat.value) ? <p className="statvalue">{stat.value}</p> : null}
+                    <p className="statlabel">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      },
+    },
+
+    LogoTicker: {
+      label: 'Brand logo ticker',
+      fields: {
+        show: showField,
+        heading: { type: 'text', label: 'Line above the logos' },
+        logos: {
+          type: 'array',
+          label: 'Brands',
+          getItemSummary: (item) => item?.name || 'Brand',
+          defaultItemProps: { image: undefined, name: '', href: '', show: true },
+          arrayFields: {
+            image: imageField(
+              'Logo',
+              'Their own logo on a transparent background. Wide lockups work best — it is shown at about 120px tall.',
+            ),
+            name: { type: 'text', label: 'Brand name (read aloud to screen readers)' },
+            href: { type: 'text', label: 'Link (optional)' },
+            show: showField,
+          },
+        },
+      },
+      defaultProps: {
+        show: true,
+        /**
+         * "Had the opportunity to work with" is a claim about breadth that is
+         * simply true. "Brands I've scaled" claims sole responsibility for other
+         * people's growth, which is both unprovable and the kind of thing an
+         * operator reads straight through. The case studies below make the
+         * stronger claims, where there are receipts.
+         */
+        heading: 'E-commerce brands I’ve had the opportunity to work with',
+        logos: [],
+      },
+      render: ({ show, heading, logos, puck }) => {
+        const items = filled(logos, (logo) => Boolean(logo.image?.url) && logo.show !== false)
+        const guard = sectionGuard(
+          { show, hasContent: items.length > 0, editing: puck?.isEditing },
+          'Logo ticker — upload a logo to publish',
+        )
+        if (guard) return guard
+
+        const one = (logo: (typeof items)[number], i: number, clone: boolean) => {
+          const mark = (
+            <span className="tickerlogo" key={`${clone ? 'b' : 'a'}-${i}`}>
+              <BlockImage image={logo.image} fallbackAlt={logo.name || ''} sizes="200px" />
+            </span>
+          )
+          if (clone || !logo.href) return mark
+          return (
+            <a className="tickerlink" href={toHref(logo.href)} target="_blank" rel="noopener" key={`a-${i}`}>
+              {mark}
+            </a>
+          )
+        }
+
+        return (
+          <div className="logobar">
+            {heading ? <p className="logobar-label">{heading}</p> : null}
+            {/*
+              Two copies of the row, the second hidden from assistive tech, so
+              the animation can translate by exactly half its width and start
+              again with no visible seam. The clone is `aria-hidden` because a
+              screen reader reading every brand name twice is worse than not
+              having the effect at all.
+
+              `.ticker` pauses on hover and on keyboard focus, and the
+              stylesheet's existing `prefers-reduced-motion` rule stops the
+              animation dead for anyone who has asked for that — where it
+              degrades to a plain wrapping row rather than to nothing.
+            */}
+            <div className="ticker">
+              <div className="ticker-track">
+                <div className="ticker-set">{items.map((logo, i) => one(logo, i, false))}</div>
+                <div className="ticker-set" aria-hidden="true">
+                  {items.map((logo, i) => one(logo, i, true))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+    },
+
+    QuestionList: {
+      label: 'Questions you can bring',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        body: { type: 'textarea', label: 'Intro paragraph' },
+        questions: {
+          type: 'array',
+          label: 'Questions',
+          getItemSummary: (item) => item?.text || 'Question',
+          defaultItemProps: { text: 'A question a founder would actually ask' },
+          arrayFields: { text: { type: 'text', label: 'The question' } },
+        },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: 'Bring the real one',
+        heading: 'The questions people actually turn up with.',
+        body: '',
+        questions: [
+          { text: 'Should I run this promotion?' },
+          { text: 'Why aren’t my Meta ads working?' },
+          { text: 'What should I email my list this week?' },
+          { text: 'How should I launch this new product?' },
+          { text: 'Is my website the problem?' },
+          { text: 'Should I raise my price?' },
+          { text: 'Which marketing project should I work on first?' },
+          { text: 'What should my Q4 plan actually look like?' },
+        ],
+      },
+      render: ({ show, eyebrow, heading, body, questions, puck }) => {
+        const items = filled(questions, (q) => hasText(q.text))
+        const guard = sectionGuard(
+          { show, hasContent: items.length > 0, editing: puck?.isEditing },
+          'Questions — add one to publish',
+        )
+        if (guard) return guard
+        return (
+          <div className="slot">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              <Paragraphs text={body} className="lede" />
+              {/* Real text in a list, not a graphic — these have to be readable
+                  at 390px, and they are the section most likely to be skimmed. */}
+              <ul className="qlist">
+                {items.map((q, i) => (
+                  <li className="qcard" key={i}>
+                    {q.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )
+      },
+    },
+
+    CaseStudy: {
+      label: 'Case study',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Result headline' },
+        body: { type: 'textarea', label: 'What we did (blank line = new paragraph)' },
+        statBefore: { type: 'text', label: 'Stat: before' },
+        statAfter: { type: 'text', label: 'Stat: after' },
+        statChange: { type: 'text', label: 'Stat: the change (emphasised)' },
+        shots: {
+          type: 'array',
+          label: 'Screenshots',
+          getItemSummary: (item) => item?.caption || 'Screenshot',
+          defaultItemProps: { image: undefined, caption: '' },
+          arrayFields: {
+            image: imageField(
+              'Screenshot',
+              'Shopify, Klaviyo or Meta. Crop to the numbers before uploading — a whole browser window shrinks the figures to nothing on a phone.',
+            ),
+            caption: { type: 'text', label: 'Caption under it' },
+          },
+        },
+        note: { type: 'textarea', label: 'Context / small print' },
+        background: {
+          type: 'radio',
+          label: 'Background',
+          options: [
+            { label: 'White', value: 'white' },
+            { label: 'Off-white', value: 'wash' },
+          ],
+        },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: 'Case study',
+        heading: 'The result, in one line.',
+        body: 'What was actually done, in two or three sentences.',
+        statBefore: '',
+        statAfter: '',
+        statChange: '',
+        shots: [],
+        note: '',
+        background: 'white',
+      },
+      /**
+       * Publishes its words without a screenshot — the one rule that separates
+       * this from the `Proof` block above it.
+       *
+       * `Proof` is David's own store, where the screenshot *is* the claim, so it
+       * hides without one. A case study is a described piece of work: the
+       * numbers are real and quotable as text, and waiting for a cropped
+       * screenshot would mean launching a sales page with no evidence on it at
+       * all. The image, when it lands, makes a true thing more believable.
+       */
+      render: ({ show, eyebrow, heading, body, statBefore, statAfter, statChange, shots, note, background, puck }) => {
+        const images = filled(shots, (shot) => Boolean(shot.image?.url))
+        const guard = sectionGuard(
+          { show, hasContent: hasText(heading) || hasText(body), editing: puck?.isEditing },
+          'Case study — add a headline to publish',
+        )
+        if (guard) return guard
+        return (
+          <div className={background === 'wash' ? 'slot wash' : 'slot'}>
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              <Paragraphs text={body} className="lede" />
+
+              {statBefore || statAfter || statChange ? (
+                <p className="proofstat">
+                  {statBefore ? <span className="proofstat-was">{statBefore}</span> : null}
+                  {statBefore && statAfter ? <span className="proofstat-to">→</span> : null}
+                  {statAfter ? <span className="proofstat-now">{statAfter}</span> : null}
+                  {statChange ? <span className="proofstat-change">{statChange}</span> : null}
+                </p>
+              ) : null}
+
+              {images.length ? (
+                <div className={`proofshots cols-${Math.min(images.length, 2)}`}>
+                  {images.map((shot, i) => (
+                    <figure className="proofshot" key={i}>
+                      {/* A plain link to the file, so a screenshot can be opened
+                          full size on a phone without shipping a lightbox. */}
+                      <a href={shot.image?.url} target="_blank" rel="noopener">
+                        <BlockImage
+                          image={shot.image}
+                          fallbackAlt={shot.caption || heading || ''}
+                          sizes="(max-width: 760px) 92vw, 440px"
+                        />
+                      </a>
+                      {shot.caption ? <figcaption className="proofshot-when">{shot.caption}</figcaption> : null}
+                    </figure>
+                  ))}
+                </div>
+              ) : null}
+
+              {note ? <p className="proofnote">{note}</p> : null}
+            </div>
+          </div>
+        )
+      },
+    },
+
+    Testimonials: {
+      label: 'Testimonials',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        items: {
+          type: 'array',
+          label: 'Testimonials',
+          getItemSummary: (item) => item?.name || 'Testimonial',
+          defaultItemProps: { quote: '', name: '', business: '', title: '', href: '', photo: undefined },
+          arrayFields: {
+            quote: { type: 'textarea', label: 'What they said' },
+            name: { type: 'text', label: 'Name' },
+            business: { type: 'text', label: 'Business' },
+            title: { type: 'text', label: 'Their role (optional)' },
+            href: { type: 'text', label: 'Link to their store (optional)' },
+            photo: imageField('Headshot', 'Square works best. Optional — initials are shown without one.'),
+          },
+        },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: '',
+        heading: '',
+        items: [],
+      },
+      /**
+       * One block for both jobs. A single testimonial sets as a large
+       * pull-quote, several set as a grid — which is what the page actually
+       * needs at the top, the middle and beside the final button, and is one
+       * block to learn instead of two nearly identical ones.
+       */
+      render: ({ show, eyebrow, heading, items, puck }) => {
+        const quotes = filled(items, (item) => hasText(item.quote))
+        const guard = sectionGuard(
+          { show, hasContent: quotes.length > 0, editing: puck?.isEditing },
+          'Testimonials — add a quote to publish',
+        )
+        if (guard) return guard
+
+        const initials = (name?: string) =>
+          (name || '')
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase() ?? '')
+            .join('')
+
+        const who = (item: (typeof quotes)[number]) => (
+          <div className="tsay">
+            {item.photo?.url ? (
+              <span className="tphoto">
+                <BlockImage image={item.photo} fallbackAlt={item.name || ''} sizes="72px" />
+              </span>
+            ) : initials(item.name) ? (
+              <span className="tphoto" aria-hidden="true">
+                {initials(item.name)}
+              </span>
+            ) : null}
+            <div>
+              {item.name ? <p className="tname">{item.name}</p> : null}
+              {item.business || item.title ? (
+                <p className="trole">
+                  {[item.title, item.business].filter(Boolean).join(', ')}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        )
+
+        const solo = quotes.length === 1
+
+        return (
+          <div className="slot wash">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              {solo ? (
+                <figure className="pullquote">
+                  <blockquote>
+                    <Paragraphs text={quotes[0].quote} />
+                  </blockquote>
+                  <figcaption>{who(quotes[0])}</figcaption>
+                </figure>
+              ) : (
+                <div className="tgrid">
+                  {quotes.map((item, i) => (
+                    <figure className="tcard" key={i}>
+                      <blockquote>
+                        <Paragraphs text={item.quote} />
+                      </blockquote>
+                      <figcaption>{who(item)}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      },
+    },
+
+    FitLists: {
+      label: 'Who it is for',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        forHeading: { type: 'text', label: 'Left heading' },
+        forItems: {
+          type: 'array',
+          label: 'This is for you if…',
+          getItemSummary: (item) => item?.text || 'Point',
+          defaultItemProps: { text: 'Something true of the right person' },
+          arrayFields: { text: { type: 'text', label: 'Point' } },
+        },
+        notHeading: { type: 'text', label: 'Right heading' },
+        notItems: {
+          type: 'array',
+          label: 'Probably not if…',
+          getItemSummary: (item) => item?.text || 'Point',
+          defaultItemProps: { text: 'Something true of the wrong person' },
+          arrayFields: { text: { type: 'text', label: 'Point' } },
+        },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: 'Fit',
+        forHeading: 'This is probably for you if…',
+        forItems: [],
+        notHeading: 'Probably not for you if…',
+        notItems: [],
+      },
+      /**
+       * Both columns, side by side, and the right-hand one kept gentle.
+       *
+       * Disqualifying people is what makes the left column believable — a page
+       * that claims to suit everybody is selling to nobody. It only works if the
+       * "not for you" list reads as honest sorting rather than as a dig, so it
+       * is set in the same quiet type as everything else, not in warning red.
+       */
+      render: ({ show, eyebrow, forHeading, forItems, notHeading, notItems, puck }) => {
+        const yes = filled(forItems, (item) => hasText(item.text))
+        const no = filled(notItems, (item) => hasText(item.text))
+        const guard = sectionGuard(
+          { show, hasContent: yes.length > 0 || no.length > 0, editing: puck?.isEditing },
+          'Who it is for — add a point to publish',
+        )
+        if (guard) return guard
+        return (
+          <div className="slot">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              <div className="fitcols">
+                {yes.length ? (
+                  <div className="fitcol">
+                    {forHeading ? <h3>{forHeading}</h3> : null}
+                    <ul className="fitlist fitlist-yes">
+                      {yes.map((item, i) => (
+                        <li key={i}>{item.text}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+                {no.length ? (
+                  <div className="fitcol">
+                    {notHeading ? <h3>{notHeading}</h3> : null}
+                    <ul className="fitlist fitlist-no">
+                      {no.map((item, i) => (
+                        <li key={i}>{item.text}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        )
+      },
+    },
+
+    PricingCard: {
+      label: 'Price and join button',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        name: { type: 'text', label: 'What they are joining' },
+        price: { type: 'text', label: 'Price' },
+        interval: { type: 'text', label: 'Per what' },
+        compareAt: { type: 'text', label: 'Was (optional, struck through)' },
+        body: { type: 'textarea', label: 'Paragraph under the price' },
+        benefits: {
+          type: 'array',
+          label: 'What is included',
+          getItemSummary: (item) => item?.text || 'Benefit',
+          defaultItemProps: { text: 'Something they get' },
+          arrayFields: { text: { type: 'text', label: 'Benefit' } },
+        },
+        ctaLabel: { type: 'text', label: 'Button text' },
+        checkoutUrl: {
+          type: 'text',
+          label: 'Checkout URL',
+          placeholder: 'https://… your GoHighLevel order form',
+        },
+        terms: { type: 'text', label: 'Small print under the button' },
+        risk: { type: 'textarea', label: 'Risk reversal line' },
+        founding: { type: 'text', label: 'Founding-member message (optional)' },
+        cap: { type: 'text', label: 'Enrollment-cap message (optional)' },
+        urgency: { type: 'text', label: 'Urgency message (optional)' },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: 'The offer',
+        name: WEEKLY_NAME,
+        price: WEEKLY_PRICE,
+        interval: WEEKLY_INTERVAL,
+        compareAt: '',
+        body: '',
+        benefits: [],
+        ctaLabel: WEEKLY_CTA,
+        checkoutUrl: WEEKLY_CHECKOUT_URL,
+        terms: WEEKLY_TERMS,
+        risk: 'No long-term contract. Cancel anytime.',
+        /**
+         * The three persuasion levers ship empty, and that is the setting, not
+         * an oversight. A founding-member line, a cap and a countdown are all
+         * true or they are lies, and there is no version of this page where
+         * inventing one is worth what it costs with an audience who will be in
+         * the room every week afterwards.
+         */
+        founding: '',
+        cap: '',
+        urgency: '',
+      },
+      render: ({ show, eyebrow, name, price, interval, compareAt, body, benefits, ctaLabel, checkoutUrl, terms, risk, founding, cap, urgency, puck }) => {
+        const includes = filled(benefits, (item) => hasText(item.text))
+        const guard = sectionGuard(
+          { show, hasContent: hasText(price) || hasText(ctaLabel), editing: puck?.isEditing },
+          'Price — add a price or a button to publish',
+        )
+        if (guard) return guard
+        return (
+          /*
+           * A fixed `id`, so every other button on the page can be `#join`.
+           *
+           * That is what keeps the checkout URL in exactly one field. The
+           * alternative — a URL on the hero button as well — means two places to
+           * paste it, which means the day they disagree nobody notices, because
+           * both buttons still work.
+           */
+          <div className="slot wash" id="join">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              <div className="pricecard">
+                {name ? <p className="pricename">{name}</p> : null}
+                <p className="priceline">
+                  {compareAt ? <span className="pricewas">{compareAt}</span> : null}
+                  <span className="pricenow">{price}</span>
+                  {interval ? <span className="priceper">{interval}</span> : null}
+                </p>
+                <Paragraphs text={body} className="pricebody" />
+
+                {includes.length ? (
+                  <ul className="pricelist">
+                    {includes.map((item, i) => (
+                      <li key={i}>{item.text}</li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {founding || cap || urgency ? (
+                  <p className="pricenote">{[founding, cap, urgency].filter(Boolean).join(' · ')}</p>
+                ) : null}
+
+                <JoinButton
+                  label={ctaLabel}
+                  href={checkoutUrl}
+                  where="pricing"
+                  missing={WEEKLY_CHECKOUT_MISSING}
+                  large
+                />
+                {terms ? <p className="formnote">{terms}</p> : null}
+              </div>
+              {risk ? <p className="pricerisk">{risk}</p> : null}
+            </div>
+          </div>
+        )
+      },
+    },
+
+    Faq: {
+      label: 'FAQ',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        items: {
+          type: 'array',
+          label: 'Questions',
+          getItemSummary: (item) => item?.q || 'Question',
+          defaultItemProps: { q: 'A question people ask', a: '' },
+          arrayFields: {
+            q: { type: 'text', label: 'Question' },
+            a: { type: 'textarea', label: 'Answer (leave empty to hide this one)' },
+          },
+        },
+      },
+      defaultProps: {
+        show: true,
+        eyebrow: 'Questions',
+        heading: 'Before you join.',
+        items: [],
+      },
+      /**
+       * An entry with no answer does not publish.
+       *
+       * The point is that questions can be written down before they have been
+       * decided — when the calls are, whether there is a community — without any
+       * risk of the half-finished version reaching a stranger. Fill the answer
+       * in and it appears; until then the question is only in the builder.
+       *
+       * `<details>` rather than a JavaScript accordion: it opens without
+       * scripting, it is keyboard operable and announced correctly for free, and
+       * a browser's find-in-page can search inside a closed one.
+       */
+      render: ({ show, eyebrow, heading, items, puck }) => {
+        const answered = filled(items, (item) => hasText(item.q) && hasText(item.a))
+        const guard = sectionGuard(
+          { show, hasContent: answered.length > 0, editing: puck?.isEditing },
+          'FAQ — answer a question to publish it',
+        )
+        if (guard) return guard
+        return (
+          <div className="slot">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              <div className="faq">
+                {answered.map((item, i) => (
+                  <details className="faqitem" key={i}>
+                    <summary>{item.q}</summary>
+                    <div className="faqanswer">
+                      <Paragraphs text={item.a} />
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      },
+    },
+
     PostList: {
       label: 'Latest from the blog',
       fields: {
@@ -1342,3 +2159,58 @@ export const starterContent = [
   withDefaults('CtaCard', 'starter-cta'),
   withDefaults('Footer', 'starter-footer'),
 ]
+
+/**
+ * Give every section a "Show this section" switch, in one place.
+ *
+ * Seven blocks needed the same three edits — a field, a default, and a guard at
+ * the top of the render — and seven hand-made copies of that is seven chances to
+ * write it slightly differently. Done here it is one rule, and adding an eighth
+ * block to the list is one word.
+ *
+ * `hasContent: true` because these blocks predate the idea: they have always
+ * rendered whatever they were given, and the switch is the only new behaviour.
+ * The newer blocks decide emptiness for themselves, where "empty" actually means
+ * something — a logo bar with no logos.
+ *
+ * Mutating the config after it is defined rather than composing it in: the
+ * alternative is a wrapper around each `render`, which reads worse at every call
+ * site to save one unusual loop in one place. The cast is needed because Puck
+ * types each block's props individually, and this is deliberately the one piece
+ * of code that does not care which block it is holding.
+ */
+const TOGGLEABLE = [
+  'Hero',
+  'Prose',
+  'BulletList',
+  'DarkCard',
+  'CardRow',
+  'Speakers',
+  'CtaCard',
+] as const
+
+type LooseBlock = {
+  label?: string
+  fields: Record<string, unknown>
+  defaultProps?: Record<string, unknown>
+  render: (props: Record<string, unknown>) => React.ReactElement
+}
+
+for (const key of TOGGLEABLE) {
+  const block = (config.components as unknown as Record<string, LooseBlock>)[key]
+  if (!block) continue
+  const inner = block.render
+  // First in the panel: whether a section shows at all is the question you ask
+  // before you edit its words.
+  block.fields = { show: showField, ...block.fields }
+  block.defaultProps = { show: true, ...(block.defaultProps ?? {}) }
+  block.render = (props) =>
+    sectionGuard(
+      {
+        show: props.show as boolean | undefined,
+        hasContent: true,
+        editing: (props.puck as { isEditing?: boolean } | undefined)?.isEditing,
+      },
+      `${block.label ?? key} — hidden`,
+    ) ?? inner(props)
+}

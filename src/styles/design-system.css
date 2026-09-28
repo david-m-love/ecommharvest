@@ -267,6 +267,134 @@ p{margin:0 0 20px;max-width:66ch;color:var(--brown)}
   font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
   color:var(--muted);text-align:center;background:var(--wash2)}
 
+/* ---- the membership pages (/weekly and /join) ---- */
+
+/* Authority strip. A row of short statements, most of which have no number in
+   them — "sold an e-commerce business" is stronger than any figure, and there
+   was never a real number to put there. A point with no number simply sets its
+   words at the larger size instead. */
+.statstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:18px;margin-top:30px}
+.statitem{background:var(--white);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:22px 20px}
+.statvalue{margin:0 0 6px;font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--navy)}
+.statlabel{margin:0;font-size:15px;line-height:1.45;color:var(--muted);max-width:none}
+.statitem-words .statlabel{font-size:16.5px;font-weight:700;color:var(--navy);letter-spacing:-.015em}
+
+/* Logo ticker. Subdued by default so a wall of other people's brand colours
+   does not out-shout the page it is vouching for; full colour on hover. */
+.logobar{background:var(--wash2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:30px 0}
+.logobar-label{max-width:var(--maxw);margin:0 auto 20px;padding:0 32px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);text-align:center}
+.ticker{overflow:hidden;position:relative;
+  /* Fade at both ends so the loop reads as a continuing row rather than as
+     logos being clipped by the edge of the screen. */
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker-track{display:flex;width:max-content;animation:ticker 42s linear infinite}
+.ticker-set{display:flex;align-items:center;gap:56px;padding-right:56px}
+.tickerlogo{display:flex;align-items:center;justify-content:center;height:56px;flex:none}
+.tickerlogo img{max-height:56px;width:auto;max-width:180px;object-fit:contain;
+  filter:grayscale(1);opacity:.62;transition:filter .18s ease,opacity .18s ease}
+.tickerlink:hover .tickerlogo img,.tickerlink:focus-visible .tickerlogo img{filter:none;opacity:1}
+@keyframes ticker{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+/* Pause for anyone reading it, by pointer or by keyboard. */
+.ticker:hover .ticker-track,.ticker:focus-within .ticker-track{animation-play-state:paused}
+/* Asked not to see motion: no animation at all, and the row wraps and centres
+   instead of scrolling — the logos are the point, the movement never was. */
+@media (prefers-reduced-motion:reduce){
+  .ticker{-webkit-mask-image:none;mask-image:none}
+  .ticker-track{animation:none;width:auto;flex-wrap:wrap;justify-content:center}
+  .ticker-set{flex-wrap:wrap;justify-content:center;gap:28px 40px;padding-right:0}
+  .ticker-set[aria-hidden="true"]{display:none}
+}
+
+/* The questions somebody can bring. Real text in a list, deliberately — this is
+   the section most likely to be skimmed on a phone, and it is exactly the kind
+   of thing that ends up baked into an unreadable graphic. */
+.qlist{list-style:none;margin:30px 0 0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px}
+.qcard{background:var(--wash2);border:1px solid var(--line-2);border-left:3px solid var(--gold);
+  border-radius:var(--r-sm);padding:16px 20px;font-size:16.5px;line-height:1.45;
+  color:var(--navy);font-weight:600;letter-spacing:-.012em}
+
+/* Testimonials. One sets as a pull-quote, several as a grid. */
+.pullquote{margin:26px 0 0;background:var(--white);border:1px solid var(--line);
+  border-radius:var(--r);padding:38px 40px}
+.pullquote blockquote{margin:0;padding:0;border:0}
+.pullquote blockquote p{font-size:21px;line-height:1.5;letter-spacing:-.018em;color:var(--navy);
+  max-width:56ch}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:30px}
+.tcard{margin:0;background:var(--white);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:26px 24px}
+.tcard blockquote{margin:0;padding:0;border:0}
+.tcard blockquote p{font-size:16px;line-height:1.55;color:var(--brown);max-width:none}
+.tsay{display:flex;align-items:center;gap:14px;margin-top:20px}
+.tphoto{width:52px;height:52px;flex:none;border-radius:50%;overflow:hidden;
+  background:var(--navy);color:var(--cream);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;letter-spacing:.02em}
+.tphoto img{width:100%;height:100%;object-fit:cover}
+.tname{margin:0;font-weight:800;font-size:15.5px;color:var(--navy);letter-spacing:-.015em}
+.trole{margin:2px 0 0;font-size:14px;color:var(--muted);max-width:none}
+
+/* Who it is for, and who it is not. Both columns in the same quiet type: the
+   right-hand list is honest sorting, not a telling-off, and setting it in
+   warning colours would make it read as one. */
+.fitcols{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:8px}
+.fitcol h3{margin-bottom:14px}
+.fitlist{list-style:none;margin:0;padding:0}
+.fitlist li{position:relative;padding:9px 0 9px 30px;font-size:16.5px;line-height:1.5;
+  color:var(--brown);border-bottom:1px solid var(--line-2)}
+.fitlist li:last-child{border-bottom:0}
+.fitlist li::before{position:absolute;left:4px;top:9px;font-weight:800}
+.fitlist-yes li::before{content:"✓";color:var(--gold-deep)}
+.fitlist-no li::before{content:"–";color:var(--chalk)}
+
+/* The price. One card, centred, with the button in it. */
+.pricecard{background:var(--white);border:1px solid var(--line);border-radius:var(--r);
+  padding:44px 40px;text-align:center;max-width:560px;margin:26px auto 0}
+.pricename{margin:0 0 10px;font-family:var(--mono);font-size:11.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted)}
+.priceline{margin:0 0 18px;display:flex;align-items:baseline;justify-content:center;gap:8px;
+  flex-wrap:wrap}
+.pricewas{font-size:22px;font-weight:700;color:var(--muted);text-decoration:line-through;
+  text-decoration-color:var(--line)}
+.pricenow{font-size:56px;font-weight:800;letter-spacing:-.045em;color:var(--navy);line-height:1}
+.priceper{font-size:19px;font-weight:700;color:var(--muted)}
+.pricebody{font-size:16.5px;color:var(--muted);max-width:42ch;margin:0 auto 20px}
+.pricelist{list-style:none;margin:0 0 26px;padding:0;text-align:left;display:inline-block}
+.pricelist li{position:relative;padding:8px 0 8px 28px;font-size:16px;line-height:1.45;color:var(--brown)}
+.pricelist li::before{content:"✓";position:absolute;left:2px;top:8px;color:var(--gold-deep);font-weight:800}
+.pricenote{margin:0 0 20px;font-size:14.5px;color:var(--gold-deep);font-weight:700;max-width:none}
+.pricerisk{margin:20px auto 0;text-align:center;font-size:15px;color:var(--muted);max-width:44ch}
+
+/* The button before anyone has pasted a checkout URL. Visibly not pressable,
+   rather than a link that silently goes nowhere. */
+.joinsoon{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.btn-off{background:var(--line-2);color:var(--muted);cursor:not-allowed}
+.joinsoon-note{font-size:14px;color:var(--muted)}
+
+/* FAQ. Native <details>, so it opens with no JavaScript, is keyboard operable
+   for free, and find-in-page can search inside a closed answer. */
+.faq{margin-top:26px;border-top:1px solid var(--line-2)}
+.faqitem{border-bottom:1px solid var(--line-2)}
+.faqitem summary{cursor:pointer;list-style:none;padding:18px 34px 18px 0;position:relative;
+  font-size:17.5px;font-weight:700;letter-spacing:-.018em;color:var(--navy)}
+.faqitem summary::-webkit-details-marker{display:none}
+.faqitem summary::after{content:"+";position:absolute;right:6px;top:16px;font-size:22px;
+  font-weight:400;color:var(--gold-deep);line-height:1}
+.faqitem[open] summary::after{content:"–"}
+.faqitem summary:hover{color:var(--gold-deep)}
+.faqanswer{padding:0 34px 20px 0}
+.faqanswer p{margin:0 0 12px;font-size:16.5px;color:var(--brown)}
+.faqanswer p:last-child{margin-bottom:0}
+
+/* The optional picture under the hero's button. */
+.heroshot{margin:34px 0 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.heroshot img{display:block;width:100%;height:auto}
+
 /* ---- bullets ---- */
 .bullets{list-style:none;margin:0;padding:0}
 .bullets li{display:flex;gap:14px;padding:17px 0;border-bottom:1px solid var(--line-2);font-size:17px;line-height:1.5;color:var(--brown)}
@@ -467,6 +595,22 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   .cols-1,.cols-2,.cols-3,.cols-4{grid-template-columns:1fr;gap:14px;margin-top:26px}
   /* Less chrome around a screenshot on a phone: every pixel of padding is a
      pixel off the numbers, which are the only reason the image is here. */
+  /* The membership pages. Two columns of anything is one column here, and the
+     price is the one number that must never wrap. */
+  .fitcols{grid-template-columns:1fr;gap:6px}
+  .statstrip{grid-template-columns:1fr;gap:12px;margin-top:24px}
+  .statitem{padding:18px 18px}
+  .qlist{grid-template-columns:1fr;margin-top:24px}
+  .tgrid{grid-template-columns:1fr;gap:12px;margin-top:24px}
+  .pullquote{padding:28px 22px}
+  .pullquote blockquote p{font-size:19px}
+  .pricecard{padding:32px 22px}
+  .pricenow{font-size:46px}
+  .logobar{padding:24px 0}
+  .logobar-label{padding:0 20px;margin-bottom:16px}
+  .ticker-set{gap:40px;padding-right:40px}
+  .tickerlogo,.tickerlogo img{max-height:44px;height:44px}
+  .faqitem summary{font-size:16.5px;padding-right:30px}
   .proofshot{padding:9px}
   .proofshot-amount{font-size:19px}
   .proofstat{padding:18px 16px;gap:8px 12px}

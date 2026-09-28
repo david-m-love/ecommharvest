@@ -92,8 +92,8 @@ fbq('init','${pixelId}');fbq('track','PageView');`}
       {mode === 'ask' && choice === null ? (
         <div className="consentbar" role="region" aria-label="Advertising cookies">
           <p>
-            We measure how many people register for the masterclass using Meta&rsquo;s pixel. It is
-            not used to build a profile of you, and we never send your name or email to it.{' '}
+            We measure how many people sign up using Meta&rsquo;s pixel. It is not used to build a
+            profile of you, and we never send your name or email to it.{' '}
             <a href={privacyHref}>How we handle data</a>.
           </p>
           <div className="consentbar-actions">

@@ -144,6 +144,11 @@ export const socialImage = (title: string, kicker?: string, when?: string) => {
 export const OWN_ROUTES: Record<string, string> = {
   home: '/',
   masterclass: '/masterclass',
+  // The membership. `/join` is the short page and `/weekly` the long one; both
+  // are real routes rather than /p/ pages because they are what goes in an
+  // email, a text message and an ad.
+  join: '/join',
+  weekly: '/weekly',
   privacy: '/privacy',
   terms: '/terms',
   /**

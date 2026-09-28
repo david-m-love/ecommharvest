@@ -430,6 +430,69 @@ Then `npm test` — `test/event.test.ts` fails and names the file if anything
 still says the old date **or the old running time**. It also checks the UTC times
 match the local ones, and that the day name matches the date.
 
+## eCommHarvest Weekly — the two offer pages
+
+`/join` is the short page; `/weekly` is the long one. Same blocks, different
+number of them, so anything you learn editing one applies to the other.
+
+**Both ship as drafts.** They are not on the internet until you open them in
+`/builder` and publish — and being drafts also keeps them out of the sitemap, so
+nothing is offered to Google before you have read it.
+
+### The one field that takes the money
+
+`/builder` → the page → **Price and join button** → **Checkout URL**. Paste the
+GoHighLevel order form there.
+
+That is the only place on either page holding the address. Every other join
+button is an anchor to `#join` that scrolls down to this card, which is why
+there is one thing to paste rather than three that can drift apart.
+
+**Until it is empty the button is visibly unavailable** — grey, not clickable,
+with "Joining opens shortly" under it. That is deliberate. A join button that
+looks normal and goes nowhere loses the sale silently; one that admits it is not
+ready tells you to go and paste the URL.
+
+### What publishes and what waits
+
+Every section has a **Show this section** switch, and every section also hides
+itself when it has nothing in it. So a page filled in over a week is never
+half-finished in public:
+
+| Section | Publishes when |
+| --- | --- |
+| Brand logo ticker | at least one logo is uploaded |
+| Testimonials | a quote is written — empty slots are skipped |
+| Case study | it has a headline; the screenshot is optional |
+| FAQ | **per question** — an entry with no answer stays hidden |
+| Authority strip | a point has words |
+
+The FAQ behaviour is the useful one: you can write down every question people
+ask now, including the ones you have not decided yet ("When are the calls?",
+"Is there a private community?"), and each appears the moment you answer it.
+
+### Three things deliberately switched off
+
+**Founding-member**, **enrollment-cap** and **urgency** messages are empty
+fields on the pricing card. They are true or they are lies, and this audience
+will be in a room with you every week afterwards. Fill one in only when it is a
+fact.
+
+There is also no guarantee anywhere. The risk reversal says what is actually
+true — no contract, cancel anytime.
+
+### The logo ticker
+
+Upload each logo, give it the brand name (a screen reader reads it), optionally
+a link. It scrolls, pauses when anyone hovers or tabs into it, and does not
+animate at all for visitors who have asked their device for reduced motion.
+
+The default headline is *"E-commerce brands I've had the opportunity to work
+with"* — a claim about breadth that is simply true. Resist "brands I've scaled":
+it claims sole credit for other people's growth, and an operator reads straight
+through it. The case studies underneath make the stronger claims, where there
+are receipts.
+
 ## The proof screenshots
 
 `/builder` → the masterclass page → the **Proof screenshots** block, between
