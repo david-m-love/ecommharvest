@@ -25,10 +25,14 @@ export async function up({ db, payload }: MigrateUpArgs): Promise<void> {
     }
 
     await db.execute(sql`
-      INSERT INTO pages (title, slug, status, description, content, noindex, updated_at, created_at)
+      INSERT INTO pages (title, slug, kind, status, description, content, noindex, updated_at, created_at)
       VALUES (
         ${page.title},
         ${page.slug},
+        -- Explicit, though the column defaults to it: these open the page editor
+        -- in the builder, not the slide editor, and that is worth stating where
+        -- somebody reading this can see it.
+        'page',
         'draft',
         ${page.description},
         ${JSON.stringify(page.content)}::jsonb,

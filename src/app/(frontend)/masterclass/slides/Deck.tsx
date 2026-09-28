@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { deckSlides } from './slides'
 
 /* ============================================================================
    The presentation shell: one slide at a time, and the controls to move.
@@ -58,9 +57,24 @@ const FullscreenIcon = ({ on }: { on: boolean }) => (
   </svg>
 )
 
-export function Deck({ logoUrl }: { logoUrl?: string | null }) {
-  const slides = useMemo(() => deckSlides({ logoUrl }), [logoUrl])
-  const last = slides.length - 1
+/**
+ * One slide, already drawn.
+ *
+ * The deck is handed finished elements rather than data it renders itself: the
+ * slides are built on the server from the page-builder record, and this
+ * component's job is only to decide which one is on screen. `name` and `note`
+ * come along for the jump grid, which is the one place a private note is
+ * allowed to appear.
+ */
+export type DeckSlide = {
+  name: string
+  tone: string
+  note?: string
+  node: React.ReactNode
+}
+
+export function Deck({ slides }: { slides: DeckSlide[] }) {
+  const last = Math.max(slides.length - 1, 0)
 
   const [index, setIndex] = useState(0)
   const [overview, setOverview] = useState(false)
@@ -253,20 +267,14 @@ export function Deck({ logoUrl }: { logoUrl?: string | null }) {
         <div className="deck-progress-bar" style={{ width: `${percent}%` }} />
       </div>
 
-      <div className="deck-stage">
-        <section
-          // The key is what makes React replace the slide rather than patch it,
-          // which is what re-runs the entrance animation on every move.
-          key={index}
-          className={`sl sl-${slide.tone ?? 'light'}`}
-          aria-roledescription="slide"
-          aria-label={`Slide ${index + 1} of ${slides.length}: ${slide.title}`}
-        >
-          {slide.body}
-          {/* The brand, quietly, on every slide but the title — which carries it
-              full size already. */}
-          {index > 0 ? <span className="sl-mark">eCommHarvest</span> : null}
-        </section>
+      <div
+        className="deck-stage"
+        // The key is what makes React replace the slide rather than patch it,
+        // which is what re-runs the entrance animation on every move.
+        key={index}
+        aria-label={`Slide ${index + 1} of ${slides.length}: ${slide?.name ?? ''}`}
+      >
+        {slide?.node}
       </div>
 
       {/* Edge click targets. Invisible until the pointer is near them, so a deck
@@ -360,7 +368,7 @@ export function Deck({ logoUrl }: { logoUrl?: string | null }) {
             {slides.map((entry, i) => (
               <button
                 type="button"
-                key={entry.title}
+                key={`${entry.name}-${i}`}
                 className="deck-tile"
                 aria-current={i === index}
                 onClick={() => {
@@ -369,9 +377,9 @@ export function Deck({ logoUrl }: { logoUrl?: string | null }) {
                 }}
               >
                 <span className="deck-tile-n">
-                  {String(i + 1).padStart(2, '0')} · {(entry.tone ?? 'light').toUpperCase()}
+                  {String(i + 1).padStart(2, '0')} · {(entry.tone || 'light').toUpperCase()}
                 </span>
-                <span className="deck-tile-t">{entry.title}</span>
+                <span className="deck-tile-t">{entry.name}</span>
                 {/* Only ever here: a "placeholder" label belongs in the
                     presenter's own view, never on a shared screen. */}
                 {entry.note ? <span className="deck-tile-note">{entry.note}</span> : null}

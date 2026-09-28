@@ -66,12 +66,24 @@ export default async function BuilderIndex({
           ) : null}
           {error ? <p className="flash flash-error">{error}</p> : null}
 
-          <form action="/api/builder/new" method="post" className="cta-row">
-            <button type="submit" className="btn">
-              New page
-            </button>
-            <span className="cta-micro">Starts from a hero, hosted-by bar, CTA and footer.</span>
-          </form>
+          <div className="cta-row">
+            <form action="/api/builder/new" method="post">
+              <button type="submit" className="btn">
+                New page
+              </button>
+            </form>
+            {/* Same editor, slide layouts instead of page sections — for
+                something presented from the browser rather than scrolled. */}
+            <form action="/api/builder/new" method="post">
+              <input type="hidden" name="kind" value="deck" />
+              <button type="submit" className="btn btn-ghost">
+                New slide deck
+              </button>
+            </form>
+            <span className="cta-micro">
+              A page starts from a hero, CTA and footer. A deck starts from a title slide.
+            </span>
+          </div>
 
           {pages.length === 0 ? (
             <p className="plus" style={{ marginTop: 34 }}>

@@ -39,6 +39,8 @@ export default async function BuilderPage({ params }: { params: Promise<{ id: st
       pageId={numericId}
       title={page.title}
       slug={page.slug}
+      // Which set of blocks the canvas offers: page sections, or slide layouts.
+      kind={page.kind === 'deck' ? 'deck' : 'page'}
       status={page.status === 'published' ? 'published' : 'draft'}
       canPublish={can(user, 'pages:publish')}
       initialData={(page.content as Data | null) ?? null}

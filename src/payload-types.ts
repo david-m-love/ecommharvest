@@ -162,6 +162,10 @@ export interface Page {
    */
   slug: string;
   /**
+   * A page is sections down a page. A deck is slides, presented from the browser.
+   */
+  kind?: ('page' | 'deck') | null;
+  /**
    * Drafts are visible only to your team.
    */
   status?: ('draft' | 'published') | null;
@@ -675,6 +679,7 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   seoTitle?: T;
   slug?: T;
+  kind?: T;
   status?: T;
   description?: T;
   content?: T;
