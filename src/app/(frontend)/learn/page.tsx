@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { AppBar } from '@/components/AppBar'
 import { requireUser } from '@/lib/auth'
-import { accessibleCourseIds, payload } from '@/lib/entitlements'
+import { accessibleCourseIds, hasMembership, payload } from '@/lib/entitlements'
 
 export const metadata: Metadata = {
   title: 'My courses',
@@ -14,7 +14,7 @@ export default async function LearnPage() {
   const user = await requireUser('/learn')
   const p = await payload()
 
-  const [courses, unlocked] = await Promise.all([
+  const [courses, unlocked, inCommunity] = await Promise.all([
     p.find({
       collection: 'courses',
       where: { _status: { equals: 'published' } },
@@ -24,6 +24,8 @@ export default async function LearnPage() {
       overrideAccess: true,
     }),
     accessibleCourseIds(user),
+    // So the Community tab appears here too, for the members it belongs to.
+    hasMembership(user),
   ])
 
   // One query for all of this user's completions, rather than one per course.
@@ -61,7 +63,7 @@ export default async function LearnPage() {
 
   return (
     <>
-      <AppBar user={user} current="learn" />
+      <AppBar user={user} current="learn" community={inCommunity} />
       <main className="shell">
         <div className="pagehead">
           <h1>{user.name ? `Welcome back, ${user.name.split(' ')[0]}.` : 'My courses'}</h1>

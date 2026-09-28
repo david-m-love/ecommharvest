@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto'
 
 import { payload } from '@/lib/entitlements'
+import { withinLimit } from '@/lib/rate-limit'
 
 /**
  * Passwordless sign-in tokens.
@@ -14,7 +15,6 @@ import { payload } from '@/lib/entitlements'
 
 const TOKEN_TTL_MS = 15 * 60 * 1000
 const KEY_PREFIX = 'magic:'
-const RATE_PREFIX = 'magic-rate:'
 const MAX_REQUESTS_PER_HOUR = 5
 
 type TokenRecord = { email: string; expiresAt: number; next?: string }
@@ -56,22 +56,20 @@ export const consumeLoginToken = async (
 /**
  * Per-email hourly cap, so the endpoint cannot be used to mail-bomb someone.
  * Keyed on email rather than IP because the abuse we care about is inbox spam.
+ *
+ * The counting now lives in `lib/rate-limit.ts`, shared with the community, so
+ * there is one limiter in the app rather than one per feature. `failOpen` is
+ * false here for the reason spelled out there: a broken limiter must stop the
+ * send rather than wave it through.
  */
-export const withinRateLimit = async (email: string): Promise<boolean> => {
-  const p = await payload()
-  const key = `${RATE_PREFIX}${email.toLowerCase()}`
-  const now = Date.now()
-  const existing = await p.kv.get<{ count: number; windowStart: number }>(key)
-
-  if (!existing || now - existing.windowStart > 60 * 60 * 1000) {
-    await p.kv.set(key, { count: 1, windowStart: now })
-    return true
-  }
-  if (existing.count >= MAX_REQUESTS_PER_HOUR) return false
-
-  await p.kv.set(key, { count: existing.count + 1, windowStart: existing.windowStart })
-  return true
-}
+export const withinRateLimit = async (email: string): Promise<boolean> =>
+  withinLimit({
+    bucket: 'magic-link',
+    subject: email,
+    max: MAX_REQUESTS_PER_HOUR,
+    windowMs: 60 * 60 * 1000,
+    failOpen: false,
+  })
 
 /**
  * Best-effort sweep of expired tokens. The KV adapter has no TTL, so without

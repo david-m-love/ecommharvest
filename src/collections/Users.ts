@@ -80,6 +80,25 @@ export const Users: CollectionConfig = {
   fields: [
     { name: 'name', type: 'text' },
     {
+      /**
+       * The byline in the community, and the only thing other members see.
+       *
+       * Separate from `name` because they answer to different people: `name` is
+       * the record we hold, filled in from a registration form and edited by an
+       * admin, while this is what the person chooses to be called in a room
+       * full of their competitors. Where it is empty the reader falls back
+       * through `name` to the local part of the email — never to the address
+       * itself, which is not ours to publish.
+       */
+      name: 'displayName',
+      type: 'text',
+      maxLength: 60,
+      admin: {
+        description:
+          'Shown on this person’s community posts. Members set their own; leave blank to fall back to their name.',
+      },
+    },
+    {
       name: 'roles',
       type: 'select',
       hasMany: true,

@@ -917,3 +917,93 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
    whether there is one paragraph or three. */
 .final-lead{color:var(--chalk);font-size:17.5px;line-height:1.62;max-width:48ch;margin:0 auto 16px}
 .finalcard .btn{margin-top:18px}
+
+/* ---- the community ----
+   A reading room, not a feed. Everything here is tuned for the same thing: a
+   question you can find again in March, and an answer you can read without
+   fighting the layout.
+
+   Deliberately reuses the member-area furniture — .shell, .pagehead, .empty,
+   .minibtn — so the room looks like the rest of the signed-in site rather than
+   like a bolted-on forum. */
+
+/* The call panel, above the feed. Cream rather than white so it reads as
+   standing apart from the questions without needing a heavier border. */
+.callcard{background:var(--cream);border:1px solid #E7DAC2;border-radius:var(--r);
+  padding:22px 26px;margin:0 0 30px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
+.callcard-body{flex:1 1 320px;min-width:0}
+.callcard h2{margin:0 0 5px;font-size:18px;letter-spacing:-.02em;color:var(--navy)}
+.callcard p{margin:0;color:var(--brown);font-size:15px}
+.callcard-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* The list of questions. Hairlines rather than cards: a card per question makes
+   twelve questions look like twelve products, and the eye has to re-enter each
+   one. A ruled list reads top to bottom. */
+.threads{border-top:1px solid var(--line-2);margin:0}
+.thread{display:block;text-decoration:none;color:inherit;padding:20px 4px;
+  border-bottom:1px solid var(--line-2);transition:background .12s ease}
+.thread:hover{background:var(--wash2)}
+.thread-top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.thread h2{margin:0;font-size:18.5px;line-height:1.35;letter-spacing:-.022em;color:var(--navy)}
+.thread:hover h2{color:var(--gold-deep)}
+.thread-excerpt{margin:6px 0 0;color:var(--muted);font-size:15px;line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.thread-meta{margin:9px 0 0;display:flex;flex-wrap:wrap;gap:6px 14px;
+  font-size:13px;color:var(--muted)}
+.thread-meta b{font-weight:600;color:var(--brown)}
+
+/* Small state markers. Uppercase mono, like the table headers, so they read as
+   labels rather than as words in the sentence. */
+.tag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap;
+  background:var(--cream);color:var(--brown);border:1px solid #E7DAC2}
+.tag-locked{background:var(--line-2);color:var(--muted);border-color:var(--line)}
+
+/* One thread. Narrower than the feed on purpose — this is the only page on the
+   signed-in site with long prose on it, and 1120px of it is unreadable. */
+.threadwrap{max-width:760px}
+.threadhead{margin:0 0 6px}
+.threadhead h1{font-size:clamp(25px,3.2vw,33px);line-height:1.22;margin:0 0 10px;max-width:26ch}
+.post{padding:22px 0;border-bottom:1px solid var(--line-2)}
+.post-by{display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 11px;margin:0 0 10px;font-size:13.5px;color:var(--muted)}
+.post-by b{font-weight:700;color:var(--navy);font-size:14.5px}
+.post-body p{margin:0 0 13px;font-size:16.5px;line-height:1.66;color:var(--brown);
+  /* Member-written text, so it may contain a URL longer than the column. */
+  overflow-wrap:anywhere}
+.post-body p:last-child{margin-bottom:0}
+.post-first .post-body p{font-size:17.5px}
+.post-mod{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+
+.replyhead{margin:30px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted)}
+
+/* Composer and reply box. One set of rules for both, because they are the same
+   thing at two sizes. */
+.composer{margin:26px 0 0}
+.composer label{display:block;font-size:13.5px;font-weight:700;color:var(--navy);margin:0 0 7px}
+.composer input[type=text],.composer textarea{width:100%;font-family:var(--font);font-size:16px;
+  line-height:1.6;color:var(--ink);background:var(--white);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:13px 15px;margin:0 0 18px;display:block}
+.composer textarea{min-height:170px;resize:vertical}
+.composer input:focus-visible,.composer textarea:focus-visible{outline:2px solid var(--gold-deep);outline-offset:2px}
+.composer .hint{font-size:13px;color:var(--muted);margin:-12px 0 18px}
+.composer-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+
+/* The error a form post bounces back with. Loud enough to find, quiet enough
+   not to look like the page broke. */
+.notice{border:1px solid #E8BFA0;background:#FBEAE0;color:#7A3E17;border-radius:var(--r-sm);
+  padding:13px 16px;margin:0 0 22px;font-size:15px}
+.notice-ok{border-color:#BFD8C2;background:#EAF4EC;color:#2E5A38}
+
+@media(max-width:760px){
+  .callcard{padding:18px 18px;gap:12px}
+  .thread{padding:17px 2px}
+  .thread h2{font-size:17.5px}
+  .composer textarea{min-height:150px}
+}
+
+/* A cell holding a state and the two or three things you can do to it. Stacked
+   rather than inline, because "Cancel" and "Remove now" mean different things
+   and a row of them reads as one control. */
+.cellstack{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.cellstack .cellsub{display:block}

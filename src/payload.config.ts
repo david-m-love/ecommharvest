@@ -17,7 +17,9 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Progress } from './collections/Progress'
 import { Registrations } from './collections/Registrations'
+import { Replies } from './collections/Replies'
 import { Roles } from './collections/Roles'
+import { Threads } from './collections/Threads'
 import { Users } from './collections/Users'
 import { SiteStyles } from './globals/SiteStyles'
 
@@ -85,6 +87,8 @@ export default buildConfig({
     Roles,
     Entitlements,
     Progress,
+    Threads,
+    Replies,
     Registrations,
     Media,
     AuditLog,

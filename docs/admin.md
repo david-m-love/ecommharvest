@@ -15,6 +15,8 @@ Login, people, permissions, and a drag-and-drop page builder.
 | `/p/[slug]` | A page you built, live | public once published |
 | `/admin/collections/posts` | Blog posts | `posts:write` |
 | `/blog`, `/blog/[slug]` | The blog, live | public once published |
+| `/members` | Who has access to what, and the buttons to change it | admins only |
+| `/community` | The private member room | anyone with a live Weekly membership |
 
 `/admin` is Payload's panel and `/builder` is the canvas. They are separate
 routes because the canvas needs the whole window — squeezed beside the admin
@@ -594,6 +596,81 @@ stops half the audience doing arithmetic.
   is segmented; renaming it would split people who signed up before the move from
   those who signed up after, for one event.
 
+
+## The community at /community
+
+A private room for paid members: somebody asks a question they are working
+through, David or another member answers, and the answer stays searchable.
+Threads with flat replies — no chat, no DMs, no reactions.
+
+**Who gets in is decided by one thing: a live Weekly membership.** Not by being
+signed in, and not by the `member` role — everybody who has ever asked for a
+sign-in link has one of those, because the masterclass flow creates accounts on
+demand.
+
+Somebody signed in without one sees `/community` explaining that their
+membership is not active, with an address to write to. Not a redirect to
+`/weekly`: that page is a draft until you publish it, so sending them there would
+send them to a 404. The locked page reads no threads at all, so there is nothing
+on it to leak.
+
+### Letting somebody in
+
+`/members` → the **Weekly** column → **Grant**. That is the whole flow for now;
+there is no payment integration yet, so access is given by hand for people who
+have paid. Every change is written to the audit log with your name on it.
+
+### Cancel and Remove now are different, on purpose
+
+| Button | What it does | When |
+| --- | --- | --- |
+| **Cancel** | Sets an end date 30 days out. They keep the room until then. | Somebody cancels their subscription. |
+| **Remove now** | Cuts access off immediately. | Refund, chargeback, or removing somebody from the room. |
+| **Resume** | Clears the end date. | They changed their mind before it ran out. |
+
+Cancelling is not removing. Somebody who cancels on the 3rd of a month they have
+paid for keeps the room until the 30th — taking it away the same afternoon is
+charging for twenty-seven days of nothing. This is also the shape the payment
+webhook will write into later: every renewal pushes the end date forward, so a
+webhook that never arrives means access lapses on its own rather than persisting
+until somebody notices.
+
+### The weekly call
+
+**Site Styles → The weekly member call.** A switch, a link, and a line of free
+text saying when it is. Nothing appears in the community until both the switch is
+on **and** a link is pasted — the same rule the masterclass join link follows, and
+for the same reason: a dead "join the call" link at the top of the room is worse
+than no link.
+
+It is a **different room from the masterclass link**, with its own field. Pasting
+the masterclass URL into the weekly call would put members in the wrong meeting,
+and nothing would look broken.
+
+Set **The call's thread** to the web address ending of a pinned thread and the
+panel links to it, so there is one place to post questions before the call and
+carry on after.
+
+### Moderating
+
+Open any thread as an admin and there are three buttons under the first post:
+
+- **Pin** — sorts it above everything else. This is how the weekly call sits at
+  the top.
+- **Close thread** — no more replies. It stays readable and findable.
+- **Delete** — removes the thread and its replies.
+
+There is a **Remove reply** button under each reply. You can hand these to
+somebody else without making them an admin: `/admin/collections/roles` → a role
+with the **Pin, lock and remove community posts** permission.
+
+### Names
+
+Members set their own name at `/community/profile`. Where somebody has not, their
+posts fall back to the name on their account and then to the part of their email
+before the `@`. **An email address is never shown** — not as a byline, not
+anywhere on the page.
+
 ## The blog
 
 `/admin` → **Site** → **Posts** → **Create new**. Articles live at **`/blog`**.
@@ -909,9 +986,10 @@ npm run test:images                          # 23 checks: upload, resizing, the 
 npm run test:hosts                           # 21 checks: partner logos of three shapes
 npm run test:blog                            # 46 checks: writing, reading, the feed, the renderer
 npm run test:funnel                          # 24 checks: the embedded form, both funnel pages
+npm run test:community                       # 39 checks: the member room, the door, moderation
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
-npm test                                     # 20 checks, no server needed
+npm test                                     # 105 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request

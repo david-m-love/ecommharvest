@@ -50,6 +50,16 @@ export const writeAudit = async (
  * comparing revokedAt before and after, so the log reads as intent rather than
  * as a diff.
  */
+/**
+ * What an entitlement was for, in one readable string.
+ *
+ * An entitlement now points at a course *or* a subscription, so the old
+ * `course:${id}` wrote `course:` with nothing after it for every membership —
+ * a log line that says an access change happened but not what to.
+ */
+const entitlementSubject = (doc: Entitlement): string =>
+  `user:${idOf(doc.user)} ${doc.product ? `product:${doc.product}` : `course:${idOf(doc.course)}`}`
+
 export const auditEntitlementChange: CollectionAfterChangeHook<Entitlement> = async ({
   doc,
   previousDoc,
@@ -73,7 +83,7 @@ export const auditEntitlementChange: CollectionAfterChangeHook<Entitlement> = as
   await writeAudit(req.payload, {
     action,
     actorId: (req.user as User | null)?.id ?? null,
-    subject: `user:${idOf(doc.user)} course:${idOf(doc.course)}`,
+    subject: entitlementSubject(doc),
     detail: {
       entitlementId: doc.id,
       source: doc.source,
@@ -94,7 +104,7 @@ export const auditEntitlementDelete: CollectionAfterDeleteHook<Entitlement> = as
   await writeAudit(req.payload, {
     action: 'entitlement.deleted',
     actorId: (req.user as User | null)?.id ?? null,
-    subject: `user:${idOf(doc.user)} course:${idOf(doc.course)}`,
+    subject: entitlementSubject(doc),
     detail: { entitlementId: doc.id, source: doc.source },
   })
   return doc

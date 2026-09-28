@@ -243,6 +243,78 @@ export const SiteStyles: GlobalConfig = {
     },
     {
       type: 'collapsible',
+      label: 'The weekly member call',
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          /**
+           * A second switch rather than reuse of the masterclass one.
+           *
+           * They obey the same rule — nothing appears unless both the switch and
+           * a link are set, which is why both go through `joinLive()` — but they
+           * are different rooms. Sharing one URL field would put the masterclass
+           * link in the members' community the week after the masterclass, and
+           * the failure would be silent: a live, clickable link to the wrong
+           * meeting.
+           */
+          name: 'showWeeklyCall',
+          label: 'Show the weekly call panel',
+          type: 'checkbox',
+          defaultValue: false,
+          admin: {
+            description:
+              'Puts the call details and the join link at the top of the community. Off until there is a link to give people.',
+          },
+        },
+        {
+          name: 'weeklyCallUrl',
+          label: 'Weekly call link',
+          type: 'text',
+          validate: (value: unknown) =>
+            !value || (typeof value === 'string' && /^https:\/\/\S+$/i.test(value.trim()))
+              ? true
+              : 'Paste the full link, starting with https://',
+          admin: {
+            description:
+              'The recurring Zoom (or other) link members click to join the call. Safe to paste before the switch is on — nothing shows until it is.',
+          },
+        },
+        {
+          name: 'weeklyCallWhen',
+          label: 'When the call is',
+          type: 'text',
+          maxLength: 120,
+          admin: {
+            description:
+              'Free text, shown above the link — for example “Thursdays, 11:00 AM Mountain”. Written out rather than scheduled, so moving a week’s call is a sentence and not a deploy.',
+          },
+        },
+        {
+          name: 'weeklyCallLabel',
+          label: 'What the link says',
+          type: 'text',
+          admin: { description: 'Leave empty for “Join the weekly call →”.' },
+        },
+        {
+          /**
+           * Points at a pinned thread rather than duplicating one.
+           *
+           * The place to post questions before a call and carry on after it is a
+           * thread like any other — searchable, repliable, already built. This
+           * field only says which one, so the panel can link to it.
+           */
+          name: 'weeklyCallThread',
+          label: 'The call’s thread',
+          type: 'text',
+          admin: {
+            description:
+              'The web address ending of the pinned thread for this week’s call — the part after /community/. Leave empty and the panel just shows the link.',
+          },
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
       label: 'Advertising and measurement',
       admin: { initCollapsed: true },
       fields: [

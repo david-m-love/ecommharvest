@@ -36,6 +36,13 @@ export const CAPABILITIES = {
   'registrations:read': 'View and export masterclass registrants',
   'courses:manage': 'Create and edit courses, modules and lessons',
   'media:manage': 'Upload and manage media',
+  /**
+   * Pin, lock and remove community threads and replies. Deliberately separate
+   * from `users:manage`: moderating the room is a job you might hand to a
+   * trusted member, and it should not come bundled with the ability to change
+   * who has access to it.
+   */
+  'community:moderate': 'Pin, lock and remove community posts',
 } as const
 
 export type Capability = keyof typeof CAPABILITIES

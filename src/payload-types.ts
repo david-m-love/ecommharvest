@@ -76,6 +76,8 @@ export interface Config {
     roles: Role;
     entitlements: Entitlement;
     progress: Progress;
+    threads: Thread;
+    replies: Reply;
     registrations: Registration;
     media: Media;
     'audit-log': AuditLog;
@@ -95,6 +97,8 @@ export interface Config {
     roles: RolesSelect<false> | RolesSelect<true>;
     entitlements: EntitlementsSelect<false> | EntitlementsSelect<true>;
     progress: ProgressSelect<false> | ProgressSelect<true>;
+    threads: ThreadsSelect<false> | ThreadsSelect<true>;
+    replies: RepliesSelect<false> | RepliesSelect<true>;
     registrations: RegistrationsSelect<false> | RegistrationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
@@ -198,6 +202,10 @@ export interface User {
   id: number;
   name?: string | null;
   /**
+   * Shown on this person’s community posts. Members set their own; leave blank to fall back to their name.
+   */
+  displayName?: string | null;
+  /**
    * Only admins can change this. The very first account is always created as an admin, whatever this says — otherwise nobody could sign in.
    */
   roles: ('admin' | 'member')[];
@@ -254,6 +262,7 @@ export interface Role {
     | 'registrations:read'
     | 'courses:manage'
     | 'media:manage'
+    | 'community:moderate'
   )[];
   updatedAt: string;
   createdAt: string;
@@ -480,7 +489,14 @@ export interface Lesson {
 export interface Entitlement {
   id: number;
   user: number | User;
-  course: number | Course;
+  /**
+   * For course access. Leave blank for a membership.
+   */
+  course?: (number | null) | Course;
+  /**
+   * For a membership. Leave blank for course access.
+   */
+  product?: 'weekly' | null;
   source: 'manual' | 'stripe' | 'shopify' | 'masterclass';
   /**
    * Stripe session id, Shopify order id, or a note.
@@ -488,11 +504,11 @@ export interface Entitlement {
   sourceReference?: string | null;
   grantedAt: string;
   /**
-   * Leave blank for lifetime access.
+   * Access ends on this date. This is where a cancellation goes — set it to the end of the period they have paid for. Blank means it never lapses.
    */
   expiresAt?: string | null;
   /**
-   * Set to revoke without deleting, so the history survives a refund dispute.
+   * Cuts access off immediately: refunds, chargebacks, removal. Not for cancellations. Stamped rather than deleted so the history survives a dispute.
    */
   revokedAt?: string | null;
   updatedAt: string;
@@ -509,6 +525,47 @@ export interface Progress {
   course?: (number | null) | Course;
   lastPositionSeconds?: number | null;
   completedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "threads".
+ */
+export interface Thread {
+  id: number;
+  /**
+   * The question, as somebody would search for it later.
+   */
+  title: string;
+  /**
+   * Generated from the title when the thread is posted, and then fixed.
+   */
+  slug?: string | null;
+  body: string;
+  author: number | User;
+  /**
+   * Pinned threads sort above everything else.
+   */
+  pinned?: boolean | null;
+  /**
+   * Set to close the thread to new replies. It stays readable.
+   */
+  lockedAt?: string | null;
+  lastReplyAt?: string | null;
+  replyCount?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "replies".
+ */
+export interface Reply {
+  id: number;
+  thread: number | Thread;
+  body: string;
+  author: number | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -616,6 +673,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'progress';
         value: number | Progress;
+      } | null)
+    | ({
+        relationTo: 'threads';
+        value: number | Thread;
+      } | null)
+    | ({
+        relationTo: 'replies';
+        value: number | Reply;
       } | null)
     | ({
         relationTo: 'registrations';
@@ -765,6 +830,7 @@ export interface LessonsSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  displayName?: T;
   roles?: T;
   roleRefs?: T;
   stripeCustomerId?: T;
@@ -803,6 +869,7 @@ export interface RolesSelect<T extends boolean = true> {
 export interface EntitlementsSelect<T extends boolean = true> {
   user?: T;
   course?: T;
+  product?: T;
   source?: T;
   sourceReference?: T;
   grantedAt?: T;
@@ -821,6 +888,33 @@ export interface ProgressSelect<T extends boolean = true> {
   course?: T;
   lastPositionSeconds?: T;
   completedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "threads_select".
+ */
+export interface ThreadsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  body?: T;
+  author?: T;
+  pinned?: T;
+  lockedAt?: T;
+  lastReplyAt?: T;
+  replyCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "replies_select".
+ */
+export interface RepliesSelect<T extends boolean = true> {
+  thread?: T;
+  body?: T;
+  author?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -996,6 +1090,26 @@ export interface SiteStyle {
    */
   joinLiveLabel?: string | null;
   /**
+   * Puts the call details and the join link at the top of the community. Off until there is a link to give people.
+   */
+  showWeeklyCall?: boolean | null;
+  /**
+   * The recurring Zoom (or other) link members click to join the call. Safe to paste before the switch is on — nothing shows until it is.
+   */
+  weeklyCallUrl?: string | null;
+  /**
+   * Free text, shown above the link — for example “Thursdays, 11:00 AM Mountain”. Written out rather than scheduled, so moving a week’s call is a sentence and not a deploy.
+   */
+  weeklyCallWhen?: string | null;
+  /**
+   * Leave empty for “Join the weekly call →”.
+   */
+  weeklyCallLabel?: string | null;
+  /**
+   * The web address ending of the pinned thread for this week’s call — the part after /community/. Leave empty and the panel just shows the link.
+   */
+  weeklyCallThread?: string | null;
+  /**
    * From Meta Events Manager. Just the number. Leave empty and no tracking script is loaded at all. In the UK, EU and Switzerland it will not load until a visitor accepts, and anywhere it is switched off for people whose browser sends a Do Not Track / Global Privacy Control signal.
    */
   metaPixelId?: string | null;
@@ -1051,6 +1165,11 @@ export interface SiteStylesSelect<T extends boolean = true> {
   showJoinLive?: T;
   liveJoinUrl?: T;
   joinLiveLabel?: T;
+  showWeeklyCall?: T;
+  weeklyCallUrl?: T;
+  weeklyCallWhen?: T;
+  weeklyCallLabel?: T;
+  weeklyCallThread?: T;
   metaPixelId?: T;
   gold?: T;
   goldDeep?: T;

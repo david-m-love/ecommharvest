@@ -18,6 +18,13 @@
 /** The wording when nobody has typed any. */
 export const JOIN_LIVE_DEFAULT_LABEL = 'Already registered? Join the live masterclass →'
 
+/**
+ * The same rule, different words: the members' weekly call is a second live
+ * link with its own switch and its own room. Only the fallback wording differs,
+ * which is why it is a label rather than a second function.
+ */
+export const JOIN_CALL_DEFAULT_LABEL = 'Join the weekly call →'
+
 export type JoinLiveSettings = {
   showJoinLive: boolean
   liveJoinUrl: string | null
@@ -33,10 +40,11 @@ export type JoinLiveSettings = {
  */
 export const joinLive = (
   settings: JoinLiveSettings,
+  fallbackLabel: string = JOIN_LIVE_DEFAULT_LABEL,
 ): { joinUrl: string; joinLabel: string } | null =>
   settings.showJoinLive && settings.liveJoinUrl
     ? {
         joinUrl: settings.liveJoinUrl,
-        joinLabel: settings.joinLiveLabel || JOIN_LIVE_DEFAULT_LABEL,
+        joinLabel: settings.joinLiveLabel || fallbackLabel,
       }
     : null

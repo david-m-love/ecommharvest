@@ -36,6 +36,13 @@ export type SiteStyles = {
   showJoinLive: boolean
   /** What the link says. Null means use the built-in wording. */
   joinLiveLabel: string | null
+  /** The recurring members' call. A different room from the masterclass. */
+  showWeeklyCall: boolean
+  weeklyCallUrl: string | null
+  weeklyCallWhen: string | null
+  weeklyCallLabel: string | null
+  /** The slug of the pinned thread for this week's call, if there is one. */
+  weeklyCallThread: string | null
   css: string | null
 }
 
@@ -54,6 +61,10 @@ const VARIABLES: Record<string, string[]> = {
 }
 
 const HEX = /^#[0-9a-fA-F]{6}$/
+
+/** A trimmed string, or null for anything blank or not a string. */
+const text = (value: unknown): string | null =>
+  typeof value === 'string' && value.trim() ? value.trim() : null
 
 /**
  * Logo heights in pixels, keyed by the names offered in Site Styles.
@@ -93,7 +104,7 @@ const LOGO_HEIGHTS_MOBILE: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, liveJoinUrl: null, showJoinLive: false, joinLiveLabel: null, css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, liveJoinUrl: null, showJoinLive: false, joinLiveLabel: null, showWeeklyCall: false, weeklyCallUrl: null, weeklyCallWhen: null, weeklyCallLabel: null, weeklyCallThread: null, css: null }
 
   try {
     const p = await payload()
@@ -175,6 +186,17 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
         typeof styles.joinLiveLabel === 'string' && styles.joinLiveLabel.trim()
           ? styles.joinLiveLabel.trim()
           : null,
+      // The members' call, read exactly like the masterclass link above and
+      // held apart from it on purpose — see the global for why.
+      showWeeklyCall: styles.showWeeklyCall === true,
+      weeklyCallUrl:
+        typeof styles.weeklyCallUrl === 'string' &&
+        /^https:\/\/\S+$/i.test(styles.weeklyCallUrl.trim())
+          ? styles.weeklyCallUrl.trim()
+          : null,
+      weeklyCallWhen: text(styles.weeklyCallWhen),
+      weeklyCallLabel: text(styles.weeklyCallLabel),
+      weeklyCallThread: text(styles.weeklyCallThread)?.replace(/^\/*(community\/)?/, '') || null,
       css: declarations.length ? `:root{${declarations.join(';')}}` : null,
     }
   } catch {

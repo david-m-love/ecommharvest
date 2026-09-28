@@ -3,6 +3,12 @@ import config from '@payload-config'
 
 import type { Course, Lesson, Module, User } from '@/payload-types'
 import { isAdmin } from '@/lib/access'
+import {
+  type MembershipProduct,
+  WEEKLY,
+  liveEntitlement,
+  liveMembershipWhere,
+} from '@/lib/membership'
 
 /**
  * The one function that decides whether someone may watch paid content.
@@ -45,7 +51,6 @@ export const hasCourseAccess = async (
   if (isAdmin(user)) return true
 
   const p = await payload()
-  const now = new Date().toISOString()
 
   const result = await p.find({
     collection: 'entitlements',
@@ -56,15 +61,201 @@ export const hasCourseAccess = async (
       and: [
         { user: { equals: user.id } },
         { course: { equals: courseId } },
-        { revokedAt: { exists: false } },
-        {
-          or: [{ expiresAt: { exists: false } }, { expiresAt: { greater_than: now } }],
-        },
+        ...liveEntitlement(new Date().toISOString()),
       ],
     },
   })
 
   return result.totalDocs > 0
+}
+
+// --- Memberships ---------------------------------------------------------
+
+export { WEEKLY, type MembershipProduct } from '@/lib/membership'
+
+/**
+ * True when this person is a paid-up member of the community.
+ *
+ * The community gates on this and never on `user.roles`. Everyone who has ever
+ * asked for a sign-in link has `roles: ['member']` — the masterclass flow
+ * creates accounts on demand — so a role check would put the entire
+ * registration list in a room that is meant to be a paid one.
+ */
+export const hasMembership = async (
+  user: User | null,
+  product: MembershipProduct = WEEKLY,
+): Promise<boolean> => {
+  if (!user) return false
+  if (isAdmin(user)) return true
+
+  const p = await payload()
+  const result = await p.find({
+    collection: 'entitlements',
+    limit: 1,
+    depth: 0,
+    overrideAccess: true, // the where clause below *is* the check
+    where: liveMembershipWhere(user.id, product),
+  })
+  return result.totalDocs > 0
+}
+
+/** The live membership row, when there is one. Null for admins without one. */
+export const findMembership = async (
+  userId: string | number,
+  product: MembershipProduct = WEEKLY,
+) => {
+  const p = await payload()
+  const { docs } = await p.find({
+    collection: 'entitlements',
+    limit: 1,
+    depth: 0,
+    overrideAccess: true,
+    where: { and: [{ user: { equals: userId } }, { product: { equals: product } }] },
+    sort: '-grantedAt',
+  })
+  return docs[0] ?? null
+}
+
+/**
+ * Start or restore a membership.
+ *
+ * Reuses the existing row rather than stacking duplicates, and clears both
+ * `revokedAt` and `expiresAt` — re-granting after a mistaken revoke, or after a
+ * cancellation the member changed their mind about, should do the obvious
+ * thing rather than leave a date ticking.
+ *
+ * `expiresAt` is left open by default because Phase 1 grants are made by hand
+ * for people who have already paid, and a silent lapse in 30 days with no
+ * webhook to renew it would lock out a paying member. When the payment webhook
+ * lands it will pass an explicit date on every renewal, which is what makes a
+ * missed event self-healing.
+ */
+export const grantMembership = async (args: {
+  userId: string | number
+  product?: MembershipProduct
+  source?: 'manual' | 'stripe' | 'shopify' | 'masterclass'
+  sourceReference?: string
+  expiresAt?: string | null
+  /**
+   * Who is doing this, so the audit log can say.
+   *
+   * Passed to the local API as `user`, which is what puts `req.user` in front
+   * of the audit hook. Without it every membership change is recorded with a
+   * blank actor — and "who removed this member" is exactly the question an
+   * audit log exists to answer. Left optional because the payment webhook in
+   * Phase 2 will have no human behind it, and a blank actor is the honest
+   * answer there.
+   */
+  actor?: User | null
+}) => {
+  const p = await payload()
+  const product = args.product || WEEKLY
+  const existing = await findMembership(args.userId, product)
+
+  const data = {
+    user: numericId(args.userId),
+    product,
+    source: args.source || ('manual' as const),
+    sourceReference: args.sourceReference,
+    grantedAt: new Date().toISOString(),
+    expiresAt: args.expiresAt ?? null,
+    revokedAt: null,
+  }
+
+  if (existing) {
+    return p.update({
+      collection: 'entitlements',
+      id: existing.id,
+      data,
+      overrideAccess: true,
+      user: args.actor ?? undefined,
+    })
+  }
+  return p.create({
+    collection: 'entitlements',
+    data,
+    overrideAccess: true,
+    user: args.actor ?? undefined,
+  })
+}
+
+/** How long a cancelled membership runs on for when no billing date is known. */
+export const DEFAULT_PERIOD_DAYS = 30
+
+/**
+ * Cancel at the end of the paid period.
+ *
+ * Sets `expiresAt` and deliberately does **not** touch `revokedAt`. Somebody
+ * who cancels three days into a month they have paid for keeps the room for the
+ * rest of it; taking it away the moment they click cancel is charging for
+ * twenty-seven days of nothing.
+ *
+ * Returns the date access ends, so the caller can say it out loud.
+ */
+export const cancelMembershipAtPeriodEnd = async (args: {
+  userId: string | number
+  product?: MembershipProduct
+  /** When the paid period actually ends. Defaults to 30 days out. */
+  periodEnd?: string
+  actor?: User | null
+}): Promise<string | null> => {
+  const p = await payload()
+  const existing = await findMembership(args.userId, args.product || WEEKLY)
+  if (!existing || existing.revokedAt) return null
+
+  const periodEnd =
+    args.periodEnd ||
+    new Date(Date.now() + DEFAULT_PERIOD_DAYS * 24 * 60 * 60 * 1000).toISOString()
+
+  await p.update({
+    collection: 'entitlements',
+    id: existing.id,
+    data: { expiresAt: periodEnd },
+    overrideAccess: true,
+    user: args.actor ?? undefined,
+  })
+  return periodEnd
+}
+
+/**
+ * End a membership now: a refund, a chargeback, or somebody being removed.
+ *
+ * Stamps `revokedAt` rather than deleting, so the history survives the dispute
+ * that usually prompts it. Distinct from cancelling on purpose — see above.
+ */
+export const revokeMembership = async (args: {
+  userId: string | number
+  product?: MembershipProduct
+  actor?: User | null
+}): Promise<number> => {
+  const p = await payload()
+  const product = args.product || WEEKLY
+  const { docs } = await p.find({
+    collection: 'entitlements',
+    limit: 10,
+    depth: 0,
+    overrideAccess: true,
+    where: {
+      and: [
+        { user: { equals: args.userId } },
+        { product: { equals: product } },
+        { revokedAt: { exists: false } },
+      ],
+    },
+  })
+
+  await Promise.all(
+    docs.map((doc) =>
+      p.update({
+        collection: 'entitlements',
+        id: doc.id,
+        data: { revokedAt: new Date().toISOString() },
+        overrideAccess: true,
+        user: args.actor ?? undefined,
+      }),
+    ),
+  )
+  return docs.length
 }
 
 /** Every course id the user may play, for rendering lock state on a listing. */
@@ -77,21 +268,27 @@ export const accessibleCourseIds = async (user: User | null): Promise<Set<string
     return new Set(all.docs.map((c) => String(c.id)))
   }
 
-  const now = new Date().toISOString()
   const result = await p.find({
     collection: 'entitlements',
     limit: 1000,
     depth: 0,
     overrideAccess: true,
     where: {
-      and: [
-        { user: { equals: user.id } },
-        { revokedAt: { exists: false } },
-        { or: [{ expiresAt: { exists: false } }, { expiresAt: { greater_than: now } }] },
-      ],
+      and: [{ user: { equals: user.id } }, ...liveEntitlement(new Date().toISOString())],
     },
   })
-  return new Set(result.docs.map((e) => String(idOf(e.course))).filter(Boolean))
+  /**
+   * `idOf` first, then a null check — not `.filter(Boolean)` on the stringified
+   * id. Membership rows live in this table too and carry no course, and
+   * `String(null)` is the truthy string "null", so stringifying first would
+   * quietly put a course called "null" in everybody's unlocked set.
+   */
+  return new Set(
+    result.docs
+      .map((e) => idOf(e.course))
+      .filter((id): id is string | number => id !== null)
+      .map(String),
+  )
 }
 
 /**
