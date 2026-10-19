@@ -54,13 +54,32 @@ const storagePlugins = process.env.BLOB_READ_WRITE_TOKEN
     ]
   : []
 
-// Transactional email. Without a key Payload falls back to logging, which is
-// fine locally — the sign-in route prints the link to the console in dev.
+/**
+ * Transactional email. Without a key Payload falls back to logging, which is
+ * fine locally — the sign-in route prints the link to the console in dev.
+ *
+ * **Two sending subdomains, and they must not be confused.**
+ *
+ *   - `notify.ecommharvest.com` — this app, through Resend. Sign-in links, and
+ *     anything else that gates access.
+ *   - `mail.ecommharvest.com` — GoHighLevel, through Mailgun. Marketing.
+ *
+ * They are deliberately apart. Sharing one subdomain would mix the two
+ * reputations, so a promotion that collected spam complaints would start
+ * pushing sign-in links into junk — and GoHighLevel suppresses mail to anyone
+ * who unsubscribes, which for a login email means a paying member who once left
+ * the newsletter silently cannot get in.
+ *
+ * The from-address therefore has to be on the Resend-verified domain. Only
+ * `notify.ecommharvest.com` is verified there, so anything else is rejected at
+ * the provider — which is why the default below is a full address and not the
+ * bare root domain it used to be.
+ */
 const email = process.env.RESEND_API_KEY
   ? resendAdapter({
       apiKey: process.env.RESEND_API_KEY,
-      defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'hello@ecommharvest.com',
-      defaultFromName: process.env.EMAIL_FROM_NAME || 'eCommHarvest',
+      defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || 'noreply@notify.ecommharvest.com',
+      defaultFromName: process.env.EMAIL_FROM_NAME || 'Notifications',
     })
   : undefined
 

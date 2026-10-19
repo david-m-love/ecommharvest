@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 import { payload } from '@/lib/entitlements'
+import { loginEmail } from '@/lib/login-email'
 import { createLoginToken, pruneExpiredTokens, withinRateLimit } from '@/lib/magic-link'
 
 /**
@@ -71,31 +72,46 @@ export async function POST(request: Request) {
     })
   }
 
-  const token = await createLoginToken(email, next)
+  const { token, reused } = await createLoginToken(email, next)
+  /**
+   * `NEXT_PUBLIC_SERVER_URL` wins over the request origin, which is worth
+   * knowing when testing a preview deployment: if it is set, the emailed link
+   * points wherever it says, not at the preview you requested it from. The
+   * email arrives, the link works, and the test proves nothing about the build
+   * you meant to check.
+   */
   const base = process.env.NEXT_PUBLIC_SERVER_URL || new URL(request.url).origin
   const link = `${base}/api/auth/verify?token=${encodeURIComponent(token)}`
 
   // Payload's fallback adapter logs only the subject, so without this the link
   // is unreachable in local development.
   if (process.env.NODE_ENV !== 'production') {
-    console.log(`\n  Sign-in link for ${email}:\n  ${link}\n`)
+    console.log(`\n  Sign-in link for ${email}${reused ? ' (reused)' : ''}:\n  ${link}\n`)
   }
 
+  const { subject, html, text } = loginEmail(link)
+
   try {
-    await p.sendEmail({
-      to: email,
-      subject: 'Your eCommHarvest sign-in link',
-      html: `
-        <p>Here is your sign-in link. It works once and expires in 15 minutes.</p>
-        <p><a href="${link}">Sign in to eCommHarvest</a></p>
-        <p style="color:#4E627A;font-size:13px">If you did not ask for this, you can ignore it.</p>
-      `,
-    })
+    await p.sendEmail({ to: email, subject, html, text })
   } catch (err) {
-    // With no email adapter configured Payload writes to the console, which is
-    // how this works in local development. A real failure must not 500 the
-    // request and reveal that the address exists.
-    console.error('request-link: sendEmail failed', err)
+    /**
+     * The visitor is told nothing — the response below is identical whether this
+     * worked, failed, or had no adapter at all, because a different answer here
+     * would turn the endpoint into a way to test whether an address has an
+     * account.
+     *
+     * But the *log* has to say what happened. Every interesting failure looks
+     * the same from the outside — no API key, an unverified sending domain, a
+     * provider outage — and the from-address is the usual culprit, so it is
+     * named here rather than left to be inferred. Without this, diagnosing a
+     * silent non-delivery means guessing.
+     */
+    console.error(
+      `request-link: send failed for ${email} ` +
+        `from=${process.env.EMAIL_FROM_ADDRESS || 'noreply@notify.ecommharvest.com (default)'} ` +
+        `adapter=${process.env.RESEND_API_KEY ? 'resend' : 'NONE — RESEND_API_KEY is not set'}: ` +
+        `${err instanceof Error ? err.message : String(err)}`,
+    )
   }
 
   // Opportunistic cleanup; the KV adapter has no TTL of its own.

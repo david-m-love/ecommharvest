@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto'
 
 import { payload } from '@/lib/entitlements'
+import { TOKEN_TTL_MS } from '@/lib/login-email'
 import { withinLimit } from '@/lib/rate-limit'
 
 /**
@@ -11,15 +12,34 @@ import { withinLimit } from '@/lib/rate-limit'
  * would not: it is single-use (consuming it deletes the record, so a forwarded
  * email cannot be replayed), and it carries no readable payload if it leaks
  * into a log or a referrer header.
+ *
+ * `TOKEN_TTL_MS` lives in `login-email.ts` rather than here, because the email
+ * has to state the expiry out loud and two numbers that must agree should be one
+ * number. The email is the thing a person reads; this is the thing that enforces
+ * it.
  */
 
-const TOKEN_TTL_MS = 15 * 60 * 1000
 const KEY_PREFIX = 'magic:'
+/** Reverse index: which token was last emailed to this address, and when. */
+const RECENT_PREFIX = 'magic-recent:'
 const MAX_REQUESTS_PER_HOUR = 5
 
-type TokenRecord = { email: string; expiresAt: number; next?: string }
+/**
+ * How long a second request re-sends the first link instead of minting another.
+ *
+ * Double-submitting a form is the normal case, not the exotic one — the button
+ * gives no feedback while the request is in flight, so people press it again.
+ * Without this they receive two emails holding two different valid links, which
+ * burns two of their five hourly requests and leaves them guessing which one is
+ * current. Ninety seconds covers a double click and an impatient retry without
+ * being long enough to matter if somebody genuinely wants a fresh link.
+ */
+const REUSE_WINDOW_MS = 90 * 1000
 
-export const createLoginToken = async (email: string, next?: string): Promise<string> => {
+type TokenRecord = { email: string; expiresAt: number; next?: string }
+type RecentRecord = { token: string; issuedAt: number }
+
+const mint = async (email: string, next?: string): Promise<string> => {
   const p = await payload()
   const token = randomBytes(32).toString('base64url')
   const record: TokenRecord = {
@@ -28,7 +48,49 @@ export const createLoginToken = async (email: string, next?: string): Promise<st
     next,
   }
   await p.kv.set(`${KEY_PREFIX}${token}`, record)
+  await p.kv.set(`${RECENT_PREFIX}${email.toLowerCase()}`, {
+    token,
+    issuedAt: Date.now(),
+  } satisfies RecentRecord)
   return token
+}
+
+/**
+ * A token to email, reusing the one just sent if the request is a repeat.
+ *
+ * Returns `{ token, reused }` so the caller can tell the two apart in its logs
+ * — "we sent one" and "we sent the same one again" look identical in an inbox
+ * and should not look identical in a log.
+ */
+export const createLoginToken = async (
+  email: string,
+  next?: string,
+): Promise<{ token: string; reused: boolean }> => {
+  const p = await payload()
+  const key = `${RECENT_PREFIX}${email.toLowerCase()}`
+
+  try {
+    const recent = await p.kv.get<RecentRecord>(key)
+    if (recent?.token && Date.now() - recent.issuedAt < REUSE_WINDOW_MS) {
+      /**
+       * The existence check is the part that matters.
+       *
+       * `consumeLoginToken` deletes the record the moment somebody signs in, so
+       * a recent *issue* is not proof of a usable token. Skipping this would
+       * email a dead link to anyone who signed in and immediately asked for
+       * another — which is exactly what somebody does when they land on the
+       * wrong device.
+       */
+      const live = await p.kv.get<TokenRecord>(`${KEY_PREFIX}${recent.token}`)
+      if (live && live.expiresAt > Date.now()) return { token: recent.token, reused: true }
+    }
+  } catch (err) {
+    // A broken reverse index must never stop somebody signing in. Mint a fresh
+    // one and carry on; the cost is one extra email, not a locked door.
+    console.error('magic-link: could not read the recent-token index', err)
+  }
+
+  return { token: await mint(email, next), reused: false }
 }
 
 /**
@@ -81,6 +143,7 @@ export const pruneExpiredTokens = async (): Promise<number> => {
   const keys = await p.kv.keys()
   const now = Date.now()
   let removed = 0
+
   for (const key of keys.filter((k) => k.startsWith(KEY_PREFIX))) {
     const record = await p.kv.get<TokenRecord>(key)
     if (!record || typeof record.expiresAt !== 'number' || record.expiresAt < now) {
@@ -88,5 +151,23 @@ export const pruneExpiredTokens = async (): Promise<number> => {
       removed++
     }
   }
+
+  /**
+   * The reverse index needs sweeping too, or it becomes a permanent record of
+   * every address that ever asked for a link — which is a list of members we
+   * have no reason to keep. It is useless past the reuse window, so that is
+   * when it goes.
+   *
+   * `magic-recent:` does not start with `magic:`, so the loop above leaves these
+   * alone and they would otherwise accumulate forever.
+   */
+  for (const key of keys.filter((k) => k.startsWith(RECENT_PREFIX))) {
+    const record = await p.kv.get<RecentRecord>(key)
+    if (!record || typeof record.issuedAt !== 'number' || now - record.issuedAt > REUSE_WINDOW_MS) {
+      await p.kv.delete(key)
+      removed++
+    }
+  }
+
   return removed
 }

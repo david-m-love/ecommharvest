@@ -82,6 +82,39 @@ minutes.
 Members of the course area sign in differently — `/login` emails them a one-time
 link, no password. Same person, same account, both work.
 
+### The sign-in email
+
+Sent through **Resend**, from `noreply@notify.ecommharvest.com`. The link works
+once and expires in fifteen minutes.
+
+**Two sending subdomains, and they are not interchangeable:**
+
+| Subdomain | Who | What |
+| --- | --- | --- |
+| `notify.ecommharvest.com` | Resend | This app. Sign-in links, and anything else that gates access. |
+| `mail.ecommharvest.com` | GoHighLevel / Mailgun | Marketing. |
+
+Keeping them apart is not tidiness. Sharing one would mix the two reputations,
+so a promotion that collected spam complaints would start pushing sign-in links
+into junk — and GoHighLevel suppresses mail to anyone who unsubscribes, which
+for a login email means a paying member who once left the newsletter silently
+cannot get in.
+
+`RESEND_API_KEY` is set in Vercel. `EMAIL_FROM_ADDRESS` and `EMAIL_FROM_NAME` are
+**optional** and already default correctly in `src/payload.config.ts` — setting
+them to anything outside `notify.ecommharvest.com` would break sending, so leave
+them alone.
+
+**Asking twice sends one email.** Within 90 seconds the same link is re-sent
+rather than a second one minted, so double-clicking the button does not produce
+two links and burn two of the five hourly requests.
+
+**If somebody says no email arrived**, the Vercel log is the place to look —
+`request-link: send failed` names the address, the sender used, whether an
+adapter was configured at all, and the provider's own reason. The page itself
+deliberately says the same thing either way, because a different answer would
+turn `/login` into a way to test whether an address has an account.
+
 ## Roles, and why they are not just "admin" and "member"
 
 Two different ideas, deliberately kept apart:
@@ -989,7 +1022,7 @@ npm run test:funnel                          # 24 checks: the embedded form, bot
 npm run test:community                       # 39 checks: the member room, the door, moderation
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
-npm test                                     # 105 checks, no server needed
+npm test                                     # 114 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request
