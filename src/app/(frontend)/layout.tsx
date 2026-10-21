@@ -3,11 +3,13 @@ import React from 'react'
 
 import { Analytics } from '@vercel/analytics/next'
 
+import { Ambient } from '@/components/Ambient'
 import { MetaPixel } from '@/components/MetaPixel'
 import { trackingDecision } from '@/lib/consent'
 import { getSiteStyles } from '@/lib/site-styles'
 import { absolute, siteUrl } from '@/lib/site-url'
 import '@/styles/design-system.css'
+import '@/styles/depth.css'
 
 /**
  * Every page under this layout renders per request, rather than being frozen
@@ -127,6 +129,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
       </head>
       <body>
         {children}
+        <Ambient />
         {/*
           Page views, from Vercel's own analytics: no cookies, no cross-site
           identifiers, nothing that needs a banner — which is the whole reason

@@ -1,0 +1,238 @@
+/* ============================================================
+   Light, depth and motion
+   ============================================================
+
+   A layer over design-system.css, loaded after it. Kept in its own file because
+   ghl/build.mjs converts design-system.css into the blocks pasted into
+   GoHighLevel; this layer is for the site we serve, and a change here cannot
+   move a pixel on a GHL page.
+
+   The idea is restraint. Most of the page gets *light* — layered shadows and a
+   bevel highlight, so surfaces read as objects rather than outlines — and very
+   little gets *motion*. Motion is spent in four places, each with a reason:
+
+     1. The hero arrives once, in order: badge, headline, promise, button.
+     2. The primary button has spring physics, and leans toward the pointer
+        (src/components/Ambient.tsx). One button, not every button.
+     3. The dark closing card catches a soft light that follows the pointer.
+     4. The hero picture settles into focus as it scrolls into view, tied to the
+        scroll position rather than fired once.
+
+   No hover lift on every card, no fade-in on every section. Everything here is
+   transform, opacity, shadow or a background — nothing changes layout, so
+   nothing shifts while the page loads. All of it switches off under
+   prefers-reduced-motion. */
+
+:root{
+  /* Elevation. Tinted with the brand navy rather than black, so a palette
+     change in Site Styles carries through — a grey shadow on cream reads as dirt.
+     Each level is a tight, darker contact shadow close to the element plus a
+     wide, soft one further out — the pair is what reads as "resting on the
+     page" rather than "outlined". */
+  --elev-1:0 1px 2px color-mix(in srgb,var(--navy) 7%,transparent),
+           0 4px 14px -4px color-mix(in srgb,var(--navy) 8%,transparent);
+  --elev-2:0 1px 2px color-mix(in srgb,var(--navy) 8%,transparent),
+           0 10px 30px -10px color-mix(in srgb,var(--navy) 16%,transparent),
+           0 26px 60px -30px color-mix(in srgb,var(--navy) 14%,transparent);
+  --elev-3:0 2px 4px color-mix(in srgb,var(--navy) 10%,transparent),
+           0 22px 48px -16px color-mix(in srgb,var(--navy) 30%,transparent),
+           0 48px 100px -40px color-mix(in srgb,var(--navy) 28%,transparent);
+  /* Light catching the top edge, like a bevel. */
+  --bevel:inset 0 1px 0 rgba(255,255,255,.7);
+  --bevel-dark:inset 0 1px 0 rgba(255,255,255,.09);
+
+  /* A spring: overshoots slightly and settles. Generated from a damped spring
+     (stiffness 170, damping 18), sampled into linear(). */
+  --spring:linear(0,.007 1%,.029 2.1%,.115 4.4%,.233 6.8%,.479 11.3%,.721 16.2%,
+    .878 20.6%,.991 25.2%,1.053 29.7%,1.083 34%,1.087 38.4%,1.074 43.5%,1.049 49.5%,
+    1.024 56.4%,1.005 65.4%,.997 76.3%,1);
+  --spring-t:.62s;
+  /* For things that should simply arrive: fast out, long settle. */
+  --ease-out:cubic-bezier(.16,1,.3,1);
+}
+
+/* ---- buttons ----
+   The gold button becomes an object: a lighter top edge, a gold-tinted glow far
+   out and a navy contact shadow close in. On hover it rises and the far shadow
+   spreads; on press it compresses. The spring is on transform only — a
+   springing shadow looks like a flicker. */
+.btn{
+  position:relative;isolation:isolate;
+  /* The gradient is an image over the solid colour, not a replacement for it:
+     the colour stays readable as the button's colour (test/styles.ui.mjs reads
+     it to prove a Site Styles change took). */
+  background-color:var(--gold);
+  background-image:linear-gradient(180deg,color-mix(in srgb,var(--gold) 86%,#fff) 0%,var(--gold) 55%,
+    color-mix(in srgb,var(--gold) 90%,#000) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(0,0,0,.08),
+    0 1px 2px color-mix(in srgb,var(--navy) 18%,transparent),
+    0 8px 20px -8px color-mix(in srgb,var(--gold-deep) 55%,transparent);
+  transition:transform var(--spring-t) var(--spring),box-shadow .3s var(--ease-out),
+    background-color .2s ease;
+  /* The magnetic offset, set by Ambient.tsx on the one button that has it. */
+  translate:var(--mag-x,0) var(--mag-y,0);
+}
+.btn:hover{
+  background-color:var(--gold);
+  background-image:linear-gradient(180deg,color-mix(in srgb,var(--gold) 92%,#fff) 0%,var(--gold) 50%,
+    color-mix(in srgb,var(--gold) 86%,#000) 100%);
+  transform:translateY(-3px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.08),
+    0 2px 4px color-mix(in srgb,var(--navy) 14%,transparent),
+    0 18px 36px -12px color-mix(in srgb,var(--gold-deep) 60%,transparent);
+}
+.btn:active{transform:translateY(0) scale(.97);transition-duration:.08s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 2px 6px rgba(0,0,0,.12),
+    0 1px 2px color-mix(in srgb,var(--navy) 20%,transparent)}
+/* The magnetic button follows the pointer quickly but without the spring's
+   overshoot — the spring is for hover and release, not for tracking. Uses
+   `translate`, a separate property from `transform`, so the lean and the hover
+   lift add together instead of one replacing the other. */
+.btn.is-magnetic{transition:transform var(--spring-t) var(--spring),translate .2s var(--ease-out),
+  box-shadow .3s var(--ease-out),background-color .2s ease}
+.btn.is-magnetic.is-leaving{transition:transform var(--spring-t) var(--spring),translate var(--spring-t) var(--spring),
+  box-shadow .3s var(--ease-out),background-color .2s ease}
+/* A sheen that crosses the button once on hover: light moving over a surface,
+   not a pulse asking for attention. */
+.btn::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.38) 50%,transparent 65%);
+  background-size:250% 100%;background-position:120% 0;opacity:0;
+  transition:background-position .7s var(--ease-out),opacity .3s ease}
+.btn:hover::after{background-position:-20% 0;opacity:1}
+
+/* Ghost and disabled buttons stay flat: depth means "press me". */
+.btn-ghost,.btn-ghost:hover{background:transparent;box-shadow:none}
+.btn-ghost::after,.btn-off::after{display:none}
+.btn-ghost:hover{background:var(--wash2);transform:none}
+.btn-off,.btn-off:hover{background:var(--line-2);box-shadow:none;transform:none}
+.formcard .btn[disabled]{transform:none}
+
+.navlink-cta{background-color:var(--gold);
+  background-image:linear-gradient(180deg,color-mix(in srgb,var(--gold) 88%,#fff),var(--gold));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 1px 2px color-mix(in srgb,var(--navy) 16%,transparent),
+    0 6px 14px -6px color-mix(in srgb,var(--gold-deep) 50%,transparent);
+  transition:transform var(--spring-t) var(--spring),box-shadow .3s var(--ease-out),background-color .2s ease}
+.navlink-cta:hover{transform:translateY(-2px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 4px color-mix(in srgb,var(--navy) 12%,transparent),
+    0 12px 22px -8px color-mix(in srgb,var(--gold-deep) 55%,transparent)}
+.navlink-cta:active{transform:scale(.96);transition-duration:.08s}
+
+/* The sticky bar gets a shadow only once there is something under it, so at
+   the top of the page it sits flush with the hero. */
+.topbar,.appbar{transition:box-shadow .3s ease,background .3s ease}
+@supports (animation-timeline:scroll()){
+  .topbar,.appbar{animation:bar-lift linear both;animation-timeline:scroll(root);animation-range:0 80px}
+  @keyframes bar-lift{to{box-shadow:0 1px 0 var(--line-2),0 10px 30px -14px color-mix(in srgb,var(--navy) 22%,transparent)}}
+}
+
+/* ---- surfaces ----
+   Light-ground cards rest on the page: a hairline border, a bevel, and the
+   first elevation. They do not move on hover — they are not links. */
+.card,.speaker,.statitem,.tcard,.proofshot,.proofstat,.qcard{
+  box-shadow:var(--bevel),var(--elev-1)}
+.card,.speaker{background:linear-gradient(180deg,color-mix(in srgb,var(--wash) 55%,#fff) 0%,var(--wash) 100%)}
+.statitem,.tcard,.proofshot,.proofstat{border-color:color-mix(in srgb,var(--line) 75%,transparent)}
+
+/* The two surfaces that carry a decision sit higher. */
+.pricecard,.pullquote{box-shadow:var(--bevel),var(--elev-2);border-color:color-mix(in srgb,var(--line) 70%,transparent)}
+.pricecard{position:relative;overflow:hidden}
+.pricecard::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--gold) 0%,#D9B45E 50%,var(--chalk) 100%)}
+
+/* Pictures are documents on the page: lifted, and framed by a white mat. */
+.heroshot{box-shadow:var(--elev-3);border-color:color-mix(in srgb,var(--line) 60%,transparent)}
+.articlecover img,.articleimage img{box-shadow:var(--elev-2)}
+
+/* Things you can click do lift — and only those. */
+.postcard,.coursecard{box-shadow:var(--bevel),var(--elev-1);
+  transition:transform var(--spring-t) var(--spring),box-shadow .35s var(--ease-out),border-color .2s ease}
+.postcard:hover,.coursecard:hover{transform:translateY(-4px);box-shadow:var(--bevel),var(--elev-2)}
+.postcard-cover img{transition:transform .8s var(--ease-out)}
+.postcard:hover .postcard-cover img{transform:scale(1.035)}
+
+/* The FAQ: the open answer reads as pulled forward. */
+.faqitem summary::after{transition:transform .4s var(--spring)}
+.faqitem[open] summary::after{transform:rotate(180deg)}
+.faqitem[open] .faqanswer{animation:faq-open .45s var(--ease-out) both}
+@keyframes faq-open{from{opacity:0;transform:translateY(-6px)}}
+
+/* ---- dark surfaces ----
+   Navy cards get depth from inside: a faint highlight on the top edge, a deeper
+   shadow under them, and a soft light that follows the pointer (--lx/--ly, set
+   by Ambient.tsx; centred near the top when there is no pointer). */
+.card-dark,.fbar,.finalcard{
+  box-shadow:var(--bevel-dark),var(--elev-3);position:relative;isolation:isolate}
+.card-dark::after,.fbar::after,.finalcard::after{content:"";position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;z-index:-1;
+  background:radial-gradient(520px circle at var(--lx,50%) var(--ly,0%),
+    color-mix(in srgb,var(--gold) 16%,transparent),transparent 60%);
+  transition:opacity .5s ease}
+.finalcard::after{background:radial-gradient(620px circle at var(--lx,50%) var(--ly,-10%),
+    color-mix(in srgb,var(--gold) 20%,transparent),color-mix(in srgb,var(--chalk) 5%,transparent) 40%,transparent 68%)}
+/* The gold bar along the top stays above the light. */
+.finalcard::before{z-index:1}
+.card-dark>*,.fbar>*,.finalcard>*{position:relative}
+
+/* ---- the hero ----
+   A warm light falling from the top, and the one choreographed entrance on the
+   page. Short — the last item lands at about 650ms — because motion that delays
+   content costs more than it adds. */
+.slot.hero{overflow:hidden}
+.slot.hero::before{content:"";position:absolute;inset:-20% -10% auto;height:120%;pointer-events:none;
+  background:radial-gradient(60% 55% at 22% 0%,color-mix(in srgb,var(--gold) 14%,transparent),transparent 70%),
+    radial-gradient(45% 45% at 92% 18%,color-mix(in srgb,var(--chalk) 22%,transparent),transparent 70%)}
+.slot.hero .slot-in{position:relative}
+.badge{box-shadow:var(--bevel),0 1px 2px color-mix(in srgb,var(--brown) 10%,transparent)}
+.badge::before{box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 22%,transparent)}
+.when{box-shadow:var(--bevel)}
+
+@media (prefers-reduced-motion:no-preference){
+  .slot.hero .slot-in>*{animation:arrive .7s var(--ease-out) both}
+  .slot.hero .slot-in>:nth-child(1){animation-delay:.02s}
+  .slot.hero .slot-in>:nth-child(2){animation-delay:.09s}
+  .slot.hero .slot-in>:nth-child(3){animation-delay:.17s}
+  .slot.hero .slot-in>:nth-child(4){animation-delay:.24s}
+  .slot.hero .slot-in>:nth-child(5){animation-delay:.3s}
+  .slot.hero .slot-in>:nth-child(n+6){animation-delay:.36s}
+  /* The headline arrives a touch further, so it reads as the first thing. */
+  .slot.hero h1{animation-name:arrive-head}
+  @keyframes arrive{from{opacity:0;transform:translateY(14px)}}
+  @keyframes arrive-head{from{opacity:0;transform:translateY(22px)}}
+
+  /* The badge's dot breathes, slowly, a few times and then stops: it marks the
+     thing as live without becoming a cursor-chasing blink. */
+  .slot.hero .badge::before{animation:dot 2.4s ease-in-out .8s 3}
+  @keyframes dot{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--gold) 8%,transparent)}}
+
+  /* The hero picture settles into focus as it scrolls into view. Driven by the
+     scroll position, so it is the reader moving it, not a show playing at them. */
+  @supports (animation-timeline:view()){
+    .slot.hero .slot-in>.heroshot{animation:settle linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+    @keyframes settle{from{transform:perspective(1200px) rotateX(9deg) scale(.94);
+      filter:saturate(.75) brightness(.97)}}
+  }
+}
+
+/* ---- the closing section ----
+   Already the darkest thing on the page; the deeper shadow lets it lift off
+   the white, and the gold bar along the top now has a glow under it. */
+.finalcard::before{box-shadow:0 0 24px 2px color-mix(in srgb,var(--gold) 45%,transparent)}
+
+/* ---- the registration form ----
+   Fields that sit in the card rather than on it. */
+.field input[type=text],.field input[type=email],.field input[type=url]{
+  box-shadow:inset 0 1px 2px color-mix(in srgb,var(--navy) 12%,transparent);
+  transition:box-shadow .2s ease,border-color .2s ease}
+.field input:focus-visible{box-shadow:inset 0 1px 2px color-mix(in srgb,var(--navy) 12%,transparent),
+  0 0 0 4px color-mix(in srgb,var(--gold) 28%,transparent)}
+
+/* ---- reduced motion ----
+   Asked for no motion: no movement at all. The light and shadow stay, because
+   they are not motion. */
+@media (prefers-reduced-motion:reduce){
+  .btn,.btn:hover,.btn:active,.navlink-cta:hover,.postcard:hover,.coursecard:hover{transform:none;translate:none}
+  .btn::after{display:none}
+  .postcard:hover .postcard-cover img{transform:none}
+  .topbar,.appbar{animation:none}
+  .faqitem[open] .faqanswer{animation:none}
+}
