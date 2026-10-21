@@ -2,8 +2,8 @@ import React from 'react'
 
 import { BlockImage } from './BlockImage'
 import { SiteNav } from './SiteNav'
-import { toHref } from '@/lib/href'
-import type { NavLink } from '@/lib/site-styles'
+import { isExternalHref, toHref } from '@/lib/href'
+import type { HeaderCta, NavLink } from '@/lib/site-styles'
 
 /**
  * The bar at the top of the site: the logo, and the menu.
@@ -26,6 +26,7 @@ export function SiteHeaderBar({
   links,
   homeUrl,
   rightText,
+  cta,
 }: {
   logoUrl?: string | null
   logoText?: string
@@ -34,9 +35,16 @@ export function SiteHeaderBar({
   links?: NavLink[]
   homeUrl?: string
   rightText?: string
+  /** The button on the right. Which one — the site's, the page's, or none — is
+      the caller's decision; this only draws it. */
+  cta?: HeaderCta | null
 }) {
   const alt = logoText || ''
   const menu = links ?? []
+  const ctaHref = cta ? toHref(cta.href) : ''
+  const classes = ['topbar-in', menu.length ? 'has-nav' : '', cta && ctaHref ? 'has-cta' : '']
+    .filter(Boolean)
+    .join(' ')
   return (
     <header className="topbar">
       {/*
@@ -44,7 +52,7 @@ export function SiteHeaderBar({
         phone. Without it, a header with no menu still reserves the space and the
         centred logo sits visibly off-centre.
       */}
-      <div className={menu.length ? 'topbar-in has-nav' : 'topbar-in'}>
+      <div className={classes}>
         <a className="brand" href={toHref(homeUrl) || '/'} aria-label={logoText || 'Home'}>
           {logoUrl ? (
             <BlockImage
@@ -81,6 +89,21 @@ export function SiteHeaderBar({
           </div>
         ) : null}
         <SiteNav links={menu} />
+        {/*
+          After the menu in the markup, so on a desktop it is the last thing on
+          the right; on a phone it stays in the bar beside the menu button
+          rather than going behind it — the one link that matters most should
+          not be a tap away.
+        */}
+        {cta && ctaHref ? (
+          <a
+            className="headcta"
+            href={ctaHref}
+            {...(isExternalHref(ctaHref) ? { target: '_blank', rel: 'noopener' } : {})}
+          >
+            {cta.label}
+          </a>
+        ) : null}
       </div>
     </header>
   )

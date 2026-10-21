@@ -67,6 +67,7 @@ export default async function PostPage({ params }: Props) {
         logoWidth={styles.logoWidth}
         logoHeight={styles.logoHeight}
         links={styles.navLinks}
+        cta={styles.headerCta}
       />
       <main>
       {post.status !== 'published' ? (

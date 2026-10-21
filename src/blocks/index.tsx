@@ -14,7 +14,8 @@ import {
   WEEKLY_PRICE,
   WEEKLY_TERMS,
 } from '@/lib/weekly'
-import type { RecentPost } from '@/lib/site-styles'
+import { type HeaderCta, headerCta } from '@/lib/header-cta'
+import type { NavLink, RecentPost } from '@/lib/site-styles'
 
 import { FormEmbed } from './FormEmbed'
 import { JoinButton } from './JoinButton'
@@ -228,6 +229,11 @@ export type Blocks = {
     homeUrl?: string
     rightText?: string
     showMenu?: boolean
+    /** Which button sits on the right. Undefined on pages saved before this
+        existed — see the Header block's render. */
+    button?: 'site' | 'page' | 'none'
+    buttonLabel?: string
+    buttonHref?: string
   }
   Hero: {
     show?: boolean
@@ -473,12 +479,36 @@ export const config: Config<Blocks> = {
             { label: 'Hide it (best for a landing page)', value: false },
           ],
         },
+        /**
+         * The button follows the same split as the menu: what it says lives in
+         * Site Styles, once, and each page chooses whether to use it. A page
+         * can also carry its own — the masterclass page wants "Save my seat",
+         * not the site's "Book a call" — without that becoming the site's.
+         */
+        button: {
+          type: 'radio',
+          label: 'Button on the right',
+          options: [
+            { label: 'The site’s button (set in Site Styles)', value: 'site' },
+            { label: 'A button just for this page', value: 'page' },
+            { label: 'No button', value: 'none' },
+          ],
+        },
+        buttonLabel: { type: 'text', label: 'This page’s button text' },
+        buttonHref: { ...linkField, label: 'This page’s button links to' },
+      },
+      /** The page's own button fields only appear when they will be used. */
+      resolveFields: (data, { fields }) => {
+        if (data.props.button === 'page') return fields
+        const { buttonLabel: _label, buttonHref: _href, ...rest } = fields
+        return rest as typeof fields
       },
       defaultProps: {
         logoText: 'eCommHarvest',
         homeUrl: 'https://ecommharvest.com/',
         rightText: 'Thursday, September 24 · 11:00 AM MT · free',
         showMenu: true,
+        button: 'site',
       },
       /**
        * The site logo, or the name as text if none is uploaded.
@@ -491,20 +521,35 @@ export const config: Config<Blocks> = {
        * Height is not a prop: it comes from the --logo-h variable that Site
        * Styles emits, so changing the size changes every page at once.
        */
-      render: ({ logoText, homeUrl, rightText, showMenu, puck }) => {
+      render: ({ logoText, homeUrl, rightText, showMenu, button, buttonLabel, buttonHref, puck }) => {
         const site = puck?.metadata as
           | {
               siteLogoUrl?: string
               siteLogoText?: string
               siteLogoWidth?: number
               siteLogoHeight?: number
-              siteNavLinks?: { label: string; href: string; emphasis?: boolean }[]
+              siteNavLinks?: NavLink[]
+              siteHeaderCta?: HeaderCta | null
             }
           | undefined
         const url = site?.siteLogoUrl
         // `!== false` so a page saved before this field existed still shows the
         // menu rather than silently losing it.
         const links = showMenu !== false ? (site?.siteNavLinks ?? []) : []
+        /**
+         * A page saved before the button existed has no choice recorded. It
+         * follows its menu: a page showing the site menu shows the site
+         * button, and a landing page that hid the menu stays clean — so
+         * setting a site-wide button cannot add a second way out to a page
+         * built around one.
+         */
+        const choice = button ?? (showMenu !== false ? 'site' : 'none')
+        const cta =
+          choice === 'site'
+            ? (site?.siteHeaderCta ?? null)
+            : choice === 'page'
+              ? headerCta(buttonLabel, buttonHref)
+              : null
         /**
          * The markup lives in `SiteHeaderBar` because the blog's routes need the
          * same bar and have no block to put it in. One component, so a visitor
@@ -521,6 +566,7 @@ export const config: Config<Blocks> = {
             links={links}
             homeUrl={homeUrl}
             rightText={rightText}
+            cta={cta}
           />
         )
       },

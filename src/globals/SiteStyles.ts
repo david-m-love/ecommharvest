@@ -119,10 +119,20 @@ export const SiteStyles: GlobalConfig = {
           name: 'href',
           label: 'Links to',
           type: 'text',
-          required: true,
+          /**
+           * Required unless the link opens a dropdown. A heading like
+           * "Resources" over a few links does not need a page of its own, and
+           * insisting on one is how sites end up with a menu item that leads to
+           * a page saying "see below".
+           */
+          validate: (value: unknown, { siblingData }: { siblingData?: { children?: unknown[] } }) =>
+            (typeof value === 'string' && value.trim()) ||
+            (Array.isArray(siblingData?.children) && siblingData.children.length)
+              ? true
+              : 'Add a link, or add dropdown links below so this opens a menu instead.',
           admin: {
             description:
-              'A path on this site like /masterclass, or a full address like https://ecommharvest.com/masterclass/register. The https:// is filled in for you.',
+              'A path on this site like /masterclass, or a full address like https://ecommharvest.com/masterclass/register. The https:// is filled in for you. Can be left empty if this opens a dropdown.',
           },
         },
         {
@@ -131,8 +141,59 @@ export const SiteStyles: GlobalConfig = {
           type: 'checkbox',
           defaultValue: false,
           admin: {
-            description: 'For the one link that matters most — usually the one that takes a booking.',
+            description:
+              'Inside the menu. For a button that should stay visible on every page — even one with the menu hidden, and on a phone — use “Header button” below instead.',
           },
+        },
+        {
+          /**
+           * One level, deliberately. A second level of flyouts is unusable on a
+           * phone and rarely means anything but a site map nobody asked for.
+           */
+          name: 'children',
+          label: 'Dropdown links',
+          type: 'array',
+          maxRows: 6,
+          admin: {
+            description:
+              'Optional. Add links here and this item opens a small menu instead of being a single link.',
+            initCollapsed: true,
+          },
+          fields: [
+            { name: 'label', type: 'text', required: true },
+            { name: 'href', label: 'Links to', type: 'text', required: true },
+          ],
+        },
+      ],
+    },
+    {
+      /**
+       * The site's one header button — "Book a call", "Join now".
+       *
+       * Separate from the menu because it behaves differently: it stays in the
+       * bar on a phone rather than going behind the menu button, and it can
+       * stay on a page that hides the menu. Each page's Header block decides
+       * whether to show this one, show its own instead, or show none.
+       */
+      type: 'collapsible',
+      label: 'Header button',
+      admin: {
+        initCollapsed: false,
+        description:
+          'The button in the top-right of every page. Each page can keep it, swap in its own, or hide it — in the page’s Header block in the builder.',
+      },
+      fields: [
+        {
+          name: 'headerCtaLabel',
+          label: 'Button text',
+          type: 'text',
+          admin: { description: 'Short — two or three words, like “Book a call”. Leave empty for no site-wide button.' },
+        },
+        {
+          name: 'headerCtaHref',
+          label: 'Links to',
+          type: 'text',
+          admin: { description: 'A path like /join, or a full address. The https:// is filled in for you.' },
         },
       ],
     },

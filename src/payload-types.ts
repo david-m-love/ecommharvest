@@ -1059,16 +1059,34 @@ export interface SiteStyle {
          */
         label: string;
         /**
-         * A path on this site like /masterclass, or a full address like https://ecommharvest.com/masterclass/register. The https:// is filled in for you.
+         * A path on this site like /masterclass, or a full address like https://ecommharvest.com/masterclass/register. The https:// is filled in for you. Can be left empty if this opens a dropdown.
          */
-        href: string;
+        href?: string | null;
         /**
-         * For the one link that matters most — usually the one that takes a booking.
+         * Inside the menu. For a button that should stay visible on every page — even one with the menu hidden, and on a phone — use “Header button” below instead.
          */
         emphasis?: boolean | null;
+        /**
+         * Optional. Add links here and this item opens a small menu instead of being a single link.
+         */
+        children?:
+          | {
+              label: string;
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Short — two or three words, like “Book a call”. Leave empty for no site-wide button.
+   */
+  headerCtaLabel?: string | null;
+  /**
+   * A path like /join, or a full address. The https:// is filled in for you.
+   */
+  headerCtaHref?: string | null;
   /**
    * The line at the top of the blog. Leave blank for the default.
    */
@@ -1158,8 +1176,17 @@ export interface SiteStylesSelect<T extends boolean = true> {
         label?: T;
         href?: T;
         emphasis?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
         id?: T;
       };
+  headerCtaLabel?: T;
+  headerCtaHref?: T;
   blogHeading?: T;
   blogIntro?: T;
   showJoinLive?: T;

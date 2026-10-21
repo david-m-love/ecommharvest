@@ -107,15 +107,15 @@
 .btn-off,.btn-off:hover{background:var(--line-2);box-shadow:none;transform:none}
 .formcard .btn[disabled]{transform:none}
 
-.navlink-cta{background-color:var(--gold);
+.navlink-cta,.headcta{background-color:var(--gold);
   background-image:linear-gradient(180deg,color-mix(in srgb,var(--gold) 88%,#fff),var(--gold));
   box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 1px 2px color-mix(in srgb,var(--navy) 16%,transparent),
     0 6px 14px -6px color-mix(in srgb,var(--gold-deep) 50%,transparent);
   transition:transform var(--spring-t) var(--spring),box-shadow .3s var(--ease-out),background-color .2s ease}
-.navlink-cta:hover{transform:translateY(-2px);
+.navlink-cta:hover,.headcta:hover{transform:translateY(-2px);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 4px color-mix(in srgb,var(--navy) 12%,transparent),
     0 12px 22px -8px color-mix(in srgb,var(--gold-deep) 55%,transparent)}
-.navlink-cta:active{transform:scale(.96);transition-duration:.08s}
+.navlink-cta:active,.headcta:active{transform:scale(.96);transition-duration:.08s}
 
 /* The sticky bar gets a shadow only once there is something under it, so at
    the top of the page it sits flush with the hero. */
@@ -230,7 +230,7 @@
    Asked for no motion: no movement at all. The light and shadow stay, because
    they are not motion. */
 @media (prefers-reduced-motion:reduce){
-  .btn,.btn:hover,.btn:active,.navlink-cta:hover,.postcard:hover,.coursecard:hover{transform:none;translate:none}
+  .btn,.btn:hover,.btn:active,.navlink-cta:hover,.headcta:hover,.postcard:hover,.coursecard:hover{transform:none;translate:none}
   .btn::after{display:none}
   .postcard:hover .postcard-cover img{transform:none}
   .topbar,.appbar{animation:none}

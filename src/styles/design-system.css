@@ -631,6 +631,73 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
   .deck{max-width:none}
 }
 
+/* ---- header dropdowns and the header button ----
+   After the phone block above on purpose: several of these rules change the
+   bar's grid on a phone, and need to come later than the rules they adjust. */
+
+/* A menu item that opens a short list. Opens on hover for a mouse, and on the
+   caret button for a keyboard, a tap or a screen reader — `navitem-open` is that
+   button's state. Not :focus-within, because then a list closed with Escape
+   would stay open for as long as the button kept focus. */
+.navitem{position:relative;display:flex;align-items:center;gap:4px}
+.navcaret{display:inline-flex;align-items:center;gap:7px;background:none;border:0;margin:0;
+  padding:4px 2px;font-family:inherit;cursor:pointer;border-bottom:1px solid transparent}
+.navcaret-icon{width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:translateY(-2px) rotate(45deg);transition:transform .2s ease;opacity:.7}
+.navitem-open .navcaret-icon{transform:translateY(1px) rotate(225deg)}
+.navdrop{position:absolute;top:calc(100% + 12px);left:-14px;min-width:230px;z-index:70;
+  display:flex;flex-direction:column;padding:8px;background:var(--white);
+  border:1px solid var(--line-2);border-radius:16px;
+  box-shadow:0 2px 4px rgba(22,50,79,.06),0 18px 40px -12px rgba(22,50,79,.22);
+  opacity:0;visibility:hidden;transform:translateY(-4px);
+  transition:opacity .16s ease,transform .2s ease,visibility 0s linear .2s}
+/* Bridges the gap under the label, so moving the mouse down to the list does
+   not cross dead space and close it. */
+.navdrop::before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px}
+.navitem:hover .navdrop,.navitem-open .navdrop{opacity:1;visibility:visible;transform:none;
+  transition:opacity .16s ease,transform .2s ease,visibility 0s}
+.navdrop-link{display:block;padding:10px 12px;border-radius:10px;font-size:14.5px;font-weight:600;
+  letter-spacing:-.01em;color:var(--navy);text-decoration:none;white-space:nowrap}
+.navdrop-link:hover,.navdrop-link:focus-visible{background:var(--wash2);color:var(--gold-deep)}
+
+/* The header button. The same pill as an emphasised menu link, but outside the
+   menu: it stays put on a phone and on pages that hide the menu. */
+.headcta{flex:none;margin-left:auto;display:inline-flex;align-items:center;
+  background:var(--gold);color:#0F2439;border-radius:999px;padding:10px 20px;
+  font-weight:800;font-size:13.5px;text-transform:uppercase;letter-spacing:.02em;
+  text-decoration:none;white-space:nowrap}
+.headcta:hover{background:#B67F26}
+/* Beside a menu or the small text, the bar's own gap spaces it. */
+.topnav~.headcta,.topbar-right~.headcta{margin-left:0}
+/* A menu *and* a button leave no room for the small text beside the logo, and
+   on a page with a menu it is not needed: the date line is a landing-page
+   device, and landing pages hide the menu. Dropped rather than squeezed — a
+   truncated date reads as a mistake. */
+.topbar-in.has-nav.has-cta .topbar-right{display:none}
+
+@media(max-width:760px){
+  /* Dropdowns on a phone: every link laid out in the panel, the ones under a
+     heading indented beneath it. Nothing to open twice. */
+  .navpanel .navgroup{margin:14px 4px 2px;font-size:11px;font-weight:800;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--gold-deep);max-width:none}
+  .navpanel .navlink-sub{padding-left:18px;font-weight:600;font-size:15.5px}
+
+  /* With a button, the logo moves to the left — the usual phone pattern, and
+     the only one that leaves the logo room: centred, it would have to clear a
+     button-wide space on *both* sides. The menu button, when there is one,
+     goes first. --headcta-w is a typical two-word button; a longer label takes
+     its room from the logo, which shrinks to fit. */
+  .topbar-in.has-cta{grid-template-columns:minmax(0,1fr) auto;
+    --logo-space:calc(100vw - 36px - var(--headcta-w,120px))}
+  .topbar-in.has-cta .brand{grid-column:1;justify-content:flex-start}
+  .topbar-in.has-cta .headcta{grid-column:2;grid-row:1}
+  .topbar-in.has-nav.has-cta{grid-template-columns:44px minmax(0,1fr) auto;
+    --logo-space:calc(100vw - 88px - var(--headcta-w,120px))}
+  .topbar-in.has-nav.has-cta .brand{grid-column:2}
+  .topbar-in.has-nav.has-cta .headcta{grid-column:3}
+  .headcta{padding:9px 14px;font-size:12px;margin-left:0}
+}
+
 /* ---- registration form ---- */
 .formcard{max-width:520px;margin:0 auto;text-align:left}
 .field{margin:0 0 16px}

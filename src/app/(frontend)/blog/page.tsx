@@ -46,6 +46,7 @@ export default async function BlogIndex() {
         logoWidth={styles.logoWidth}
         logoHeight={styles.logoHeight}
         links={styles.navLinks}
+        cta={styles.headerCta}
       />
       <main>
       <section className="slot">

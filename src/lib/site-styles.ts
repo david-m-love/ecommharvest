@@ -1,4 +1,5 @@
 import { payload } from '@/lib/entitlements'
+import { type HeaderCta, headerCta } from '@/lib/header-cta'
 import { joinLive } from '@/lib/join-live'
 
 /**
@@ -16,7 +17,18 @@ import { joinLive } from '@/lib/join-live'
  * the built-in palette. A missing colour must never take the site down.
  */
 
-export type NavLink = { label: string; href: string; emphasis?: boolean }
+/**
+ * One menu item. `href` may be empty only when `children` is not: an item that
+ * opens a dropdown does not need a page of its own.
+ */
+export type NavLink = {
+  label: string
+  href: string
+  emphasis?: boolean
+  children?: { label: string; href: string }[]
+}
+
+export type { HeaderCta }
 
 export type SiteStyles = {
   logoUrl: string | null
@@ -25,6 +37,8 @@ export type SiteStyles = {
   logoHeight: number | null
   logoText: string
   navLinks: NavLink[]
+  /** The site-wide header button, from Site Styles. Null when unset. */
+  headerCta: HeaderCta | null
   /** What the blog calls itself. Null means "use the built-in wording". */
   blogHeading: string | null
   blogIntro: string | null
@@ -104,7 +118,7 @@ const LOGO_HEIGHTS_MOBILE: Record<string, number> = {
 }
 
 export const getSiteStyles = async (): Promise<SiteStyles> => {
-  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], blogHeading: null, blogIntro: null, metaPixelId: null, liveJoinUrl: null, showJoinLive: false, joinLiveLabel: null, showWeeklyCall: false, weeklyCallUrl: null, weeklyCallWhen: null, weeklyCallLabel: null, weeklyCallThread: null, css: null }
+  const fallback: SiteStyles = { logoUrl: null, logoWidth: null, logoHeight: null, logoText: 'eCommHarvest', navLinks: [], headerCta: null, blogHeading: null, blogIntro: null, metaPixelId: null, liveJoinUrl: null, showJoinLive: false, joinLiveLabel: null, showWeeklyCall: false, weeklyCallUrl: null, weeklyCallWhen: null, weeklyCallLabel: null, weeklyCallThread: null, css: null }
 
   try {
     const p = await payload()
@@ -149,15 +163,22 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
      * admin would otherwise render as an empty item or a dead link — worse than
      * not being there.
      */
-    const navLinks = (Array.isArray(styles.navLinks) ? styles.navLinks : [])
-      .filter((link): link is { label: string; href: string; emphasis?: boolean | null } =>
-        Boolean(link && typeof link.label === 'string' && link.label.trim() && typeof link.href === 'string' && link.href.trim()),
-      )
-      .map((link) => ({
+    const navLinks: NavLink[] = []
+    for (const link of Array.isArray(styles.navLinks) ? styles.navLinks : []) {
+      if (!link || typeof link.label !== 'string' || !link.label.trim()) continue
+      const children = (Array.isArray(link.children) ? link.children : [])
+        .map((child) => headerCta(child?.label, child?.href))
+        .filter((child): child is HeaderCta => child !== null)
+      const href = typeof link.href === 'string' ? link.href.trim() : ''
+      // An item needs somewhere to go: its own page, a dropdown, or both.
+      if (!href && !children.length) continue
+      navLinks.push({
         label: link.label.trim(),
-        href: link.href.trim(),
+        href,
         emphasis: Boolean(link.emphasis),
-      }))
+        ...(children.length ? { children } : {}),
+      })
+    }
 
     return {
       logoUrl: typeof logo === 'object' && logo && 'url' in logo ? (logo.url as string) : null,
@@ -165,6 +186,7 @@ export const getSiteStyles = async (): Promise<SiteStyles> => {
       logoHeight: typeof logo === 'object' && logo && typeof logo.height === 'number' ? logo.height : null,
       logoText: typeof styles.logoText === 'string' && styles.logoText ? styles.logoText : 'eCommHarvest',
       navLinks,
+      headerCta: headerCta(styles.headerCtaLabel, styles.headerCtaHref),
       blogHeading: typeof styles.blogHeading === 'string' && styles.blogHeading.trim() ? styles.blogHeading.trim() : null,
       blogIntro: typeof styles.blogIntro === 'string' && styles.blogIntro.trim() ? styles.blogIntro.trim() : null,
       // Re-checked here as well as in the admin: this value goes into a script
@@ -220,6 +242,8 @@ export type SiteMetadata = {
   siteLogoWidth: number | null
   siteLogoHeight: number | null
   siteNavLinks: NavLink[]
+  /** The site-wide header button. Each Header block decides whether to use it. */
+  siteHeaderCta: HeaderCta | null
   /**
    * The newest few blog posts, for the "Latest from the blog" block.
    *
@@ -298,6 +322,7 @@ export const siteMetadata = async (): Promise<SiteMetadata> => {
     siteLogoWidth: styles.logoWidth,
     siteLogoHeight: styles.logoHeight,
     siteNavLinks: styles.navLinks,
+    siteHeaderCta: styles.headerCta,
     /**
      * Spread, so that when the switch is off the keys are not there at all —
      * the URL never reaches the browser rather than arriving and being hidden.

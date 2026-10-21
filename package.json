@@ -30,6 +30,7 @@
     "test:styles": "node test/styles.ui.mjs",
     "test:logo": "node test/logo.ui.mjs",
     "test:nav": "node test/nav.ui.mjs",
+    "test:header": "node test/header.ui.mjs",
     "test:tracking": "node test/tracking.ui.mjs",
     "test:manage": "node test/builder-manage.ui.mjs",
     "test:images": "node test/image-upload.ui.mjs",
