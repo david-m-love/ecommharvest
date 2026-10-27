@@ -69,6 +69,29 @@ const requestLink = async (email, next) => {
   return token
 }
 
+/**
+ * A request with exactly the headers given, and no others added.
+ *
+ * Not `fetch`: Node's fetch is a spec-compliant one and quietly sets
+ * `Sec-Fetch-Mode: cors` on every request whatever you ask for, which turns a
+ * simulated link click into a simulated script — and a test that passes or fails
+ * for the wrong reason is worse than none. `http.request` sends what it is told.
+ */
+const raw = (method, path, headers, body) =>
+  new Promise((resolve, reject) => {
+    const url = new URL(path, B)
+    const req = http.request(
+      { host: url.hostname, port: url.port, path: url.pathname + url.search, method, headers },
+      (res) => {
+        res.resume()
+        res.on('end', () => resolve({ status: res.statusCode, headers: res.headers }))
+      },
+    )
+    req.on('error', reject)
+    if (body) req.write(body)
+    req.end()
+  })
+
 /** A page on a *different site* that does nothing but link to the sign-in URL. */
 const otherSite = http.createServer((req, res) => {
   const target = new URL(req.url, 'http://x').searchParams.get('to') || '/'
@@ -223,6 +246,109 @@ console.log('\nthe link must not carry people anywhere off-site')
     page.url(),
   )
   await ctx.close()
+}
+
+console.log('\nfollowing a link while signed in')
+{
+  /**
+   * The second half of the same bug. Signing in worked; the next link followed
+   * from an email, Slack or a campaign did not, because the browser calls that a
+   * cross-site navigation and Payload discards the session cookie on those. A
+   * member arriving from a reminder email landed on the login form holding a
+   * valid session.
+   */
+  const member = fresh()
+  const token = await requestLink(member)
+  const first = await clickFromEmail(token)
+  check(new URL(first.page.url()).pathname === '/learn', 'signed in')
+
+  for (const path of ['/learn', '/community']) {
+    const page = await first.ctx.newPage()
+    await page.goto(`${OTHER}/?to=${encodeURIComponent(B + path)}`)
+    await page.click('#go')
+    await page.waitForLoadState('networkidle')
+    check(
+      new URL(page.url()).pathname !== '/login',
+      `a link from another site to ${path} keeps the member signed in`,
+      new URL(page.url()).pathname,
+    )
+    await page.close()
+  }
+  await first.ctx.close()
+}
+
+console.log('\nbut only a link — nothing else may borrow the session')
+{
+  /**
+   * The relaxation has to be exactly as wide as a person clicking a link and no
+   * wider. These send a real session cookie with the headers each kind of
+   * cross-site request carries, and every one except the link must be treated as
+   * signed out.
+   */
+  const member = fresh()
+  const token = await requestLink(member)
+  const signIn = await fetch(`${B}/api/auth/verify`, {
+    method: 'POST',
+    redirect: 'manual',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Origin: B },
+    body: `token=${encodeURIComponent(token)}`,
+  })
+  const cookie = (signIn.headers.getSetCookie?.() || [])
+    .map((c) => c.split(';')[0])
+    .find((c) => c.startsWith('payload-token='))
+  check(Boolean(cookie), 'the sign-in POST sets a session cookie')
+
+  const asRequest = async (label, headers, expectSignedIn) => {
+    const res = await raw('GET', '/learn', {
+      Host: new URL(B).host,
+      Cookie: cookie,
+      'Sec-Fetch-Site': 'cross-site',
+      ...headers,
+    })
+    const signedIn = res.status === 200
+    check(signedIn === expectSignedIn, label, `${res.status}`)
+  }
+
+  await asRequest(
+    'a cross-site link click is signed in',
+    { 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Dest': 'document' },
+    true,
+  )
+  await asRequest(
+    'a cross-site iframe is not',
+    { 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Dest': 'iframe' },
+    false,
+  )
+  await asRequest(
+    'a cross-site fetch() is not',
+    { 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Dest': 'empty' },
+    false,
+  )
+  await asRequest(
+    'a cross-site navigation carrying a foreign Origin is not',
+    { 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Dest': 'document', Origin: 'https://evil.example' },
+    false,
+  )
+
+  // And the write path, which is where it would matter. A forged form POST from
+  // another site carries a foreign Origin; it must act as nobody.
+  const payloadBody = JSON.stringify({ title: 'Forged from another site', body: 'should never exist' })
+  const forged = await raw(
+    'POST',
+    '/api/community/threads',
+    {
+      Host: new URL(B).host,
+      Cookie: cookie,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(payloadBody),
+      Origin: 'https://evil.example',
+      'Sec-Fetch-Site': 'cross-site',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Dest': 'document',
+    },
+    payloadBody,
+  )
+  check(forged.status === 401, 'a forged cross-site POST acts as nobody', `${forged.status}`)
 }
 
 otherSite.close()

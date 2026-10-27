@@ -114,6 +114,19 @@ thrown away, landing the member back on the login form. The button is a click on
 a page we served, which makes everything after it same-origin. It also means a
 mail scanner opening the link cannot use it up: only the button spends it.
 
+**Following a link while signed in keeps you signed in.** Payload discards a
+session cookie on any page request the browser calls cross-site — which is what a
+link clicked in an email, Slack, a calendar invite or a GoHighLevel campaign is.
+Left alone, every member arriving from a reminder email would land on the login
+form holding a valid session. `src/lib/auth.ts` therefore tells Payload such a
+request is same-origin, but **only** for a top-level page load with no `Origin`
+header (`src/lib/navigation.ts`). That is safe because the cookie is
+`SameSite=Lax`: browsers already refuse to send it on a cross-site fetch, iframe
+or form POST, so a link click is the only cross-site request that carries it, and
+a page the other site cannot read. Frames, `fetch()` and forged form posts still
+go through Payload's full check. `/admin` is Payload's own and is not covered, so
+an emailed link into the admin still asks you to sign in.
+
 **Asking twice sends one email.** Within 90 seconds the same link is re-sent
 rather than a second one minted, so double-clicking the button does not produce
 two links and burn two of the five hourly requests.
@@ -1029,10 +1042,10 @@ npm run test:hosts                           # 21 checks: partner logos of three
 npm run test:blog                            # 46 checks: writing, reading, the feed, the renderer
 npm run test:funnel                          # 24 checks: the embedded form, both funnel pages
 npm run test:community                       # 39 checks: the member room, the door, moderation
-npm run test:signin                          # 11 checks: the emailed link, clicked from another site
+npm run test:signin                          # 20 checks: the emailed link, clicked from another site; and what a link may and may not do
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
-npm test                                     # 123 checks, no server needed
+npm test                                     # 129 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request

@@ -5,6 +5,7 @@ import type { User } from '@/payload-types'
 import { isAdmin } from '@/lib/access'
 import { type Capability, can } from '@/lib/capabilities'
 import { payload } from '@/lib/entitlements'
+import { isTopLevelNavigation } from '@/lib/navigation'
 
 /**
  * Server-side session helpers.
@@ -18,7 +19,23 @@ import { payload } from '@/lib/entitlements'
 export const getCurrentUser = async (): Promise<User | null> => {
   const p = await payload()
   // Next 16: headers() is async.
-  const requestHeaders = await nextHeaders()
+  const incoming = await nextHeaders()
+
+  /**
+   * A link clicked from an email, Slack or a campaign is a cross-site
+   * navigation, and Payload throws away the session cookie on those — so every
+   * member arriving from a link landed on the login form while holding a valid
+   * session. See `lib/navigation.ts` for why relaxing it for a top-level page
+   * load, and only that, is safe.
+   *
+   * A copy rather than the original: the incoming headers are read-only, and
+   * nothing downstream should see a header the browser did not send.
+   */
+  const requestHeaders = new Headers(incoming)
+  if (isTopLevelNavigation((name) => requestHeaders.get(name))) {
+    requestHeaders.set('Sec-Fetch-Site', 'same-origin')
+  }
+
   const { user } = await p.auth({ headers: requestHeaders })
   return (user as User | null) ?? null
 }
