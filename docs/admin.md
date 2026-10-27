@@ -105,6 +105,15 @@ cannot get in.
 them to anything outside `notify.ecommharvest.com` would break sending, so leave
 them alone.
 
+**Clicking the link shows a button, and the button signs you in.** That extra
+click is the fix for a bug that locked everybody out, not a flourish. A click in
+Gmail is a cross-site navigation, and Payload refuses to trust a session cookie on
+a page request that began on another site — so a link that set the cookie and
+redirected straight to `/learn` set a perfectly good cookie and then had it
+thrown away, landing the member back on the login form. The button is a click on
+a page we served, which makes everything after it same-origin. It also means a
+mail scanner opening the link cannot use it up: only the button spends it.
+
 **Asking twice sends one email.** Within 90 seconds the same link is re-sent
 rather than a second one minted, so double-clicking the button does not produce
 two links and burn two of the five hourly requests.
@@ -1020,9 +1029,10 @@ npm run test:hosts                           # 21 checks: partner logos of three
 npm run test:blog                            # 46 checks: writing, reading, the feed, the renderer
 npm run test:funnel                          # 24 checks: the embedded form, both funnel pages
 npm run test:community                       # 39 checks: the member room, the door, moderation
+npm run test:signin                          # 11 checks: the emailed link, clicked from another site
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
-npm test                                     # 114 checks, no server needed
+npm test                                     # 123 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request

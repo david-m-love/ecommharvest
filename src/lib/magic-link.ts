@@ -94,6 +94,26 @@ export const createLoginToken = async (
 }
 
 /**
+ * Whether a token is still good, **without spending it**.
+ *
+ * This is what the confirm page uses to decide between "here is your button" and
+ * "that link has expired" — and the reason it exists at all is that opening a
+ * link is not the same as meaning it. Mail systems fetch every link in a message
+ * to scan it, with a plain GET and no person involved; if looking at the link
+ * used it up, the member's first real click would meet "expired" and they would
+ * conclude the product was broken.
+ *
+ * It reveals nothing a scanner could use: it answers the same question the
+ * eventual click would, about a token the caller already holds.
+ */
+export const peekLoginToken = async (token: string): Promise<boolean> => {
+  if (!token || token.length < 20) return false
+  const p = await payload()
+  const record = await p.kv.get<TokenRecord>(`${KEY_PREFIX}${token}`)
+  return Boolean(record && typeof record.expiresAt === 'number' && record.expiresAt > Date.now())
+}
+
+/**
  * Validates and burns a token. Returns null for unknown, expired, or
  * already-used tokens — deliberately indistinguishable to the caller so the
  * error message cannot be used to probe which tokens once existed.

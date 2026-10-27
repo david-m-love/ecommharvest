@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { payload } from '@/lib/entitlements'
 import { loginEmail } from '@/lib/login-email'
 import { createLoginToken, pruneExpiredTokens, withinRateLimit } from '@/lib/magic-link'
+import { safeNext } from '@/lib/safe-next'
 
 /**
  * POST /api/auth/request-link  { email, next? }
@@ -24,9 +25,8 @@ export async function POST(request: Request) {
   const email = (body.email || '').trim().toLowerCase().slice(0, 254)
 
   // Only accept in-app paths, so `next` cannot be turned into an open redirect.
-  const next = body.next && body.next.startsWith('/') && !body.next.startsWith('//')
-    ? body.next
-    : undefined
+  // See `lib/safe-next.ts` for why "starts with /" was not enough.
+  const next = safeNext(body.next)
 
   const genericOk = NextResponse.json(
     { ok: true, message: 'If that address has an account, a sign-in link is on its way.' },
