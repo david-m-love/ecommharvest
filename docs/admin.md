@@ -498,8 +498,19 @@ nothing is offered to Google before you have read it.
 
 ### The one field that takes the money
 
-`/builder` → the page → **Price and join button** → **Checkout URL**. Paste the
-GoHighLevel order form there.
+`/builder` → the page → **Price and join button** → **Checkout URL**.
+
+It is **already set** to the payment page
+(`api.shoqwave.com/payment-link/…`), on both pages, by migration
+`20261027_200000_weekly_checkout_link`. That migration only fills a *blank* field —
+a link you pasted yourself is never overwritten — so after the first deploy the
+builder's field is the one that counts. **There are two fields, one per page.**
+To change the link, change both, or the two pages will send people to different
+places. `npm run test:weekly` reports it if they disagree.
+
+**Check the price behind the link.** Both pages say `$100/month`. The payment page
+is configured separately, so a mismatch is invisible from the website: open the
+link and compare, then make one real test purchase before sending traffic.
 
 That is the only place on either page holding the address. Every other join
 button is an anchor to `#join` that scrolls down to this card, which is why
@@ -1045,7 +1056,7 @@ npm run test:community                       # 39 checks: the member room, the d
 npm run test:signin                          # 20 checks: the emailed link, clicked from another site; and what a link may and may not do
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
-npm test                                     # 129 checks, no server needed
+npm test                                     # 141 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request

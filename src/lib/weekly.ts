@@ -29,18 +29,33 @@ export const WEEKLY_MICRO = 'Cancel anytime.'
 export const WEEKLY_TERMS = 'Recurring monthly membership. Cancel anytime.'
 
 /**
- * Where the button goes. **Empty on purpose.**
+ * Where the button goes: the payment page for eCommHarvest Weekly.
  *
- * The real address is a GoHighLevel order form, and it is pasted into the
- * pricing block in the builder — not committed here — so it can change without
- * a deploy, exactly like the live webinar link.
+ * A hosted payment link on the GoHighLevel side (a white-labelled
+ * `api.<brand>/payment-link/…` address). It is a public URL, not a secret, which
+ * is why it can live in source — and living here is what keeps a fresh database,
+ * a local run and a seeded preview all pointing at the same place.
+ *
+ * **Two pages, one address.** `/join` and `/weekly` each keep their own copy of
+ * it inside their pricing block, because that is where the builder edits it, so
+ * "change the link" means changing two fields. Migration
+ * `20261027_200000_weekly_checkout_link` fills both on the live site; after that
+ * the builder's **Checkout URL** field is the one that counts, and it is never
+ * overwritten by a deploy. If this constant and a page ever disagree, the page
+ * wins — and `test:weekly` reports it, since two different payment destinations
+ * on pages taking the same traffic is the failure that costs money.
  *
  * While it is empty the button renders as plainly unavailable rather than as a
- * link to nowhere. A dead join button on a page taking traffic is worse than a
- * button that admits it is not ready: one loses the sale quietly, the other
- * tells you to go and paste the URL.
+ * link to nowhere: a dead join button on a page taking traffic loses the sale
+ * quietly, and one that admits it is not ready tells you to go and paste the URL.
+ *
+ * **The price on the page must match the price behind this link.** Both pages say
+ * `$100/month` from `WEEKLY_PRICE_LINE` above; the payment page is configured
+ * separately, so a mismatch is invisible from this side. Check it by opening the
+ * link, not by trusting either number.
  */
-export const WEEKLY_CHECKOUT_URL = ''
+export const WEEKLY_CHECKOUT_URL =
+  'https://api.shoqwave.com/payment-link/6aba788fbaea3cadef54fb37'
 /** Shown in place of the button until somebody pastes one. */
 export const WEEKLY_CHECKOUT_MISSING = 'Joining opens shortly.'
 

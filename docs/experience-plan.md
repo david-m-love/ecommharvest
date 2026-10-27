@@ -44,7 +44,7 @@ everything below is *building on* what exists, not restructuring it.
 | --- | --- | --- |
 | Home, masterclass, register and thank-you pages advertise **September 24** | Header and hero button on `/`; present in 4 of 9 pages | 🔴 Credibility |
 | **No page mentions Weekly or links to `/join` or `/weekly`** | Searched every page's content | 🔴 Revenue |
-| `/weekly` and `/join` are **drafts** and the checkout button is **dead** | Both 404; `WEEKLY_CHECKOUT_URL` is empty | 🔴 Revenue |
+| `/weekly` and `/join` are **drafts** (both 404). *The checkout button has since been wired to the payment page (27 Oct); publishing is what is left* | Draft status | 🔴 Revenue |
 | **No header menu is configured**, and no link to sign in | Site Styles menu is empty | 🟠 |
 | The date is typed into code, so every event **goes stale on its own** | `src/lib/event.ts` | 🟠 Recurs forever |
 | Pages render on every request | `export const dynamic = 'force-dynamic'` on the layout | 🟡 Slower for paid traffic |
@@ -119,7 +119,7 @@ needs your accounts. Phases are ordered by what unblocks money and retention.
 | 0.4 | **Make events admin-controlled, not typed into code.** One "Next live session" setting in Site Styles drives the date everywhere, and the pages have a *past* state ("Next session coming soon — join the list") | This is why the September date is still live, and why it will be stale again in November |
 | 0.5 | Retire "Thursday, September 24" from home, masterclass, register, thank-you and the share card | Credibility, today |
 | 0.6 | Cookie `Secure` flag; confirm the production database does not auto-suspend; add DMARC for `notify.ecommharvest.com` | Cheap hardening before real members |
-| 0.7 | **You:** paste the GoHighLevel order-form URL, publish `/weekly` and `/join` | The only thing between you and revenue |
+| 0.7 | ~~Paste the order-form URL~~ **Done** — both pages link to the payment page. **You:** open that link and confirm it is $100/month recurring, then publish `/weekly` and `/join` | The only thing between you and revenue |
 
 ### Phase 1 — A member area people return to *(~12–14 days)*
 

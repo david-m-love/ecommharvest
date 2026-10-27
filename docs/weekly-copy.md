@@ -260,7 +260,7 @@ Seven bullets (bold lead, then the rest):
 
 ---
 
-## 15. Pricing card — `wk-price-15`  ⚠️ *button disabled*
+## 15. Pricing card — `wk-price-15`  ✅ *button wired to payment*
 
 **Eyebrow:** The offer
 
@@ -284,8 +284,9 @@ Seven bullets (bold lead, then the rest):
 
 *Compare-at price, founding-member line, cap and urgency fields are all empty.*
 
-🚨 **The checkout URL is empty, so this button is currently dead** — it renders
-greyed out reading "Joining opens shortly." See the end of this document.
+✅ **The button now goes to the payment page** (wired 27 October). When this copy
+was first transcribed it was greyed out reading "Joining opens shortly." See the
+end of this document.
 
 ---
 
@@ -375,16 +376,17 @@ Read before rewriting. None of this is visible from the copy alone — it comes
 from the blocks’ render rules, which hide anything unfilled rather than
 publishing an empty box.
 
-### 🚨 The join button is dead
+### ✅ The join button is wired — but the pages are still drafts
 
-The checkout URL is empty, so both CTAs scroll to a pricing card whose button is
-greyed out and reads **"Joining opens shortly."** The page cannot take money
-until the GoHighLevel order form URL is pasted into **`/builder` → `/weekly` →
-Price and join button → Checkout URL**.
+As of 27 October both pages' pricing buttons go to the payment page
+(`api.shoqwave.com/payment-link/…`). The pages themselves are **still drafts**, so
+both return 404 until you press **Publish** in `/builder`. Nothing earlier in this
+document about the button being greyed out applies any more — that was the state
+this copy was transcribed in.
 
-This is deliberate — a disabled button tells you to go and paste the URL, where a
-link to nowhere would just lose the sale quietly — but it is the single thing
-standing between this page and revenue.
+Two things to do by hand: open the payment link and confirm it is **$100/month,
+recurring** (the pages say so; the payment page is configured separately), and
+make one real test purchase before sending traffic.
 
 ### ❌ Three sections or entries publish nothing
 
