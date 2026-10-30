@@ -14,7 +14,7 @@
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "payload": "payload",
-    "test": "tsx test/registration.test.ts && tsx test/href.test.ts && tsx test/event.test.ts && tsx test/join-live.test.ts && tsx test/section-visibility.test.ts && tsx test/ghl-links.test.ts && tsx test/migrations.test.ts && tsx test/membership.test.ts && tsx test/community-input.test.ts && tsx test/community-text.test.ts && tsx test/login-email.test.ts && tsx test/safe-next.test.ts && tsx test/navigation.test.ts && tsx test/weekly-checkout.test.ts && tsx test/weekly-publish.test.ts && node --experimental-strip-types test/video.test.js",
+    "test": "tsx test/registration.test.ts && tsx test/href.test.ts && tsx test/event.test.ts && tsx test/join-live.test.ts && tsx test/section-visibility.test.ts && tsx test/ghl-links.test.ts && tsx test/migrations.test.ts && tsx test/membership.test.ts && tsx test/community-input.test.ts && tsx test/community-text.test.ts && tsx test/login-email.test.ts && tsx test/safe-next.test.ts && tsx test/navigation.test.ts && tsx test/weekly-checkout.test.ts && tsx test/weekly-publish.test.ts && tsx test/roadmap.test.ts && node --experimental-strip-types test/video.test.js",
     "db:start": "bash scripts/local-db.sh start",
     "db:stop": "bash scripts/local-db.sh stop",
     "seed": "payload run scripts/seed.ts",
@@ -44,6 +44,7 @@
     "test:admin": "node test/admin-boots.ui.mjs",
     "extract:pages": "node scripts/extract-pages.mjs",
     "test:weekly": "node test/weekly.ui.mjs",
+    "test:roadmap": "node test/roadmap.ui.mjs",
     "test:community": "node test/community.ui.mjs",
     "test:signin": "node test/signin.ui.mjs"
   },

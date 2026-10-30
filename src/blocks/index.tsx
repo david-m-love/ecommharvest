@@ -78,6 +78,23 @@ const Cta = ({ label, href, large }: { label?: string; href?: string; large?: bo
 }
 
 /**
+ * A quiet link under a button: "See sample pages", "Read the full preview".
+ *
+ * Always the same tab. These go to another part of the same journey, a section
+ * further down or a sibling page, and the button above them is the one that is
+ * allowed to be loud.
+ */
+const TextLink = ({ label, href, className }: { label?: string; href?: string; className: string }) => {
+  const target = toHref(href)
+  if (!label || !target) return null
+  return (
+    <p className={className}>
+      <a href={target}>{label}</a>
+    </p>
+  )
+}
+
+/**
  * "Already registered? Join the live masterclass →"
  *
  * Deliberately a text link and not a button. Someone arriving three minutes
@@ -239,6 +256,9 @@ export type Blocks = {
     ctaLabel?: string
     ctaHref?: string
     ctaMicro?: string
+    /** An optional quiet text link under the button, such as "See sample pages". */
+    linkLabel?: string
+    linkHref?: string
     image?: PickedImage
   }
   HostedBy: {
@@ -262,6 +282,8 @@ export type Blocks = {
   BulletList: {
     show?: boolean
     eyebrow?: string
+    /** An optional h2 above the lead-in, for lists that are a section of their own. */
+    heading?: string
     leadIn?: string
     bullets?: { lead?: string; text?: string; show?: boolean }[]
     ctaLabel?: string
@@ -393,6 +415,27 @@ export type Blocks = {
     founding?: string
     cap?: string
     urgency?: string
+    /** What the ad account is told was bought. Blank means eCommHarvest Weekly. */
+    trackAs?: string
+    /** Shown instead of the button until a checkout URL is pasted. */
+    unavailable?: string
+    /** An optional quiet text link under the button. */
+    linkLabel?: string
+    linkHref?: string
+  }
+  SampleGallery: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    body?: string
+    note?: string
+    items?: { image?: PickedImage; caption?: string }[]
+  }
+  NumberedGroups: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    groups?: { title?: string; items?: { number?: string; title?: string; text?: string }[] }[]
   }
   Faq: {
     show?: boolean
@@ -422,7 +465,7 @@ export const config: Config<Blocks> = {
     },
     Body: {
       title: 'Body sections',
-      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'Speakers', 'Prose', 'LegalText'],
+      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'NumberedGroups', 'SampleGallery', 'Speakers', 'Prose', 'LegalText'],
       defaultExpanded: true,
     },
     /**
@@ -537,6 +580,8 @@ export const config: Config<Blocks> = {
         ctaLabel: { type: 'text', label: 'Button text' },
         ctaHref: linkField,
         ctaMicro: { type: 'text', label: 'Small text beside the button' },
+        linkLabel: { type: 'text', label: 'Text link under the button (optional)' },
+        linkHref: { type: 'text', label: 'Text link goes to', placeholder: '#sample-pages' },
         image: imageField(
           'Picture under the headline',
           'Optional. A photo of David, the community, or a call in progress — wide rather than tall, since it sits under the button.',
@@ -552,7 +597,7 @@ export const config: Config<Blocks> = {
         ctaHref: REGISTER_URL,
         ctaMicro: EVENT_WORKBOOK,
       },
-      render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro, image, puck }) => (
+      render: ({ eyebrow, heading, deck, body, when, ctaLabel, ctaHref, ctaMicro, linkLabel, linkHref, image, puck }) => (
         <div className="slot hero">
           <div className="slot-in">
             {eyebrow ? <p className="badge">{eyebrow}</p> : null}
@@ -570,6 +615,7 @@ export const config: Config<Blocks> = {
                 {ctaMicro ? <span className="cta-micro">{ctaMicro}</span> : null}
               </div>
             ) : null}
+            <TextLink label={linkLabel} href={linkHref} className="herolink" />
             {/*
               Outside the `ctaLabel` test on purpose. The registration and
               thank-you pages both use this block with no button — the form is
@@ -762,6 +808,7 @@ export const config: Config<Blocks> = {
       label: 'Bullet list',
       fields: {
         eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading (optional)' },
         leadIn: { type: 'textarea', label: 'Lead-in line' },
         bullets: {
           type: 'array',
@@ -790,10 +837,11 @@ export const config: Config<Blocks> = {
         ctaHref: REGISTER_URL,
         ctaMicro: 'Thursday, September 24 · 11:00 AM MT',
       },
-      render: ({ eyebrow, leadIn, bullets, ctaLabel, ctaHref, ctaMicro }) => (
+      render: ({ eyebrow, heading, leadIn, bullets, ctaLabel, ctaHref, ctaMicro }) => (
         <div className="slot wash">
           <div className="slot-in">
             {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+            {heading ? <h2>{heading}</h2> : null}
             {leadIn ? <p className="leadin">{leadIn}</p> : null}
             <ul className="bullets">
               {/* A bullet can be switched off without being deleted — a promise
@@ -1847,6 +1895,10 @@ export const config: Config<Blocks> = {
         founding: { type: 'text', label: 'Founding-member message (optional)' },
         cap: { type: 'text', label: 'Enrollment-cap message (optional)' },
         urgency: { type: 'text', label: 'Urgency message (optional)' },
+        linkLabel: { type: 'text', label: 'Text link under the button (optional)' },
+        linkHref: { type: 'text', label: 'Text link goes to', placeholder: '/roadmap/preview' },
+        unavailable: { type: 'text', label: 'Shown instead of the button until a checkout URL is pasted' },
+        trackAs: { type: 'text', label: 'Name reported to the ad account (blank: eCommHarvest Weekly)' },
       },
       defaultProps: {
         show: true,
@@ -1871,8 +1923,12 @@ export const config: Config<Blocks> = {
         founding: '',
         cap: '',
         urgency: '',
+        linkLabel: '',
+        linkHref: '',
+        unavailable: '',
+        trackAs: '',
       },
-      render: ({ show, eyebrow, name, price, interval, compareAt, body, benefits, ctaLabel, checkoutUrl, terms, risk, founding, cap, urgency, puck }) => {
+      render: ({ show, eyebrow, name, price, interval, compareAt, body, benefits, ctaLabel, checkoutUrl, terms, risk, founding, cap, urgency, linkLabel, linkHref, unavailable, trackAs, puck }) => {
         const includes = filled(benefits, (item) => hasText(item.text))
         const guard = sectionGuard(
           { show, hasContent: hasText(price) || hasText(ctaLabel), editing: puck?.isEditing },
@@ -1916,12 +1972,142 @@ export const config: Config<Blocks> = {
                   label={ctaLabel}
                   href={checkoutUrl}
                   where="pricing"
-                  missing={WEEKLY_CHECKOUT_MISSING}
+                  missing={unavailable || WEEKLY_CHECKOUT_MISSING}
+                  product={trackAs}
                   large
                 />
                 {terms ? <p className="formnote">{terms}</p> : null}
+                <TextLink label={linkLabel} href={linkHref} className="pricelink" />
               </div>
               {risk ? <p className="pricerisk">{risk}</p> : null}
+            </div>
+          </div>
+        )
+      },
+    },
+
+    SampleGallery: {
+      label: 'Sample pages gallery',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        body: { type: 'textarea', label: 'Intro paragraph' },
+        items: {
+          type: 'array',
+          label: 'Pictures',
+          getItemSummary: (item) => item?.caption || 'Picture',
+          defaultItemProps: { image: undefined, caption: '' },
+          arrayFields: {
+            image: imageField(
+              'Picture',
+              'A page from the sample. Describe it in the alt text, with no dashes.',
+            ),
+            caption: { type: 'text', label: 'One-line caption' },
+          },
+        },
+        note: { type: 'textarea', label: 'Line under the gallery' },
+      },
+      defaultProps: { show: true, eyebrow: '', heading: '', body: '', items: [], note: '' },
+      /**
+       * Swipeable on a phone, two columns on a desktop, and a tap opens the full
+       * picture. A picture with no image in it is skipped rather than shown as a
+       * grey box: a proof section is only worth publishing if what it shows is
+       * real, so an empty one publishes nothing until somebody uploads.
+       */
+      render: ({ show, eyebrow, heading, body, items, note, puck }) => {
+        const shown = filled(items, (item) => Boolean(item.image?.url))
+        const guard = sectionGuard(
+          { show, hasContent: shown.length > 0, editing: puck?.isEditing },
+          'Sample pages: upload a picture to publish',
+        )
+        if (guard) return guard
+        return (
+          <div className="slot wash" id="sample-pages">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              <Paragraphs text={body} className="lede" />
+              <ul className="gallery">
+                {shown.map((item, i) => (
+                  <li className="gallery-item" key={i}>
+                    <a className="gallery-shot" href={item.image?.url} target="_blank" rel="noopener">
+                      <BlockImage image={item.image as PickedImage} sizes="(max-width: 760px) 80vw, 440px" />
+                    </a>
+                    {item.caption ? <p className="gallery-cap">{item.caption}</p> : null}
+                  </li>
+                ))}
+              </ul>
+              <Paragraphs text={note} className="gallery-note" />
+            </div>
+          </div>
+        )
+      },
+    },
+
+    NumberedGroups: {
+      label: 'Numbered sections in groups',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        groups: {
+          type: 'array',
+          label: 'Groups',
+          getItemSummary: (item) => item?.title || 'Group',
+          defaultItemProps: { title: 'Group name', items: [] },
+          arrayFields: {
+            title: { type: 'text', label: 'Group name' },
+            items: {
+              type: 'array',
+              label: 'Sections',
+              getItemSummary: (item) => `${item?.number || ''} ${item?.title || 'Section'}`.trim(),
+              defaultItemProps: { number: '01', title: 'Section name', text: 'One line about it.' },
+              arrayFields: {
+                number: { type: 'text', label: 'Number' },
+                title: { type: 'text', label: 'Title' },
+                text: { type: 'textarea', label: 'One-line description' },
+              },
+            },
+          },
+        },
+      },
+      defaultProps: { show: true, eyebrow: '', heading: '', groups: [] },
+      /**
+       * Not a ten-row table. Three groups, each with its own heading, so ten
+       * items read as three ideas; on a phone each row is a compact number,
+       * title and one line.
+       */
+      render: ({ show, eyebrow, heading, groups, puck }) => {
+        const shown = filled(groups, (group) => filled(group.items, (item) => hasText(item.title)).length > 0)
+        const guard = sectionGuard(
+          { show, hasContent: shown.length > 0, editing: puck?.isEditing },
+          'Numbered sections: add a group to publish',
+        )
+        if (guard) return guard
+        return (
+          <div className="slot">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              <div className="numgroups">
+                {shown.map((group, i) => (
+                  <section className="numgroup" key={i}>
+                    {group.title ? <h3>{group.title}</h3> : null}
+                    <ol className="numlist">
+                      {filled(group.items, (item) => hasText(item.title)).map((item, j) => (
+                        <li key={j}>
+                          <span className="numn">{item.number}</span>
+                          <span className="numt">
+                            <strong>{item.title}</strong>
+                            {item.text ? <span className="numd">{item.text}</span> : null}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
+                ))}
+              </div>
             </div>
           </div>
         )

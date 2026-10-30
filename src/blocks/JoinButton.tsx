@@ -24,6 +24,7 @@ export function JoinButton({
   where,
   missing,
   large,
+  product,
 }: {
   label?: string
   href?: string
@@ -31,6 +32,8 @@ export function JoinButton({
   where: string
   missing?: string
   large?: boolean
+  /** What is being bought, for the ad account. Blank means eCommHarvest Weekly. */
+  product?: string
 }) {
   const target = toHref(href)
   if (!label) return null
@@ -50,7 +53,7 @@ export function JoinButton({
     <a
       className={large ? 'btn btn-lg' : 'btn'}
       href={target}
-      onClick={() => trackCheckoutClick(where)}
+      onClick={() => trackCheckoutClick(where, product || undefined)}
       /**
        * Same tab. The order form is the next step of this journey, not a
        * reference somebody wants to come back from — and a new tab on a phone

@@ -1007,3 +1007,62 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
    and a row of them reads as one control. */
 .cellstack{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .cellstack .cellsub{display:block}
+
+/* ---- the Founder Roadmap pages ------------------------------------------
+   Scoped to `.page-roadmap`, which only the /roadmap routes wrap themselves in,
+   so nothing here can change another page. The palette is the site's own
+   (Ink Navy, Wheat Gold, Harvest Brown, Linen Cream, Chalk Blue); what differs
+   is type, which matches the Roadmap PDF: Lora for headlines, Inter for the
+   rest. Buttons are Wheat Gold with Ink Navy text, at least 48px tall and full
+   width on a phone. */
+.page-roadmap{--font:"Inter",system-ui,-apple-system,sans-serif;--serif:"Lora",Georgia,"Times New Roman",serif;
+  background:var(--cream);font-family:var(--font);color:var(--brown)}
+.page-roadmap h1,.page-roadmap h2,.page-roadmap h3,.page-roadmap .pricenow{font-family:var(--serif);color:var(--navy)}
+.page-roadmap h1{font-weight:700;letter-spacing:-.025em;max-width:20ch}
+.page-roadmap h2{font-weight:700;letter-spacing:-.02em}
+.page-roadmap h3{font-weight:700;letter-spacing:-.01em}
+.page-roadmap .slot,.page-roadmap .slot.hero{background:var(--cream)}
+.page-roadmap .slot.hero::after{background:var(--chalk);opacity:.5}
+.page-roadmap .slot.wash{background:var(--wash2)}
+.page-roadmap .card,.page-roadmap .speaker,.page-roadmap .pricecard{border-color:var(--chalk)}
+.page-roadmap .card{background:var(--white)}
+.page-roadmap .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+  color:var(--navy);text-transform:none;letter-spacing:0;font-size:17px;text-align:center}
+.page-roadmap .btn-off{color:var(--muted)}
+.page-roadmap .cta-micro,.page-roadmap .lede{color:var(--brown)}
+.page-roadmap .herolink,.page-roadmap .pricelink{margin:14px 0 0;font-size:15.5px}
+.page-roadmap .pricelink{text-align:center}
+.page-roadmap .herolink a,.page-roadmap .pricelink a{color:var(--navy);font-weight:600;text-underline-offset:3px}
+.page-roadmap .formnote{font-family:var(--font);text-transform:none;letter-spacing:0;font-size:14.5px;
+  color:var(--muted);line-height:1.5;max-width:46ch;margin-left:auto;margin-right:auto}
+.page-roadmap .speakers:has(.speaker:only-child){grid-template-columns:1fr}
+.page-roadmap .eyebrow{color:var(--gold-deep)}
+
+/* Sample pages: a swipeable strip on a phone, two columns on a desktop. */
+.gallery{list-style:none;margin:34px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+.gallery-shot{display:block;border:1px solid var(--chalk);border-radius:var(--r-sm);overflow:hidden;background:var(--white)}
+.gallery-shot img{display:block;width:100%;height:auto}
+.gallery-cap{margin:12px 2px 0;font-size:15px;color:var(--brown);line-height:1.45}
+.gallery-note{margin:30px 0 0;font-size:16px;color:var(--brown);max-width:62ch}
+
+/* Ten sections in three groups. */
+.numgroups{display:grid;gap:34px;margin-top:30px}
+.numgroup h3{font-size:15px;font-family:var(--font);font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gold-deep);margin:0 0 6px}
+.numlist{list-style:none;margin:0;padding:0;border-top:1px solid var(--chalk)}
+.numlist li{display:flex;gap:18px;padding:16px 0;border-bottom:1px solid var(--chalk)}
+.numn{flex:none;width:2.2em;font-family:var(--serif);font-weight:700;font-size:20px;color:var(--gold-deep);line-height:1.3}
+.numt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.numt strong{color:var(--navy);font-size:17px;line-height:1.35}
+.numd{font-size:15.5px;line-height:1.5;color:var(--brown)}
+
+@media(max-width:760px){
+  .page-roadmap .btn{width:100%}
+  .page-roadmap .joinsoon,.page-roadmap .cta-row{width:100%}
+  .page-roadmap .cta-row .btn{width:100%}
+  .gallery{display:flex;overflow-x:auto;gap:14px;scroll-snap-type:x mandatory;
+    margin-left:-20px;margin-right:-20px;padding:0 20px 8px;-webkit-overflow-scrolling:touch}
+  .gallery-item{flex:0 0 80%;scroll-snap-align:center}
+}
+.page-roadmap .card-dark h2{color:var(--cream)}
+.page-roadmap .card-dark{background:var(--navy)}

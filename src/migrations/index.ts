@@ -29,6 +29,7 @@ import * as migration_20260928_120000_weekly_pages from './20260928_120000_weekl
 import * as migration_20260928_141414_community_phase_one from './20260928_141414_community_phase_one';
 import * as migration_20261027_200000_weekly_checkout_link from './20261027_200000_weekly_checkout_link';
 import * as migration_20261030_120000_publish_weekly_pages from './20261030_120000_publish_weekly_pages';
+import * as migration_20261030_150000_roadmap_pages from './20261030_150000_roadmap_pages';
 
 export const migrations = [
   {
@@ -184,6 +185,11 @@ export const migrations = [
   {
     up: migration_20261030_120000_publish_weekly_pages.up,
     down: migration_20261030_120000_publish_weekly_pages.down,
-    name: '20261030_120000_publish_weekly_pages'
+    name: '20261030_120000_publish_weekly_pages',
+  },
+  {
+    up: migration_20261030_150000_roadmap_pages.up,
+    down: migration_20261030_150000_roadmap_pages.down,
+    name: '20261030_150000_roadmap_pages'
   },
 ];

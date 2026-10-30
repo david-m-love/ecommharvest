@@ -149,6 +149,10 @@ export const OWN_ROUTES: Record<string, string> = {
   // email, a text message and an ad.
   join: '/join',
   weekly: '/weekly',
+  // The Founder Roadmap: the short page, the long one, and the page after checkout.
+  roadmap: '/roadmap',
+  'roadmap-preview': '/roadmap/preview',
+  'roadmap-thanks': '/roadmap/thanks',
   privacy: '/privacy',
   terms: '/terms',
   /**

@@ -28,5 +28,5 @@ export const track = (event: string, params?: Record<string, unknown>): void => 
  * so the purchase itself has to be reported by their pixel or their Conversions
  * API — there is no arrangement of code here that can observe it.
  */
-export const trackCheckoutClick = (where: string): void =>
-  track('InitiateCheckout', { content_name: 'eCommHarvest Weekly', content_category: where })
+export const trackCheckoutClick = (where: string, product = 'eCommHarvest Weekly'): void =>
+  track('InitiateCheckout', { content_name: product, content_category: where })
