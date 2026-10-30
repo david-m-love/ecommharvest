@@ -22,15 +22,21 @@ export const ROADMAP_PREVIEW_PATH = '/roadmap/preview'
 export const ROADMAP_THANKS_PATH = '/roadmap/thanks'
 
 /**
- * Where the button goes: the Stripe checkout for the Roadmap.
+ * Where the button goes: the payment page for the Founder Roadmap.
  *
- * **Empty on purpose.** No checkout link for this product has been supplied, and
- * inventing one is the failure that costs a sale without anybody noticing.
- * While it is empty the button renders as plainly unavailable. Paste the link
- * into the **Checkout URL** field of the price block on both pages; it is the
- * only place that holds it, because the buttons above the price scroll to it.
+ * A hosted payment link on the same white-labelled `api.shoqwave.com` domain as
+ * the Weekly one. It is a public URL, not a secret. Both sales pages keep their
+ * own copy inside the price block, because that is where the builder edits it;
+ * every other button on a page scrolls to that block. Migration
+ * `20261030_170000_roadmap_checkout_link` fills both on the live site, and after
+ * that the builder's **Checkout URL** field is the one that counts.
+ *
+ * **The price on the page must match the price behind this link.** The pages say
+ * `$500`; the payment page is configured separately, so check it by opening the
+ * link, not by trusting either number.
  */
-export const ROADMAP_CHECKOUT_URL = ''
+export const ROADMAP_CHECKOUT_URL =
+  'https://api.shoqwave.com/payment-link/6ae0e24d5b49394de8f57519'
 export const ROADMAP_CHECKOUT_MISSING = 'Checkout opens shortly.'
 
 /** Where a visitor who wants the evidence first is sent. */

@@ -80,8 +80,17 @@ test('every button above the price scrolls to it, so the checkout lives in one f
   }
 })
 
-test('no checkout link is invented: the URL is empty until one is supplied', () => {
-  assert.equal(ROADMAP_CHECKOUT_URL, '')
+test('the checkout link is the Roadmap payment page and not the Weekly one', () => {
+  assert.equal(ROADMAP_CHECKOUT_URL, 'https://api.shoqwave.com/payment-link/6ae0e24d5b49394de8f57519')
+  assert.ok(!JSON.stringify(ROADMAP_PAGES).includes('6aba788fbaea3cadef54fb37'))
+})
+
+test('the two sales pages carry the link and the thank-you page carries none', () => {
+  for (const page of sales) {
+    const card = blocks(page).find((b) => b.type === 'PricingCard')!
+    assert.equal(card.props.checkoutUrl, ROADMAP_CHECKOUT_URL)
+  }
+  assert.ok(!JSON.stringify(THANKS_PAGE).includes('shoqwave'))
 })
 
 test('proof is never made up: testimonials, logos and pictures all start empty', () => {

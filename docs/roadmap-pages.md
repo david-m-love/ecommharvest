@@ -12,7 +12,7 @@ The pages are not indexed until published, and the thank-you page is never index
 
 ## Before you publish: what is still open
 
-1. **Stripe checkout link.** None was supplied, so the price button reads "Checkout opens shortly." and is not clickable. Paste the link into **Checkout URL** on the price block of `/roadmap` and `/roadmap/preview`. Every other button on a page scrolls to that block, so it is the only place the link lives. (The thank-you link target in your Stripe settings should be `/roadmap/thanks`.)
+1. ~~Checkout link~~ **Done.** Both price buttons go to `https://api.shoqwave.com/payment-link/6ae0e24d5b49394de8f57519`. Open it and check it charges `$500` once; the page cannot see what the payment page is set to. Set the payment page's thank-you redirect to `/roadmap/thanks`. To change the link later, edit **Checkout URL** on the price block of each page.
 2. **Four decisions**, shown on the page as square-bracket text until you decide. Suggested defaults are from the deck.
    - `[CLASS DAY AND TIME]`: used on both pages.
    - `[CLASS TERMS AFTER MONTH ONE]`: suggested "Stops automatically; opt in to $100/month to stay."
