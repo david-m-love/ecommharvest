@@ -492,9 +492,20 @@ match the local ones, and that the day name matches the date.
 `/join` is the short page; `/weekly` is the long one. Same blocks, different
 number of them, so anything you learn editing one applies to the other.
 
-**Both ship as drafts.** They are not on the internet until you open them in
-`/builder` and publish — and being drafts also keeps them out of the sitemap, so
-nothing is offered to Google before you have read it.
+**Both are published** (migration `20261030_120000_publish_weekly_pages`), at
+`/weekly` and `/join` — share `ecommharvest.com/weekly` and `ecommharvest.com/join`.
+They began as drafts and were published once the checkout link was in. Publishing
+put them in the sitemap, so they are now offered to search engines.
+
+**One section is held back.** The jewellery case study ("15x return") is switched
+**off**, because its own note says the definition of "15x" is unconfirmed and no
+unverified number goes live. It is not deleted: in `/builder` → `/weekly` it shows
+as a hidden section, and **Show this section** brings it back once you have
+confirmed what the figure is a multiple of — and replaced the note, which says
+"to be confirmed" and would otherwise print under the number.
+
+`npm run test:weekly` fails if anything like "to be confirmed" or "TBD" is visible
+on either page, so this cannot slip back in unnoticed.
 
 ### The one field that takes the money
 
@@ -1056,7 +1067,7 @@ npm run test:community                       # 39 checks: the member room, the d
 npm run test:signin                          # 20 checks: the emailed link, clicked from another site; and what a link may and may not do
 npm run test:tracking                        # 22 checks: consent, Do Not Track, the pixel
 npm run test:security                        # roles, playback, the audit log
-npm test                                     # 141 checks, no server needed
+npm test                                     # 151 checks, no server needed
 
 npm run build                                # then, against the build output:
 npm run test:prerender                       #  6 routes must render per request

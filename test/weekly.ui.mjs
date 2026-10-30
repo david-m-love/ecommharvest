@@ -95,6 +95,19 @@ for (const path of ['/join', '/weekly']) {
   check(empties.emptyFaq === 0, 'no FAQ entry without an answer')
   check(empties.emptyLogos === 0, 'no logo slot without a logo')
 
+  /**
+   * Nothing written for *us* may be printed for a stranger. A draft is allowed to
+   * say "to be confirmed before publishing" in a field that, once the page is
+   * public, appears under a headline figure — and that figure is unconfirmed by
+   * the note's own admission. This reads what a visitor can actually see.
+   */
+  const internal = await page.evaluate(() => {
+    const text = document.body.innerText
+    const found = text.match(/to be confirmed|confirm(ed)? before publish|\bTBC\b|\bTBD\b|\bTODO\b|lorem ipsum|placeholder/i)
+    return found ? found[0] : null
+  })
+  check(internal === null, 'no internal note reached the live page', internal || '')
+
   // --- proof is real text -----------------------------------------------
   const proof = await page.evaluate(() => {
     const text = document.body.innerText

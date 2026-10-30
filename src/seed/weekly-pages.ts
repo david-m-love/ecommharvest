@@ -109,6 +109,13 @@ const KLAVIYO = {
 }
 
 const JEWELRY = {
+  /**
+   * Off, because its own note says the figure is unconfirmed — what "15x" is a
+   * multiple *of* has not been stated, and no unverified number is published. It
+   * stays in the builder with all its words; switch it on once the definition is
+   * confirmed. `lib/weekly-publish.ts` applies the same rule to a live page.
+   */
+  show: false,
   eyebrow: 'Case study',
   heading: 'Jewellery brand sees 15x return from an email marketing buildout.',
   body:

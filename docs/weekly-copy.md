@@ -376,11 +376,12 @@ Read before rewriting. None of this is visible from the copy alone — it comes
 from the blocks’ render rules, which hide anything unfilled rather than
 publishing an empty box.
 
-### ✅ The join button is wired — but the pages are still drafts
+### ✅ The join button is wired, and both pages are published
 
 As of 27 October both pages' pricing buttons go to the payment page
-(`api.shoqwave.com/payment-link/…`). The pages themselves are **still drafts**, so
-both return 404 until you press **Publish** in `/builder`. Nothing earlier in this
+(`api.shoqwave.com/payment-link/…`), and on 30 October both pages were published.
+**The jewellery case study (section 11, "15x") was switched off** because its note
+says the definition is unconfirmed. Nothing earlier in this
 document about the button being greyed out applies any more — that was the state
 this copy was transcribed in.
 
