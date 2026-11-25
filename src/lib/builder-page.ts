@@ -153,6 +153,8 @@ export const OWN_ROUTES: Record<string, string> = {
   roadmap: '/roadmap',
   'roadmap-preview': '/roadmap/preview',
   'roadmap-thanks': '/roadmap/thanks',
+  // The channel's page on the site; videos and the subscribe link are added in the builder.
+  youtube: '/youtube',
   privacy: '/privacy',
   terms: '/terms',
   /**

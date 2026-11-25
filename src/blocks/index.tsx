@@ -4,6 +4,7 @@ import React from 'react'
 import { BlockImage } from './BlockImage'
 import { EVENT_WORKBOOK, MASTERCLASS_FORM_ID, REGISTER_URL } from '@/lib/event'
 import { isExternalHref, toHref } from '@/lib/href'
+import { youtubeId } from '@/lib/replay'
 import { filled, hasText, sectionState } from '@/lib/section-visibility'
 import {
   WEEKLY_CHECKOUT_MISSING,
@@ -431,6 +432,13 @@ export type Blocks = {
     note?: string
     items?: { image?: PickedImage; caption?: string }[]
   }
+  VideoGallery: {
+    show?: boolean
+    eyebrow?: string
+    heading?: string
+    body?: string
+    items?: { url?: string; title?: string; caption?: string }[]
+  }
   NumberedGroups: {
     show?: boolean
     eyebrow?: string
@@ -465,7 +473,7 @@ export const config: Config<Blocks> = {
     },
     Body: {
       title: 'Body sections',
-      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'NumberedGroups', 'SampleGallery', 'Speakers', 'Prose', 'LegalText'],
+      components: ['DarkCard', 'BulletList', 'FormEmbed', 'FormulaBar', 'CardRow', 'NumberedGroups', 'SampleGallery', 'VideoGallery', 'Speakers', 'Prose', 'LegalText'],
       defaultExpanded: true,
     },
     /**
@@ -2039,6 +2047,86 @@ export const config: Config<Blocks> = {
                 ))}
               </ul>
               <Paragraphs text={note} className="gallery-note" />
+            </div>
+          </div>
+        )
+      },
+    },
+
+    VideoGallery: {
+      label: 'YouTube videos',
+      fields: {
+        show: showField,
+        eyebrow: { type: 'text', label: 'Eyebrow' },
+        heading: { type: 'textarea', label: 'Heading' },
+        body: { type: 'textarea', label: 'Intro paragraph' },
+        items: {
+          type: 'array',
+          label: 'Videos',
+          getItemSummary: (item) => item?.title || item?.url || 'Video',
+          defaultItemProps: { url: '', title: '', caption: '' },
+          arrayFields: {
+            url: { type: 'text', label: 'YouTube link', placeholder: 'https://youtu.be/…' },
+            title: { type: 'text', label: 'Title' },
+            caption: { type: 'text', label: 'One-line description' },
+          },
+        },
+      },
+      defaultProps: { show: true, eyebrow: '', heading: '', body: '', items: [] },
+      /**
+       * Thumbnails that link out, not players.
+       *
+       * A page of six embedded players loads six players before anybody has
+       * pressed anything, and sets YouTube's cookies on every visitor. A
+       * thumbnail is one small image each and nothing else; the click opens the
+       * video on YouTube, where it plays at its best and counts as a view.
+       * Only links the YouTube parser accepts are drawn, so a mistyped one
+       * publishes nothing rather than a broken box.
+       */
+      render: ({ show, eyebrow, heading, body, items, puck }) => {
+        const videos = filled(items, (item) => youtubeId(item.url) !== null)
+        const guard = sectionGuard(
+          { show, hasContent: videos.length > 0, editing: puck?.isEditing },
+          'Videos: paste a YouTube link to publish',
+        )
+        if (guard) return guard
+        return (
+          <div className="slot wash" id="videos">
+            <div className="slot-in">
+              {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
+              {heading ? <h2>{heading}</h2> : null}
+              <Paragraphs text={body} className="lede" />
+              <ul className="videogrid">
+                {videos.map((item, i) => {
+                  const id = youtubeId(item.url) as string
+                  return (
+                    <li key={i}>
+                      <a
+                        className="videocard"
+                        href={`https://www.youtube.com/watch?v=${id}`}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        <span className="videothumb">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+                            alt=""
+                            loading="lazy"
+                            width={480}
+                            height={360}
+                          />
+                          <span className="videoplay" aria-hidden="true">
+                            ▶
+                          </span>
+                        </span>
+                        {item.title ? <span className="videotitle">{item.title}</span> : null}
+                        {item.caption ? <span className="videocap">{item.caption}</span> : null}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
           </div>
         )
