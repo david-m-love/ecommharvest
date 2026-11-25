@@ -757,6 +757,25 @@ Each thread can carry a recording above the question. Open **Admin → Community
 - Clear the field to remove the replay.
 - Timestamps work: `https://youtu.be/ID?t=90` starts at 1:30.
 
+## Replays: recorded calls for members
+
+`/replays` is a members-only library of recorded calls. Each replay is laid out like a lesson: the video, a short summary, written notes, and downloadable files. It uses the same gate as the community, so only people with a live Weekly membership (and the team) can open it. Non-members see a locked page with no titles on it.
+
+### Adding one
+
+1. Upload the recording to YouTube as **Unlisted**. Video files are not stored on this site.
+2. In **Admin → Community → Replays**, choose **Create new**.
+3. Fill in **Title**, **Date of the call**, **Video link (YouTube)**, **Summary** and **Notes** (headings, bullets, links and timestamps all work).
+4. Under **Downloads**, add a label and upload each file (worksheet, template, transcript). Allowed: PDF, Word, Excel, PowerPoint, plain text, Markdown, CSV, zip, and PNG/JPEG/WebP/GIF images. Anything else, including HTML, is refused.
+5. Optional: choose the **community thread** where the call is discussed. A "Discuss this call" button appears under the notes.
+6. Tick **Published** in the sidebar when it is ready. Until then only the team can see it, and you can preview it at `/replays/<slug>` while signed in.
+
+### What is and is not private
+
+- **The page and the files are members-only.** Downloads live in their own private store (`replay-files`, not the public Media library) and are served through this site, which checks the membership on every request. A non-member, or a signed-out visitor, gets a 403 even with the exact file address.
+- **The video is only as private as its YouTube setting.** Anyone who has an unlisted link can watch it, including anybody a member forwards the link to. If you need the video itself locked to members, that is the Cloudflare Stream route (`src/lib/video.ts`, already built) and is a separate step.
+- Unpublished replays are hidden from members at the API as well as on the pages.
+
 ## The blog
 
 `/admin` → **Site** → **Posts** → **Create new**. Articles live at **`/blog`**.

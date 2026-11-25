@@ -38,6 +38,7 @@ export default function robots(): MetadataRoute.Robots {
           '/masterclass/slides',
           '/p/',
           '/register',
+          '/replays',
           '/social',
           '/status',
         ],

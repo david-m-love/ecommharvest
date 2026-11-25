@@ -974,6 +974,18 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .post-first .post-body p{font-size:17.5px}
 .post-mod{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 
+/* The replay page: summary, notes and downloads under the player. */
+.replay-summary{font-size:18px;line-height:1.55;color:var(--brown);margin:18px 0 0;max-width:62ch}
+.replay-notes{margin-top:26px}
+.replay-notes h2{font-size:24px;margin:28px 0 12px}
+.replay-notes h3{font-size:19px;margin:22px 0 8px}
+.replay-notes ul,.replay-notes ol{margin:0 0 16px;padding-left:22px}
+.replay-notes li{margin:0 0 6px}
+.replay-downloads{margin-top:34px}
+.replay-downloads h2{font-size:20px;margin:0 0 12px}
+.replay-downloads .attachlist a{justify-content:space-between}
+.replay-discuss{margin:32px 0 0}
+
 /* The replay: 16 by 9, full width of the column, with its space reserved so the
    page does not jump when the player loads. */
 .replay{position:relative;aspect-ratio:16/9;margin:18px 0 8px;border-radius:var(--r-sm);overflow:hidden;

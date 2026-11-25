@@ -19,7 +19,7 @@ export const AppBar = ({
   community,
 }: {
   user: User
-  current?: 'learn' | 'community'
+  current?: 'learn' | 'community' | 'replays'
   community?: boolean
 }) => (
   <header className="appbar">
@@ -35,6 +35,11 @@ export const AppBar = ({
         {(community || current === 'community') && (
           <Link href="/community" aria-current={current === 'community' ? 'page' : undefined}>
             Community
+          </Link>
+        )}
+        {(community || current === 'community' || current === 'replays') && (
+          <Link href="/replays" aria-current={current === 'replays' ? 'page' : undefined}>
+            Replays
           </Link>
         )}
         {isAdmin(user) && <Link href="/admin">Admin</Link>}

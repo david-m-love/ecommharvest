@@ -18,6 +18,8 @@ import { Posts } from './collections/Posts'
 import { Progress } from './collections/Progress'
 import { Registrations } from './collections/Registrations'
 import { Replies } from './collections/Replies'
+import { ReplayFiles } from './collections/ReplayFiles'
+import { Replays } from './collections/Replays'
 import { Roles } from './collections/Roles'
 import { Threads } from './collections/Threads'
 import { Users } from './collections/Users'
@@ -48,7 +50,7 @@ if (!process.env.PAYLOAD_SECRET) throw missingEnv('PAYLOAD_SECRET')
 const storagePlugins = process.env.BLOB_READ_WRITE_TOKEN
   ? [
       vercelBlobStorage({
-        collections: { media: true },
+        collections: { media: true, 'replay-files': true },
         token: process.env.BLOB_READ_WRITE_TOKEN,
       }),
     ]
@@ -108,6 +110,8 @@ export default buildConfig({
     Progress,
     Threads,
     Replies,
+    Replays,
+    ReplayFiles,
     Registrations,
     Media,
     AuditLog,

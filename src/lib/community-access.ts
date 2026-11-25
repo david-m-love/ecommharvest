@@ -36,3 +36,23 @@ export const memberCanRead =
     })
     return result.totalDocs > 0
   }
+
+/**
+ * Members read what is published; moderators read everything.
+ *
+ * For content that is drafted before it is shown, like a replay: a draft is the
+ * team's work in progress and must not be readable by a member who guesses the
+ * address, any more than by somebody who is not one. Returns a query constraint
+ * rather than a yes or no, so the filter applies to lists as well as to a single
+ * document, and `/api/replays` cannot be used to list what the pages hide.
+ */
+export const memberCanReadPublished =
+  (product: MembershipProduct = WEEKLY): Access =>
+  async (args) => {
+    const { req } = args
+    const user = req.user
+    if (!user) return false
+    if (isAdmin(user) || can(user, 'community:moderate')) return true
+    const allowed = await memberCanRead(product)(args)
+    return allowed ? { published: { equals: true } } : false
+  }

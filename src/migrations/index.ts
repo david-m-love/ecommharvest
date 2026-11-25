@@ -33,6 +33,7 @@ import * as migration_20261030_150000_roadmap_pages from './20261030_150000_road
 import * as migration_20261030_170000_roadmap_checkout_link from './20261030_170000_roadmap_checkout_link';
 import * as migration_20261125_120000_thread_replay_link from './20261125_120000_thread_replay_link';
 import * as migration_20261125_150000_youtube_page from './20261125_150000_youtube_page';
+import * as migration_20261125_160000_replays_library from './20261125_160000_replays_library';
 
 export const migrations = [
   {
@@ -208,6 +209,11 @@ export const migrations = [
   {
     up: migration_20261125_150000_youtube_page.up,
     down: migration_20261125_150000_youtube_page.down,
-    name: '20261125_150000_youtube_page'
+    name: '20261125_150000_youtube_page',
   },
+  {
+    up: migration_20261125_160000_replays_library.up,
+    down: migration_20261125_160000_replays_library.down,
+    name: '20261125_160000_replays_library',
+  }
 ];

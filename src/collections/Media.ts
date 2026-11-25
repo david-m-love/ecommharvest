@@ -15,7 +15,7 @@ import { can } from '@/lib/capabilities'
  *
  * Locally there is no such problem: disk is disk, so uploads are allowed.
  */
-const refuseIfUploadsWouldVanish: CollectionBeforeChangeHook = ({ data, operation }) => {
+export const refuseIfUploadsWouldVanish: CollectionBeforeChangeHook = ({ data, operation }) => {
   if (operation !== 'create') return data
   const ephemeral = Boolean(process.env.VERCEL) && !process.env.BLOB_READ_WRITE_TOKEN
   if (!ephemeral) return data

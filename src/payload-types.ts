@@ -78,6 +78,8 @@ export interface Config {
     progress: Progress;
     threads: Thread;
     replies: Reply;
+    replays: Replay;
+    'replay-files': ReplayFile;
     registrations: Registration;
     media: Media;
     'audit-log': AuditLog;
@@ -99,6 +101,8 @@ export interface Config {
     progress: ProgressSelect<false> | ProgressSelect<true>;
     threads: ThreadsSelect<false> | ThreadsSelect<true>;
     replies: RepliesSelect<false> | RepliesSelect<true>;
+    replays: ReplaysSelect<false> | ReplaysSelect<true>;
+    'replay-files': ReplayFilesSelect<false> | ReplayFilesSelect<true>;
     registrations: RegistrationsSelect<false> | RegistrationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
@@ -575,6 +579,88 @@ export interface Reply {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "replays".
+ */
+export interface Replay {
+  id: number;
+  title: string;
+  /**
+   * Used in the URL. Auto-filled from the title; safe to edit before publishing.
+   */
+  slug: string;
+  /**
+   * Tick to show this replay to members. Until then only the team can see it.
+   */
+  published?: boolean | null;
+  /**
+   * Replays are listed newest first by this date.
+   */
+  recordedAt?: string | null;
+  /**
+   * An unlisted YouTube video is fine. Anyone who has an unlisted link can watch it, so do not post the link anywhere else.
+   */
+  videoUrl?: string | null;
+  /**
+   * One or two sentences, shown on the list and at the top of the replay.
+   */
+  summary?: string | null;
+  /**
+   * What was covered: headings, bullets, links and timestamps all work.
+   */
+  notes?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Worksheets, templates, a transcript. Uploaded to a private store: only members can open them.
+   */
+  attachments?:
+    | {
+        label: string;
+        file: number | ReplayFile;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional. The community thread where this call is discussed; a link appears under the video.
+   */
+  thread?: (number | null) | Thread;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Private downloads for replays. Only members can open these.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "replay-files".
+ */
+export interface ReplayFile {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "registrations".
  */
 export interface Registration {
@@ -685,6 +771,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'replies';
         value: number | Reply;
+      } | null)
+    | ({
+        relationTo: 'replays';
+        value: number | Replay;
+      } | null)
+    | ({
+        relationTo: 'replay-files';
+        value: number | ReplayFile;
       } | null)
     | ({
         relationTo: 'registrations';
@@ -922,6 +1016,46 @@ export interface RepliesSelect<T extends boolean = true> {
   author?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "replays_select".
+ */
+export interface ReplaysSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  published?: T;
+  recordedAt?: T;
+  videoUrl?: T;
+  summary?: T;
+  notes?: T;
+  attachments?:
+    | T
+    | {
+        label?: T;
+        file?: T;
+        id?: T;
+      };
+  thread?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "replay-files_select".
+ */
+export interface ReplayFilesSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

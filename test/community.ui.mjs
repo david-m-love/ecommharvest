@@ -305,6 +305,125 @@ console.log('\nreplay')
   await patch(admin, '')
 }
 
+// --- the replays library -------------------------------------------------
+
+console.log('\nreplays')
+{
+  const TITLE = `Replay test ${Date.now()}`
+  const make = await admin.request.post(`${B}/api/replays`, {
+    data: {
+      title: TITLE,
+      summary: 'What we covered, in a sentence.',
+      videoUrl: 'https://youtu.be/dQw4w9WgXcQ',
+      recordedAt: '2026-11-24T12:00:00.000Z',
+      published: false,
+      notes: {
+        root: {
+          type: 'root', format: '', indent: 0, version: 1, direction: 'ltr',
+          children: [
+            { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'What we covered', version: 1 }] },
+            { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'A sticky add to cart button.', version: 1 }] },
+          ],
+        },
+      },
+    },
+    headers: H,
+  })
+  check(make.ok(), 'an admin can add a replay', String(make.status()))
+  const replay = (await make.json()).doc
+  const slug = replay?.slug
+
+  const bad = await admin.request.post(`${B}/api/replays`, {
+    data: { title: 'Bad link', videoUrl: 'https://evil.example/embed/dQw4w9WgXcQ' },
+    headers: H,
+  })
+  check(bad.status() >= 400, 'a link that is not YouTube is refused when saved', String(bad.status()))
+
+  const memberPost = await paid.request.post(`${B}/api/replays`, { data: { title: 'x' }, headers: H })
+  check([401, 403].includes(memberPost.status()), 'a member cannot add one', String(memberPost.status()))
+
+  // A private file, uploaded the way the admin does it.
+  const upload = await admin.request.post(`${B}/api/replay-files`, {
+    headers: H,
+    multipart: { file: { name: 'worksheet.txt', mimeType: 'text/plain', buffer: Buffer.from('Margin worksheet') } },
+  })
+  check(upload.ok(), 'an admin can upload a private file', String(upload.status()))
+  const file = (await upload.json()).doc
+  const refusedType = await admin.request.post(`${B}/api/replay-files`, {
+    headers: H,
+    multipart: { file: { name: 'x.html', mimeType: 'text/html', buffer: Buffer.from('<script>1</script>') } },
+  })
+  check(refusedType.status() >= 400, 'an HTML file is refused', String(refusedType.status()))
+
+  await admin.request.patch(`${B}/api/replays/${replay.id}`, {
+    data: { attachments: [{ label: 'Margin worksheet', file: file.id }] },
+    headers: H,
+  })
+
+  // Draft: invisible to members at the page and at the API.
+  const draftPage = await paid.request.get(`${B}/replays/${slug}`, { headers: H })
+  check(draftPage.status() === 404, 'a draft is a 404 to a member', String(draftPage.status()))
+  const draftList = await (await paid.request.get(`${B}/api/replays?limit=100`, { headers: H })).json()
+  check((draftList.docs || []).length === 0, 'and absent from /api/replays', String((draftList.docs || []).length))
+  const draftFeed = await (await paid.request.get(`${B}/replays`, { headers: H })).text()
+  check(!draftFeed.includes(TITLE), 'and from the list')
+  const adminDraft = await admin.request.get(`${B}/replays/${slug}`, { headers: H })
+  check(adminDraft.status() === 200, 'an admin can preview it', String(adminDraft.status()))
+
+  await admin.request.patch(`${B}/api/replays/${replay.id}`, { data: { published: true }, headers: H })
+
+  const view = await paid.newPage()
+  await view.goto(`${B}/replays/${slug}`, { waitUntil: 'domcontentloaded' })
+  const seen = await view.evaluate(() => ({
+    h1: document.querySelector('h1')?.textContent?.trim(),
+    src: document.querySelector('.replay iframe')?.getAttribute('src'),
+    summary: document.querySelector('.replay-summary')?.textContent?.trim(),
+    notes: document.querySelector('.replay-notes')?.textContent || '',
+    link: document.querySelector('.replay-downloads a')?.getAttribute('href'),
+    label: document.querySelector('.replay-downloads a')?.textContent?.trim(),
+    tab: [...document.querySelectorAll('.appbar-nav a')].map((a) => a.textContent.trim()),
+  }))
+  check(seen.h1 === TITLE, 'a published replay opens for a member', seen.h1)
+  check(seen.src === 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0', 'with the video above the notes', seen.src)
+  check(Boolean(seen.summary), 'and its summary')
+  check(seen.notes.includes('What we covered') && seen.notes.includes('sticky add to cart'), 'and its notes, as written', seen.notes.slice(0, 50))
+  check(/Margin worksheet/.test(seen.label || '') && (seen.link || '').startsWith('/api/replay-files/file/'), 'and its download, served by this site', seen.link)
+  check(seen.tab.includes('Replays'), 'and the Replays tab is in the bar')
+  await view.close()
+
+  const listing = await (await paid.request.get(`${B}/replays`, { headers: H })).text()
+  check(listing.includes(TITLE), 'it is in the list')
+
+  // The files are the part that must not leak.
+  const mine = await paid.request.get(`${B}${seen.link}`, { headers: H })
+  check(mine.status() === 200 && (await mine.text()).includes('Margin worksheet'), 'a member can download the file', String(mine.status()))
+  const theirs = await unpaid.request.get(`${B}${seen.link}`, { headers: H })
+  check([401, 403, 404].includes(theirs.status()), 'a signed-in non-member cannot', String(theirs.status()))
+  const nobody = await anon.request.get(`${B}${seen.link}`, { headers: H })
+  check([401, 403, 404].includes(nobody.status()), 'and a signed-out visitor cannot', String(nobody.status()))
+
+  // The door.
+  const locked = await (await unpaid.request.get(`${B}/replays`, { headers: H })).text()
+  check(locked.includes('membership is not active') && !locked.includes(TITLE), 'a non-member sees the door and no title')
+  const lockedOne = await unpaid.request.get(`${B}/replays/${slug}`, { headers: H, maxRedirects: 0 })
+  check([307, 302, 303].includes(lockedOne.status()), 'and is bounced from a direct link', String(lockedOne.status()))
+  const api = await unpaid.request.get(`${B}/api/replays?limit=100`, { headers: H })
+  check(api.status() === 403 || ((await api.json()).docs || []).length === 0, 'and reads none through the API', String(api.status()))
+  const anonPage = await anon.request.get(`${B}/replays`, { headers: H, maxRedirects: 0 })
+  check([307, 302, 303].includes(anonPage.status()) && (anonPage.headers()['location'] || '').includes('/login'), 'a signed-out visitor is sent to sign in')
+
+  // On a phone.
+  const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: await paid.storageState() })
+  const pp = await phone.newPage()
+  await pp.goto(`${B}/replays/${slug}`, { waitUntil: 'load' })
+  const overflow = await pp.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  check(overflow <= 0, 'the replay does not push sideways on a phone', `${overflow}px`)
+  await phone.close()
+
+  await admin.request.delete(`${B}/api/replays/${replay.id}`, { headers: H })
+  await admin.request.delete(`${B}/api/replay-files/${file.id}`, { headers: H })
+}
+
 // --- the profile ---------------------------------------------------------
 
 console.log('\nthe display name')
