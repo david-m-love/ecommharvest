@@ -545,6 +545,10 @@ export interface Thread {
   body: string;
   author: number | User;
   /**
+   * Optional. A YouTube link (unlisted is fine) to the recording. Members see it above the question, inside the signed-in area.
+   */
+  replayUrl?: string | null;
+  /**
    * Pinned threads sort above everything else.
    */
   pinned?: boolean | null;
@@ -900,6 +904,7 @@ export interface ThreadsSelect<T extends boolean = true> {
   slug?: T;
   body?: T;
   author?: T;
+  replayUrl?: T;
   pinned?: T;
   lockedAt?: T;
   lastReplyAt?: T;

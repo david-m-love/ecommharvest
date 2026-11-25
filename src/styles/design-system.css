@@ -974,6 +974,12 @@ footer{border-top:1px solid var(--line-2);background:var(--white)}
 .post-first .post-body p{font-size:17.5px}
 .post-mod{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 
+/* The replay: 16 by 9, full width of the column, with its space reserved so the
+   page does not jump when the player loads. */
+.replay{position:relative;aspect-ratio:16/9;margin:18px 0 8px;border-radius:var(--r-sm);overflow:hidden;
+  background:var(--navy);border:1px solid var(--line)}
+.replay iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
 .replyhead{margin:30px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;
   text-transform:uppercase;color:var(--muted)}
 

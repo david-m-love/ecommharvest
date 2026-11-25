@@ -1,6 +1,7 @@
 import { can } from '@/lib/capabilities'
 import { FALLBACK_BYLINE, bylineOf, excerptOf } from '@/lib/community-text'
 import { payload } from '@/lib/entitlements'
+import { replayEmbedUrl } from '@/lib/replay'
 import type { Reply, Thread, User } from '@/payload-types'
 
 export { bylineOf, formatWhen, paragraphsOf } from '@/lib/community-text'
@@ -136,7 +137,7 @@ export const listThreads = async ({
 /** One thread and every reply on it, oldest first. */
 export const getThread = async (
   slug: string,
-): Promise<{ thread: ThreadCard; body: string; replies: ReplyView[] } | null> => {
+): Promise<{ thread: ThreadCard; body: string; replay: string | null; replies: ReplyView[] } | null> => {
   try {
     const p = await payload()
     const { docs } = await p.find({
@@ -169,6 +170,7 @@ export const getThread = async (
     return {
       thread: toCard(thread, names.get(String(idOf(thread.author))) || FALLBACK_BYLINE),
       body: thread.body,
+      replay: replayEmbedUrl((thread as { replayUrl?: string | null }).replayUrl),
       replies: (replies.docs as Reply[]).map((r) => ({
         id: String(r.id),
         body: r.body,

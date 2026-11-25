@@ -748,6 +748,15 @@ posts fall back to the name on their account and then to the part of their email
 before the `@`. **An email address is never shown** — not as a byline, not
 anywhere on the page.
 
+### Putting a call replay on a thread
+
+Each thread can carry a recording above the question. Open **Admin → Community → Community threads**, open the thread (for example the weekly-call thread), and paste a YouTube link into **Replay link (YouTube)**. An unlisted video is fine and free; see below for what that does and does not protect.
+
+- Only YouTube links are accepted. Anything else is refused when you save, with a message, rather than quietly not showing.
+- The player is drawn only inside the signed-in community page, so people who are not members never see it. The link itself is as private as the video's setting: **anyone who has an unlisted link can watch it**, including anybody a member forwards it to. For paid content you want kept to members, the signed-link route (Cloudflare Stream, already built in `src/lib/video.ts`) is the stricter one.
+- Clear the field to remove the replay.
+- Timestamps work: `https://youtu.be/ID?t=90` starts at 1:30.
+
 ## The blog
 
 `/admin` → **Site** → **Posts** → **Create new**. Articles live at **`/blog`**.

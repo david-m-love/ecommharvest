@@ -3,6 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdmin } from '@/lib/access'
 import { can, requireCapabilityField } from '@/lib/capabilities'
 import { memberCanRead } from '@/lib/community-access'
+import { replayEmbedUrl } from '@/lib/replay'
 import { slugify } from '@/lib/slug'
 
 /**
@@ -118,6 +119,24 @@ export const Threads: CollectionConfig = {
     },
     { name: 'body', type: 'textarea', required: true },
     { name: 'author', type: 'relationship', relationTo: 'users', required: true, index: true },
+    {
+      name: 'replayUrl',
+      type: 'text',
+      label: 'Replay link (YouTube)',
+      maxLength: 300,
+      access: {
+        create: requireCapabilityField('community:moderate'),
+        update: requireCapabilityField('community:moderate'),
+      },
+      // A link that is not a YouTube video is refused here rather than silently
+      // not showing, so whoever pasted it finds out at once.
+      validate: (value: string | null | undefined) =>
+        !value || replayEmbedUrl(value) ? true : 'Paste a YouTube link, such as https://youtu.be/…',
+      admin: {
+        description:
+          'Optional. A YouTube link (unlisted is fine) to the recording. Members see it above the question, inside the signed-in area.',
+      },
+    },
     {
       name: 'pinned',
       type: 'checkbox',

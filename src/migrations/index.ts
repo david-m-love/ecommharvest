@@ -31,6 +31,7 @@ import * as migration_20261027_200000_weekly_checkout_link from './20261027_2000
 import * as migration_20261030_120000_publish_weekly_pages from './20261030_120000_publish_weekly_pages';
 import * as migration_20261030_150000_roadmap_pages from './20261030_150000_roadmap_pages';
 import * as migration_20261030_170000_roadmap_checkout_link from './20261030_170000_roadmap_checkout_link';
+import * as migration_20261125_120000_thread_replay_link from './20261125_120000_thread_replay_link';
 
 export const migrations = [
   {
@@ -196,6 +197,11 @@ export const migrations = [
   {
     up: migration_20261030_170000_roadmap_checkout_link.up,
     down: migration_20261030_170000_roadmap_checkout_link.down,
-    name: '20261030_170000_roadmap_checkout_link'
+    name: '20261030_170000_roadmap_checkout_link',
+  },
+  {
+    up: migration_20261125_120000_thread_replay_link.up,
+    down: migration_20261125_120000_thread_replay_link.down,
+    name: '20261125_120000_thread_replay_link'
   },
 ];

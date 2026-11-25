@@ -271,6 +271,40 @@ console.log('\nmoderation')
   check(res.status() === 200, 'unlocking lets replies through again', String(res.status()))
 }
 
+// --- the replay ----------------------------------------------------------
+
+console.log('\nreplay')
+{
+  const found = await (await admin.request.get(`${B}/api/threads?where[slug][equals]=${slug}&limit=1`, { headers: H })).json()
+  const id = found.docs?.[0]?.id
+  check(Boolean(id), 'the thread can be found by an admin', String(id))
+
+  const patch = (ctx, replayUrl) =>
+    ctx.request.patch(`${B}/api/threads/${id}`, { data: { replayUrl }, headers: H })
+
+  check((await patch(paid, 'https://youtu.be/dQw4w9WgXcQ')).status() === 403, 'a member cannot attach a replay', '403')
+  check((await patch(admin, 'https://evil.example/embed/dQw4w9WgXcQ')).status() >= 400, 'a link that is not YouTube is refused when saved')
+  check((await patch(admin, 'https://youtu.be/dQw4w9WgXcQ?t=30')).ok(), 'an admin can attach a YouTube link')
+
+  const view = await paid.newPage()
+  await view.goto(`${B}/community/${slug}`, { waitUntil: 'domcontentloaded' })
+  const frame = await view.evaluate(() => {
+    const f = document.querySelector('.replay iframe')
+    return f ? { src: f.getAttribute('src'), title: f.getAttribute('title') } : null
+  })
+  check(Boolean(frame), 'the replay shows above the question')
+  check(frame?.src === 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?rel=0&start=30', 'and points at the privacy-enhanced embed', frame?.src)
+  await view.close()
+
+  const noReplay = await unpaid.newPage()
+  await noReplay.goto(`${B}/community/${slug}`, { waitUntil: 'domcontentloaded' })
+  const leaked = await noReplay.evaluate(() => document.querySelectorAll('iframe').length)
+  check(leaked === 0, 'a non-member sees no player on the locked page')
+  await noReplay.close()
+
+  await patch(admin, '')
+}
+
 // --- the profile ---------------------------------------------------------
 
 console.log('\nthe display name')

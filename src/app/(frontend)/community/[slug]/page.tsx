@@ -92,7 +92,7 @@ export default async function ThreadPage({
   const found = await getThread(slug)
   if (!found) notFound()
 
-  const { thread, body, replies } = found
+  const { thread, body, replay, replies } = found
   const canModerate = isModerator(user)
 
   return (
@@ -114,6 +114,24 @@ export default async function ThreadPage({
         </div>
 
         {error && <p className="notice">{error}</p>}
+
+        {/*
+          The recording, above the question it belongs to. Only drawn for a link
+          the replay parser accepts, so the iframe source is always a YouTube
+          embed address and never something somebody typed.
+        */}
+        {replay ? (
+          <div className="replay">
+            <iframe
+              src={replay}
+              title={`Replay: ${thread.title}`}
+              loading="lazy"
+              allow="accelerometer; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </div>
+        ) : null}
 
         <article className="post post-first">
           <p className="post-by">
